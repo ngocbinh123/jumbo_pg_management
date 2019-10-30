@@ -1,0 +1,59 @@
+// NativeScript core theme
+// @see https://docs.nativescript.org/ui/theme
+@import '~nativescript-theme-core/scss/dark';
+// Override variables here
+@import '~nativescript-theme-core/scss/index';
+// Global SCSS styling
+// @see https://docs.nativescript.org/ui/styling
+.page_title,
+.page_title_small {
+    font-family: "f_arima_madurai_bold";
+    font-weight: bold;
+    color: #007882;
+    font-size: 40px;
+    text-align: center;
+    margin: 8, 8, 4, 8;
+}
+
+.page_title_small {
+    font-size: 24px;
+}
+
+.dlg_title {
+    font-family: "f_arima_madurai_bold";
+    font-weight: bold;
+    color: #007882;
+    font-size: 24px;
+    text-align: center;
+    margin: 8, 8, 4, 8;
+}
+
+.page_sub_title {
+    font-family: "f_arima_madurai_medium";
+    font-size: 16px;
+    text-align: center;
+    margin: 0, 0, 46, 0;
+}
+
+.btn {
+    font-size: 18;
+    border-radius: 50%;
+}
+
+.btn-primary {
+    font-family: "f_arima_madurai_bold";
+    background-color: #EF4D4D;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+Label,
+TextField {
+    font-family: "f_arima_madurai_regular";
+    color: black;
+}
+
+ActivityIndicator {
+    color: #EF4D4D;
+    width: 15%;
+}
