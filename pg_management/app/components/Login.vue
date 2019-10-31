@@ -4,7 +4,7 @@
       <GridLayout row="auto, auto, auto">
         <StackLayout>
           <Label text="Xin Chào" class="page_title" />
-          <Label text="Hãy đăng nhập bằng tài khoản của bạn" class="page_sub_title" />
+          <Label text="Hãy đăng nhập bằng tài khoản của bạn." class="page_sub_title" textWrap="true"/>
           <TextField
             id="txt_email"
             v-model="user.email"
@@ -21,7 +21,7 @@
             returnKeyType="done"
             @returnPress="startLogigning"
           />
-          <Button id="btn_login" @tap="validateInput()" text="Đăng Nhập" class="btn btn-primary" />
+          <Button id="btn_login" @tap="validateInput()" text="Đăng Nhập" class="btn btn-primary" :isEnabled ="!processing"/>
           <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Bạn quên mật khẩu?" />
         </StackLayout>
         <ActivityIndicator v-show="processing" busy="true" />
@@ -34,14 +34,14 @@
 import Home from "./App";
 import ChangePass from "./ChangePassword";
 import Vue from "nativescript-vue";
-
+import fetchModule from "tns-core-modules/fetch";
 export default {
   data() {
     return {
       processing: false,
       user: {
-        email: "",
-        password: ""
+        email: "nguyengocbinh@gmail.com",
+        password: "JsgkHSZBJO"
       }
     };
   },
@@ -56,11 +56,7 @@ export default {
         this.showDlg("THÔNG BÁO", "Email không đúng.");
         return;
       }
-
-      if (!this.user.email.endsWith("@abiz.co")) {
-        this.showDlg("THẤT BẠI", "Tài khoản không tồn tại.");
-        return;
-      }
+      
       this.processing = true;
       this.login();
     },
@@ -69,8 +65,45 @@ export default {
       return re.test(this.user.email);
     },
     login() {
+      fetchModule
+        .fetch("https://ntgroupipamwebapi.azurewebsites.net/api/login", {
+          method: "POST",
+          body: JSON.stringify({
+            Email: this.user.email,
+            Password: this.user.password
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(
+          response => {
+            var contentJson = JSON.parse(response._bodyInit);
+            if (response.ok) {
+              this.loginSuccess(contentJson);
+            } else {
+              var errMsg = contentJson.error_message;
+              if (errMsg == "Your email and password not match") {
+                errMsg = "Email hoặc mật khẩu không đúng.";
+              }
+              this.loginFail(errMsg);
+            }
+          },
+          e => {
+            var errMsg = e.message;
+            if (errMsg.includes("UnknownHostException")) {
+              errMsg = "không thể kết nối với hệ thống.";
+            }
+            this.loginFail(errMsg);
+          }
+        );
+    },
+    loginSuccess(json) {
       this.processing = false;
-      if (this.user.password == "654321") {
+      var forceChangePass = json.abiz_forcechangepassword.value;
+      var clientCode = json.abiz_clientcode.value;
+
+      if (forceChangePass) {
         confirm({
           title: "ĐỔI MẬT KHẨU",
           message: "Bạn cần phải thay đổi mật khẩu.",
@@ -88,6 +121,10 @@ export default {
       } else {
         this.gotoHome();
       }
+    },
+    loginFail(errMessage) {
+      this.processing = false;
+      this.showDlg("ĐĂNG NHẬP THẤT BẠI", errMessage);
     },
     gotoHome() {
       this.$navigateTo(Home, {
@@ -115,17 +152,14 @@ export default {
         console.log("Forgot function result: " + data.result);
         if (data.result) {
           var formatReq = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-         var userEmail = data.text.trim() 
-         if (formatReq.test(userEmail)) {
+          var userEmail = data.text.trim();
+          if (formatReq.test(userEmail)) {
             this.showDlg(
               "THÀNH CÔNG",
               "Mật khẩu mới được gửi tới email của bạn."
             );
           } else {
-              this.showDlg(
-              "THÔNG BÁO",
-              "Email không đúng."
-            );
+            this.showDlg("THÔNG BÁO", "Email không đúng.");
           }
         }
         // if (data.result) {
