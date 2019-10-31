@@ -35,6 +35,10 @@ import Home from "./App";
 import ChangePass from "./ChangePassword";
 import Vue from "nativescript-vue";
 import fetchModule from "tns-core-modules/fetch";
+const configApi = require("../service/config");
+const stringConst = require("../assets/StringConst");
+
+
 export default {
   data() {
     return {
@@ -48,15 +52,15 @@ export default {
   methods: {
     validateInput() {
       if (!this.user.email || !this.user.password) {
-        this.showDlg("THÔNG BÁO", "Xin hãy nhập đầy đủ email và mật khẩu.");
+        this.showDlg(stringConst.lbl_notification, stringConst.msg_fill_emai_pass);
         return;
       }
 
       if (!this.validateEmail()) {
-        this.showDlg("THÔNG BÁO", "Email không đúng.");
+        this.showDlg(stringConst.lbl_notification, stringConst.msg_email_not_match);
         return;
       }
-      
+
       this.processing = true;
       this.login();
     },
@@ -66,15 +70,13 @@ export default {
     },
     login() {
       fetchModule
-        .fetch("https://ntgroupipamwebapi.azurewebsites.net/api/login", {
+        .fetch(configApi.loginUrl, {
           method: "POST",
+          headers: configApi.headers,
           body: JSON.stringify({
             Email: this.user.email,
             Password: this.user.password
           }),
-          headers: {
-            "Content-Type": "application/json"
-          }
         })
         .then(
           response => {
@@ -84,7 +86,7 @@ export default {
             } else {
               var errMsg = contentJson.error_message;
               if (errMsg == "Your email and password not match") {
-                errMsg = "Email hoặc mật khẩu không đúng.";
+                errMsg = stringConst.msg_email_pass_not_math;
               }
               this.loginFail(errMsg);
             }
@@ -92,7 +94,7 @@ export default {
           e => {
             var errMsg = e.message;
             if (errMsg.includes("UnknownHostException")) {
-              errMsg = "không thể kết nối với hệ thống.";
+              errMsg = stringConst.msg_unknow_host_exception;
             }
             this.loginFail(errMsg);
           }
@@ -105,9 +107,9 @@ export default {
 
       if (forceChangePass) {
         confirm({
-          title: "ĐỔI MẬT KHẨU",
-          message: "Bạn cần phải thay đổi mật khẩu.",
-          okButtonText: "Đồng ý"
+          title: stringConst.lbl_change_pass,
+          message: stringConst.msg_should_change_pass,
+          okButtonText: stringConst.lbl_accept
         }).then(function(result) {
           Vue.prototype.$navigateTo(ChangePass, {
             clearHistory: true,
@@ -124,7 +126,7 @@ export default {
     },
     loginFail(errMessage) {
       this.processing = false;
-      this.showDlg("ĐĂNG NHẬP THẤT BẠI", errMessage);
+      this.showDlg(stringConst.lbl_login_fail, errMessage);
     },
     gotoHome() {
       this.$navigateTo(Home, {
@@ -142,39 +144,25 @@ export default {
     },
     forgotPassword() {
       prompt({
-        title: "KHÔI PHỤC MẬT KHẨU",
+        title: stringConst.lbl_restore_pass,
         message: "Xin hãy nhập Email mà bạn đã đăng ký với hệ thống.",
         inputType: "email",
         defaultText: "",
-        okButtonText: "Gửi",
-        cancelButtonText: "Huỷ"
+        okButtonText: stringConst.lbl_send,
+        cancelButtonText: stringConst.lbl_cancel
       }).then(data => {
-        console.log("Forgot function result: " + data.result);
         if (data.result) {
           var formatReq = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           var userEmail = data.text.trim();
           if (formatReq.test(userEmail)) {
             this.showDlg(
-              "THÀNH CÔNG",
-              "Mật khẩu mới được gửi tới email của bạn."
+              stringConst.lbl_success,
+              stringConst.msg_enter_your_email
             );
           } else {
-            this.showDlg("THÔNG BÁO", "Email không đúng.");
+            this.showDlg(stringConst.lbl_notification, stringConst.msg_email_pass_not_math);
           }
         }
-        // if (data.result) {
-        //   this.$backendService
-        //     .resetPassword(data.text.trim())
-        //     .then(() => {
-        //       this.showDlg(
-        //         "THÀNH CÔNG",
-        //         "Mật khẩu đã được khôi phục và đã gửi tới email của bạn."
-        //       );
-        //     })
-        //     .catch(() => {
-        //       this.showDlg("THẤT BẠI", "Có sự cố xảy ra. Xin hãy thử lại.");
-        //     });
-        // }
       });
     },
     startLogigning() {
@@ -186,7 +174,7 @@ export default {
     showDlg(dlgTitle, dlgMsg) {
       return alert({
         title: dlgTitle,
-        okButtonText: "Đóng",
+        okButtonText: stringConst.lbl_close,
         message: dlgMsg
       });
     }
