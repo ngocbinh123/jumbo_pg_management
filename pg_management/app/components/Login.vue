@@ -4,7 +4,11 @@
       <GridLayout row="auto, auto, auto">
         <StackLayout>
           <Label text="Xin Chào" class="page_title" />
-          <Label text="Hãy đăng nhập bằng tài khoản của bạn." class="page_sub_title" textWrap="true"/>
+          <Label
+            text="Hãy đăng nhập bằng tài khoản của bạn."
+            class="page_sub_title"
+            textWrap="true"
+          />
           <TextField
             id="txt_email"
             v-model="user.email"
@@ -21,8 +25,14 @@
             returnKeyType="done"
             @returnPress="startLogigning"
           />
-          <Button id="btn_login" @tap="validateInput()" text="Đăng Nhập" class="btn btn-primary" :isEnabled ="!processing"/>
-          <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Bạn quên mật khẩu?" />
+          <Button
+            id="btn_login"
+            @tap="validateInput()"
+            text="Đăng Nhập"
+            class="btn btn-primary"
+            :isEnabled="!processing"
+          />
+          <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Bạn quên mật khẩu?"/>
         </StackLayout>
         <ActivityIndicator v-show="processing" busy="true" />
       </GridLayout>
@@ -34,10 +44,8 @@
 import Home from "./App";
 import ChangePass from "./ChangePassword";
 import Vue from "nativescript-vue";
-import fetchModule from "tns-core-modules/fetch";
-const configApi = require("../service/config");
 const stringConst = require("../assets/StringConst");
-
+const apiService = require("../service/BackEndService");
 
 export default {
   data() {
@@ -52,12 +60,18 @@ export default {
   methods: {
     validateInput() {
       if (!this.user.email || !this.user.password) {
-        this.showDlg(stringConst.lbl_notification, stringConst.msg_fill_emai_pass);
+        this.showDlg(
+          stringConst.lbl_notification,
+          stringConst.msg_fill_emai_pass
+        );
         return;
       }
 
       if (!this.validateEmail()) {
-        this.showDlg(stringConst.lbl_notification, stringConst.msg_email_not_match);
+        this.showDlg(
+          stringConst.lbl_notification,
+          stringConst.msg_email_not_match
+        );
         return;
       }
 
@@ -69,36 +83,10 @@ export default {
       return re.test(this.user.email);
     },
     login() {
-      fetchModule
-        .fetch(configApi.loginUrl, {
-          method: "POST",
-          headers: configApi.headers,
-          body: JSON.stringify({
-            Email: this.user.email,
-            Password: this.user.password
-          }),
-        })
-        .then(
-          response => {
-            var contentJson = JSON.parse(response._bodyInit);
-            if (response.ok) {
-              this.loginSuccess(contentJson);
-            } else {
-              var errMsg = contentJson.error_message;
-              if (errMsg == "Your email and password not match") {
-                errMsg = stringConst.msg_email_pass_not_math;
-              }
-              this.loginFail(errMsg);
-            }
-          },
-          e => {
-            var errMsg = e.message;
-            if (errMsg.includes("UnknownHostException")) {
-              errMsg = stringConst.msg_unknow_host_exception;
-            }
-            this.loginFail(errMsg);
-          }
-        );
+      apiService.methods
+        .login(this.user.email, this.user.password)
+        .catch(this.loginFail)
+        .then(this.loginSuccess);
     },
     loginSuccess(json) {
       this.processing = false;
@@ -124,9 +112,13 @@ export default {
         this.gotoHome();
       }
     },
-    loginFail(errMessage) {
+    loginFail(e) {
+      var errMsg = e.message;
+      if (errMsg.includes("UnknownHostException")) {
+        errMsg = stringConst.msg_unknow_host_exception;
+      }
       this.processing = false;
-      this.showDlg(stringConst.lbl_login_fail, errMessage);
+      this.showDlg(stringConst.lbl_login_fail, errMsg);
     },
     gotoHome() {
       this.$navigateTo(Home, {
@@ -143,6 +135,9 @@ export default {
       this.gotoHome();
     },
     forgotPassword() {
+      if(this.processing) {
+        return;
+      }
       prompt({
         title: stringConst.lbl_restore_pass,
         message: "Xin hãy nhập Email mà bạn đã đăng ký với hệ thống.",
@@ -160,7 +155,10 @@ export default {
               stringConst.msg_enter_your_email
             );
           } else {
-            this.showDlg(stringConst.lbl_notification, stringConst.msg_email_pass_not_math);
+            this.showDlg(
+              stringConst.lbl_notification,
+              stringConst.msg_email_pass_not_math
+            );
           }
         }
       });
