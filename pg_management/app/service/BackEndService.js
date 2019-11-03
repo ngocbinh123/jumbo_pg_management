@@ -25,11 +25,12 @@ module.exports = {
                 })
                 .then(this.checkResponse);
         },
-        changepassword(oldPass, newPass) {
+        changepassword(oldPass, newPass, bearer) {
+            var headers = config.authHeaders(bearer);
             return fetchModule
                 .fetch(config.changePass, {
                     method: "POST",
-                    headers: config.authHeaders,
+                    headers: headers,
                     body: JSON.stringify({
                         old_password: oldPass,
                         new_password: newPass
@@ -38,13 +39,20 @@ module.exports = {
                 .then(this.checkResponse);
         },
         checkResponse(response) {
-            if (response.status == 401) {
-                return Error("Đã có sự cố ngoài ý muốn.")
+            var body = response._bodyInit;
+            if (body == "") {
+                if (!response.ok) {
+                    throw Error("Đã có sự cố ngoài ý muốn.");
+                }
+                return {
+                    message: "Thành công."
+                };
             }
-            var contentJson = JSON.parse(response._bodyInit);
+
+            var contentJson = JSON.parse(body);
             if (!response.ok) {
                 var errMsg = contentJson.error_message;
-                throw Error(errMsg)
+                throw Error(errMsg);
             }
             return contentJson;
         }
