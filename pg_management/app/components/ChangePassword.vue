@@ -31,14 +31,14 @@ import Home from "./App";
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
 const remember = require("../share/Remember");
-
+const transition = require("../share/Transition");
 export default {
   data() {
     return {
       processing: false,
       user: {
-        oldPass: "binh@2019",
-        newPass: "binh@2020"
+        oldPass: "binh@2020",
+        newPass: "binh@2021"
       }
     };
   },
@@ -73,31 +73,29 @@ export default {
     },
 
     submitData() {
+      var bearId = remember.getBearId();
       apiService.methods
-        .changepassword(this.user.oldPass, this.user.newPass)
+        .changepassword(this.user.oldPass, this.user.newPass, bearId)
         .catch(this.apiRequestFail)
         .then(this.apiRequestSuccess);
     },
 
     apiRequestSuccess(json) {
+      if(!json) {
+        return;
+      }
       remember.setFroceChangePass(false);
       this.processing = false;
       this.$navigateTo(Home, {
         clearHistory: true,
         animated: true,
-        transition: {
-          name: "slide",
-          duration: 380,
-          curve: "easeIn"
-        }
+        transition: transition.pageTransition
       });
     },
-    apiRequestFail(response) {
+    apiRequestFail(e) {
       var errMsg = e.message;
       if (errMsg.includes("UnknownHostException")) {
         errMsg = stringConst.msg_unknow_host_exception;
-      } else if (!errMsg) {
-        errMsg = "Status: " + e.status;
       }
       this.processing = false;
       this.showDlg(stringConst.lbl_fail, errMsg);

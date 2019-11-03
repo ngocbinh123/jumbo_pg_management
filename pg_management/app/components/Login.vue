@@ -47,13 +47,15 @@ import Vue from "nativescript-vue";
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
 const remember = require("../share/Remember");
+const transition = require("../share/Transition");
+
 export default {
   data() {
     return {
       processing: false,
       user: {
         email: "nguyengocbinh@gmail.com",
-        password: "binh@2020"
+        password: "binh@2024"
       }
     };
   },
@@ -106,11 +108,7 @@ export default {
           Vue.prototype.$navigateTo(ChangePass, {
             clearHistory: true,
             animated: true,
-            transition: {
-              name: "slide",
-              duration: 380,
-              curve: "easeIn"
-            }
+            transition: transition.pageTransition
           });
         });
       } else {
@@ -129,11 +127,7 @@ export default {
       this.$navigateTo(Home, {
         clearHistory: true,
         animated: true,
-        transition: {
-            name: "slide",
-              duration: 380,
-              curve: "easeIn"
-        }
+        transition: transition.pageTransition
       });
     },
     updatedPassSuccess(isUpdated) {

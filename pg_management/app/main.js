@@ -21,7 +21,6 @@ new Vue({
         var bearId = remember.getBearId();
         var forceChangePass = remember.getFroceChangePass();
 
-        console.log("APP.JS", forceChangePass + " " + bearId);
         if (forceChangePass) {
             return h('frame', [h(ChangePass)]);
         } else if (bearId) {

@@ -1,5 +1,4 @@
 const API_PREFIX = "https://ntgroupipamwebapi.azurewebsites.net/api/"
-const remember = require("../share/Remember");
 
 module.exports = {
     loginUrl: API_PREFIX + "login",
@@ -8,8 +7,11 @@ module.exports = {
     headers: {
         "Content-Type": "application/json"
     },
-    authHeaders: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + remember.getBearId()
+    authHeaders(bearId) {
+        var bearer = "Bearer " + bearId
+        return {
+            "Content-Type": "application/json",
+            "Authorization": bearer
+        }
     }
 };
