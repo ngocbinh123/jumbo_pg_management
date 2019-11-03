@@ -32,7 +32,7 @@
             class="btn btn-primary"
             :isEnabled="!processing"
           />
-          <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Bạn quên mật khẩu?"/>
+          <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Bạn quên mật khẩu?" />
         </StackLayout>
         <ActivityIndicator v-show="processing" busy="true" />
       </GridLayout>
@@ -46,14 +46,14 @@ import ChangePass from "./ChangePassword";
 import Vue from "nativescript-vue";
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
-
+const remember = require("../share/Remember");
 export default {
   data() {
     return {
       processing: false,
       user: {
         email: "nguyengocbinh@gmail.com",
-        password: "JsgkHSZBJO"
+        password: "binh@2020"
       }
     };
   },
@@ -85,14 +85,18 @@ export default {
     login() {
       apiService.methods
         .login(this.user.email, this.user.password)
-        .catch(this.loginFail)
+        .catch(this.apiRequestFail)
         .then(this.loginSuccess);
     },
     loginSuccess(json) {
       this.processing = false;
       var forceChangePass = json.abiz_forcechangepassword.value;
+      var beaerId = json.abiz_bearerid;
+
       var clientCode = json.abiz_clientcode.value;
 
+      remember.setBearId(beaerId);
+      remember.setFroceChangePass(forceChangePass);
       if (forceChangePass) {
         confirm({
           title: stringConst.lbl_change_pass,
@@ -103,8 +107,9 @@ export default {
             clearHistory: true,
             animated: true,
             transition: {
-              name: "fade",
-              duration: 700
+              name: "slide",
+              duration: 380,
+              curve: "easeIn"
             }
           });
         });
@@ -112,21 +117,22 @@ export default {
         this.gotoHome();
       }
     },
-    loginFail(e) {
+    apiRequestFail(e) {
       var errMsg = e.message;
       if (errMsg.includes("UnknownHostException")) {
         errMsg = stringConst.msg_unknow_host_exception;
       }
       this.processing = false;
-      this.showDlg(stringConst.lbl_login_fail, errMsg);
+      this.showDlg(stringConst.lbl_fail, errMsg);
     },
     gotoHome() {
       this.$navigateTo(Home, {
         clearHistory: true,
         animated: true,
         transition: {
-          name: "fade",
-          duration: 700
+            name: "slide",
+              duration: 380,
+              curve: "easeIn"
         }
       });
     },
@@ -135,7 +141,7 @@ export default {
       this.gotoHome();
     },
     forgotPassword() {
-      if(this.processing) {
+      if (this.processing) {
         return;
       }
       prompt({
@@ -150,10 +156,7 @@ export default {
           var formatReq = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           var userEmail = data.text.trim();
           if (formatReq.test(userEmail)) {
-            this.showDlg(
-              stringConst.lbl_success,
-              stringConst.msg_enter_your_email
-            );
+            this.resetPass(userEmail);
           } else {
             this.showDlg(
               stringConst.lbl_notification,
@@ -162,6 +165,16 @@ export default {
           }
         }
       });
+    },
+    resetPass(email) {
+      apiService.methods
+        .resetPass(email)
+        .catch(this.apiRequestFail)
+        .then(this.loginSuccess);
+    },
+    resetPassSuccess(json) {
+      this.processing = false;
+      this.showDlg(stringConst.lbl_success, stringConst.msg_enter_your_email);
     },
     startLogigning() {
       if (this.user.email && this.user.password) {

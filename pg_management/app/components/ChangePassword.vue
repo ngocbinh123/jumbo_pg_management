@@ -18,9 +18,9 @@
             secure="true"
             autocorrect="false"
           />
-          <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary" />
+          <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary" :isEnabled = "!processing"  />
         </StackLayout>
-        <ActivityIndicator v-show="processing" busy="true"></ActivityIndicator>
+        <ActivityIndicator v-show="processing" busy="true"/>
       </GridLayout>
     </FlexboxLayout>
   </Page>
@@ -28,14 +28,17 @@
 
 <script>
 import Home from "./App";
+const stringConst = require("../assets/StringConst");
+const apiService = require("../service/BackEndService");
+const remember = require("../share/Remember");
 
 export default {
   data() {
     return {
       processing: false,
       user: {
-        oldPass: "",
-        newPass: ""
+        oldPass: "binh@2019",
+        newPass: "binh@2020"
       }
     };
   },
@@ -43,16 +46,24 @@ export default {
     validateInput() {
       if (!this.user.oldPass || !this.user.newPass) {
         this.showDlg(
-          "THÔNG BÁO",
-          "Xin hãy nhập đầy đủ mật khẩu hiện tại và mật khẩu mới."
+          stringConst.lbl_notification,
+          stringConst.msg_fill_current_new_pass
         );
         return;
       }
 
       if (this.user.newPass.length < 6) {
         this.showDlg(
-          "THÔNG BÁO",
-          "Mật khẩu mới phải ít nhất 6 ký tự."
+          stringConst.lbl_notification,
+          stringConst.msg_pass_should_be_least_6_characters
+        );
+        return;
+      }
+
+      if (this.user.oldPass == this.user.newPass) {
+        this.showDlg(
+          stringConst.lbl_notification,
+          stringConst.msg_new_pass_diff_curr_pass
         );
         return;
       }
@@ -62,21 +73,39 @@ export default {
     },
 
     submitData() {
+      apiService.methods
+        .changepassword(this.user.oldPass, this.user.newPass)
+        .catch(this.apiRequestFail)
+        .then(this.apiRequestSuccess);
+    },
+
+    apiRequestSuccess(json) {
+      remember.setFroceChangePass(false);
       this.processing = false;
       this.$navigateTo(Home, {
         clearHistory: true,
         animated: true,
         transition: {
-          name: "fade",
-          duration: 700
+          name: "slide",
+          duration: 380,
+          curve: "easeIn"
         }
       });
     },
-
+    apiRequestFail(response) {
+      var errMsg = e.message;
+      if (errMsg.includes("UnknownHostException")) {
+        errMsg = stringConst.msg_unknow_host_exception;
+      } else if (!errMsg) {
+        errMsg = "Status: " + e.status;
+      }
+      this.processing = false;
+      this.showDlg(stringConst.lbl_fail, errMsg);
+    },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
         title: dlgTitle,
-        okButtonText: "Đóng",
+        okButtonText: stringConst.lbl_close,
         message: dlgMsg
       });
     }
