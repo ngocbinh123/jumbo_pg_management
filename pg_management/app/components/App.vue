@@ -1,51 +1,72 @@
 <template>
-  <Page>
-    <ActionBar title="NT Group" android:flat="true" />
-    <TabView
-      android:tabBackgroundColor="#007882"
-      android:tabTextColor="#006069"
-      android:selectedTabTextColor="#ffffff"
-      androidSelectedTabHighlightColor="#ffffff"
-    >
-      <TabViewItem title="Siêu Thị">
-        <GridLayout columns="*" rows="*">
-          <Label class="message" text="Danh sách siêu thị" col="0" row="0" />
-        </GridLayout>
-      </TabViewItem>
-      <TabViewItem title="Sản Phẩm">
-        <GridLayout columns="*" rows="*">
-          <Label class="message" text="Danh sách sản phẩm" col="0" row="0" />
-        </GridLayout>
-      </TabViewItem>
-      <TabViewItem title="Tài Khoản">
-        <GridLayout columns="*" rows="*">
-          <Label class="message" text="Thông tin tài khoản" col="0" row="0" />
-        </GridLayout>
-      </TabViewItem>
-    </TabView>
+  <Page actionBarHidden="true">
+    <GridLayout rows="*, auto">
+      <FlexBoxLayout id="page_content" row="0">
+        <Home v-show="selectedIndex==0"></Home>
+        <Transaction v-show="selectedIndex==1"></Transaction>
+        <Account v-show="selectedIndex==2"></Account>
+      </FlexBoxLayout>
+      <BottomNavigationBar
+        class="custom-bottom-navigation-bar"
+        @tabPressed="onBottomNavigationTabPressed"
+        @tabSelected="onBottomNavigationTabSelected"
+        @tabReselected="onBottomNavigationTabReselected"
+        row="1"
+      >
+        <BottomNavigationTab title="Cửa Hàng" icon="res://ic_home" />
+        <BottomNavigationTab title="Sản Phẩm" icon="res://ic_cart" />
+        <BottomNavigationTab title="Tài Khoản" icon="res://ic_user" />
+      </BottomNavigationBar>
+    </GridLayout>
   </Page>
 </template>
 
 <script >
+import Home from "./Home/Home";
+import Transaction from "./Transaction/Transaction";
+import Account from "./Account/Account";
+
 export default {
+  components: {
+    Home,
+    Transaction,
+    Account
+  },
   data() {
     return {
+      selectedIndex: 0,
       msg: "Hello World!"
     };
+  },
+  methods: {
+    onBottomNavigationTabPressed: function(args) {
+      console.log(`pressed tab index:  ${args.index}`);
+    },
+    onBottomNavigationTabSelected: function(args) {
+      this.selectedIndex = args.newIndex;
+      console.log(`old tab index:  ${args.oldIndex}`);
+      console.log(`selected tab index:  ${args.newIndex}`);
+    },
+    onBottomNavigationTabReselected: function(args) {
+      console.log(`reselected tab index:  ${args.index}`);
+    }
   }
 };
 </script>
 
-<style scoped>
-ActionBar {
-  background-color: #007882;
-  color: #ffffff;
+<style scoped lang="scss">
+@import "../app-variables";
+
+BottomNavigationTab {
+  font-family: "f_arima_madurai_bold";
+}
+.custom-bottom-navigation-bar {
+  active-color: $color-primary-dark;
+  background-color: white;
+  inactive-color: $color-sliver;
 }
 
-.message {
-  vertical-align: center;
-  text-align: center;
-  font-size: 20;
-  color: #333333;
+.page_content {
+  background: $color-primary-dark;
 }
 </style>

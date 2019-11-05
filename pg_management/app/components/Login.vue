@@ -55,7 +55,7 @@ export default {
       processing: false,
       user: {
         email: "nguyengocbinh@gmail.com",
-        password: "binh@2024"
+        password: "binh@2019"
       }
     };
   },

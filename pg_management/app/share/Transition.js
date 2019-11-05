@@ -1,7 +1,7 @@
 module.exports = {
     pageTransition: {
-        name: "slide",
-        duration: 380,
+        name: "slideLeft",
+        duration: 250,
         curve: "easeIn"
     }
 }
