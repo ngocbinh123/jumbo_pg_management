@@ -15,5 +15,8 @@ module.exports = {
     },
     setFroceChangePass(isForce) {
         appSettings.setBoolean(KEY_FORCE_CHANGE_PASS, isForce);
+    },
+    clearAll() {
+        appSettings.clear();
     }
 }
