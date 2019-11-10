@@ -5,6 +5,12 @@ export default {
         getBearId() {
             return Remember.getBearId();
         },
+        getUserId() {
+            return Remember.getUserId();
+        },
+        getUserName() {
+            return Remember.getUserName();
+        },
         logout() {
             Remember.clearAll();
         }
