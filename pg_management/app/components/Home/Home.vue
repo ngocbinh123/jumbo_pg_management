@@ -63,9 +63,10 @@ export default {
       var currentHour = now.getHours();
       var itemState = Constant.CHECK_IN_STATE.UNCHECK;
 
-      if (i == currentHour && now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN) {
-        itemState = Constant.CHECK_IN_STATE.READY;
-      } else if(i - currentHour == 1 && now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
+      if (i == currentHour) {
+        // itemState = Constant.CHECK_IN_STATE.READY;
+        itemState = now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN ? Constant.CHECK_IN_STATE.READY : Constant.CHECK_IN_STATE.CHECKED;
+      } else if(i - currentHour == 1 &&  now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
         itemState = Constant.CHECK_IN_STATE.READY;
       } else if(i - currentHour < 0) {
         itemState = Constant.CHECK_IN_STATE.CHECKED;
