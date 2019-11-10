@@ -94,9 +94,12 @@ export default {
       this.processing = false;
       var forceChangePass = json.abiz_forcechangepassword.value;
       var beaerId = json.abiz_bearerid;
+      var userId = json.abiz_ntgroupuserid;
 
       var clientCode = json.abiz_clientcode.value;
-
+      remember.setUserEmail(this.user.email.trim());
+      remember.setUserName(this.user.email.trim());
+      remember.setUserId(userId);
       remember.setBearId(beaerId);
       remember.setFroceChangePass(forceChangePass);
       if (forceChangePass) {

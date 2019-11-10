@@ -4,13 +4,12 @@ import Login from './components/Login'
 import ChangePass from './components/ChangePassword'
 
 import BottomNavigationBar from 'nativescript-bottom-navigation/vue';
-import VueDevtools from 'nativescript-vue-devtools'
 import store from './store'
 const remember = require("./share/Remember");
 Vue.use(BottomNavigationBar);
 
 if (TNS_ENV !== 'production') {
-    Vue.use(VueDevtools)
+    // Vue.use(VueDevtools)
 }
 
 // Prints Vue logs when --env.production is *NOT* set while building

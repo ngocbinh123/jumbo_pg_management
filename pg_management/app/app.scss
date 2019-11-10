@@ -45,8 +45,25 @@
 }
 
 .btn-primary {
-    font-family: "f_arima_madurai_bold";
-    background-color: #EF4D4D;
+    font-family: "f_arima_madurai_extra_bold";
+    font-size: 18;
+    font-weight: 600;
+    border-radius: 50%;
+    border-width: 1;
+    background-color: $color-accent;
+    border-color: $color-accent;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.btn-primary:active {
+    font-family: "f_arima_madurai_extra_bold";
+    font-size: 18;
+    font-weight: 600;
+    border-radius: 50%;
+    border-width: 0.5;
+    background-color: white;
+    color: $color-accent;
     margin-left: 0;
     margin-right: 0;
 }
@@ -68,10 +85,28 @@
     border-color: $color-primary;
 }
 
+.btn-fill-bg {
+    font-family: "f_arima_madurai_extra_bold";
+    color: white;
+    font-size: 18;
+    font-weight: bold;
+    background-color: $color-primary;
+    border-radius: 50%;
+    border-width: 0.5;
+    border-color: $color-primary;
+}
+
+.btn-fill-bg:active {
+    background-color: white;
+    color: $color-primary;
+    border-color: $color-primary;
+}
+
 Label,
 TextField {
     font-family: "f_arima_madurai_regular";
     color: black;
+    font-size: 14;
 }
 
 ActivityIndicator {
@@ -81,4 +116,73 @@ ActivityIndicator {
 
 .page {
     background: white;
+}
+
+.text-bold {
+    font-family: "f_arima_madurai_extra_bold";
+}
+
+.item-header {
+    font-family: "f_arima_madurai_extra_bold";
+}
+
+.item-header-sub {
+    font-family: "f_arima_madurai_thin";
+}
+
+ListView {
+    separator-color: white;
+}
+
+.icon {
+    width: 8%;
+    height: 8%;
+}
+
+.cbx,
+.cbx-checked,
+.cbx-ready {
+    width: 5%;
+    height: 5%;
+    border-radius: 100%;
+    border-width: 0.5;
+    vertical-align: top;
+}
+
+.cbx {
+    background-color: white;
+    border-color: $color-border;
+}
+
+.cbx-checked {
+    width: 5%;
+    height: 5%;
+    background-color: $color-primary;
+    border-radius: 100%;
+    border-width: 0.5;
+    border-color: $color-primary;
+}
+
+.cbx-ready {
+    width: 5%;
+    height: 5%;
+    background-color: $color-accent;
+    border-radius: 100%;
+    border-width: 0.5;
+    border-color: $color-accent;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: "f_arima_madurai_extra_bold";
+    color: black;
+}
+
+.ic-back {
+    width: 10%;
+    height: 10%;
 }
