@@ -11,10 +11,10 @@
         <Label class="lbl-value" :text="userName" row="1" col="1"/>
 
         <Image src="res://ic_alarm_primary" class="icon" row="2" col="0" />
-        <Label :text="checkInItem.store" class="lbl-value text-bold" row="2" col="1"/>
+        <Label :text="checkInTime" class="lbl-value text-bold" row="2" col="1"/>
 
         <Image src="res://ic_place_primary" class="icon" row="3" col="0" />
-        <Label :text="store" class="lbl-value" row="3" col="1" />
+        <Label :text="checkInItem.store" class="lbl-value" row="3" col="1" />
         <Button
           id="btn_submit"
           class="btn-primary"
@@ -46,7 +46,6 @@ export default {
       min =  "0" + min;
     }
     this.checkInTime = hour + ":" + min;
-    // this.store = this.$props.checkInItem.store;
   },
   props: ["checkInItem"],
   data() {
@@ -82,7 +81,6 @@ export default {
 .page-parent {
   justify-content: center;
   align-items: center;
-  // background-size: cover;
   background-image: linear-gradient($color-primary-dark, $color-primary);
 }
 
@@ -94,7 +92,7 @@ FlexboxLayout {
 .page-content {
   width: 90%;
   padding: 12 16;
-  background-color: #f0f0f0;
+  background-color: $color-bg-white;
   border-radius: 10%;
 }
 
@@ -118,13 +116,7 @@ FlexboxLayout {
 }
 
 #btn_back {
-  margin-left: 4%;
-  margin-right: 4%;
+  margin-left: 6%;
   width: 6%;
 }
-// #btn_back:active {
-//   background: white;
-//   opacity: 0.5;
-//   border-radius: 100%;
-// }
 </style>

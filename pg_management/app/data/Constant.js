@@ -4,5 +4,6 @@ module.exports = {
         READY: 0,
         CHECKED: 1
     },
+    CHECK_IN_TIME_BY_MIN: 15,
     CHECK_IN_TIME: 15 * 60 * 1000
 }
