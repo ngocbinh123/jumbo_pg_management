@@ -240,4 +240,7 @@ export default {
   padding-top: 12;
   padding-bottom: 12;
 }
+.item-header-sub {
+  font-size: 14;
+}
 </style>

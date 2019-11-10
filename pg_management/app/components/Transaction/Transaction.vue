@@ -176,6 +176,7 @@ export default {
   margin: 0;
   vertical-align: middle;
 }
+
 .parent-center {
   vertical-align: middle;
 }
@@ -197,7 +198,7 @@ export default {
 }
 
 .item-header {
-  font-size: 18;
+  font-size: 16;
   vertical-align: middle;
   margin-left: 4; 
   color: $color-primary-dark;
@@ -205,13 +206,12 @@ export default {
 
 .item-header-sub {
   font-family: "f_arima_madurai_regular";
-  font-size: 16;
+  font-size: 14;
   vertical-align: middle; 
   margin-left: 4; 
 }
 
 .time {
-
   font-size: 16;
   vertical-align: middle; 
 }
