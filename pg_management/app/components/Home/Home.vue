@@ -45,7 +45,6 @@ import Vue from "nativescript-vue";
 import CalendarView from "nativescript-ui-calendar/vue";
 Vue.use(CalendarView);
 
-import Login from "../Login";
 import CheckIn from "../CheckIn/CheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
