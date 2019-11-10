@@ -80,7 +80,7 @@ export default {
   created() {
     
     var customer1 = {
-      id: 10,
+      id: 10*10,
       name: "Nguyễn Văn Tân",
       sex: "Nam",
       phone: "0921111222",
@@ -89,7 +89,7 @@ export default {
     this.customers.push(customer1);
 
     var customer2 = {
-      id: 11,
+      id: 11*10,
       name: "Trần Ngọc Dung",
       sex: "Nữ",
       phone: "0931434343",
@@ -98,7 +98,7 @@ export default {
     this.customers.push(customer2);
 
     var customer3 = {
-      id: 12,
+      id: 12*10,
       name: "Lê Tuấn Thanh",
        sex: "Nam",
       phone: "0931232654",
@@ -107,7 +107,7 @@ export default {
     this.customers.push(customer3);
 
     var customer4 = {
-      id: 13,
+      id: 13*10,
       name: "Hà Nguyễn Minh Tuấn",
        sex: "Nam",
       phone: "09315566654",
@@ -116,7 +116,7 @@ export default {
     this.customers.push(customer4);
 
     var customer5 = {
-      id: 14,
+      id: 14*10,
       name: "Phạm Thị Loan",
       sex: "Nữ",
       phone: "0931191169",
@@ -124,14 +124,51 @@ export default {
     };
     this.customers.push(customer5);
 
-    const now = new Date();
-    for(var i = 0; i < 5; i++) {
+    var customer6 = {
+      id: 15*10,
+      name: "Đỗ Văn Công",
+      sex: "Nam",
+      phone: "09222876123",
+      address:"Hồ Chí Minh"
+    };
+    this.customers.push(customer6);
+
+    var customer7 = {
+      id: 16*10,
+      name: "Lê Thị Tú",
+      sex: "Nữ",
+      phone: "0931551124",
+      address:"Hồ Chí Minh"
+    };
+    this.customers.push(customer7);
+
+    var customer8 = {
+      id: 17*10,
+      name: "Huỳnh Anh Tuấn",
+      sex: "Nam",
+      phone: "09312411581",
+      address:"Hồ Chí Minh"
+    };
+    this.customers.push(customer8);
+
+    var customer9 = {
+      id: 18*10,
+      name: "Phạm Nguyễn Thanh Tâm",
+      sex: "Nam",
+      phone: "0931241179",
+      address:"Hồ Chí Minh"
+    };
+    this.customers.push(customer9);
+
+    for(var i = 0; i < this.customers.length; i++) {
+      const now = new Date();
       var time = (now.getHours() -1) + ":";
       if(i==0) {
         time+="00";
       }else {
-        time+=i*i+(i+10);
+        time+=9+ i*5 + i%2;
       }
+
       var item = {
         id: (i+1)*100,
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
