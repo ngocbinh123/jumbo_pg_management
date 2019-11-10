@@ -61,14 +61,14 @@ export default {
     // dummy data 
     for(var i = 9; i < 22; i++) {
       var currentHour = now.getHours();
-      var itemState = Constant.CHECK_IN_STATE.CHECKED;
+      var itemState = Constant.CHECK_IN_STATE.UNCHECK;
 
       if (i == currentHour && now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN) {
         itemState = Constant.CHECK_IN_STATE.READY;
       } else if(i - currentHour == 1 && now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
         itemState = Constant.CHECK_IN_STATE.READY;
-      } else if(i - currentHour > 1) {
-        itemState = Constant.CHECK_IN_STATE.UNCHECK;
+      } else if(i - currentHour < 0) {
+        itemState = Constant.CHECK_IN_STATE.CHECKED;
       }
       var item = {
           id: i*100,
@@ -160,7 +160,6 @@ export default {
         return;
       }
       
-
       var currHour = (new Date()).getHours();
       var newReadyItems = this.currCheckInList.filter(function(item) { 
         const itemHour = item.time.split(":")[0]
@@ -185,6 +184,19 @@ export default {
       var readyItems = this.currCheckInList.filter(function(item) { 
         return item.state == Constant.CHECK_IN_STATE.READY;
       });
+
+      if(readyItems.length == 0) {
+        var currHour = (new Date()).getHours();
+        var newReadyItems = this.currCheckInList.filter(function(item) { 
+          const itemHour = item.time.split(":")[0]
+          return item.state == Constant.CHECK_IN_STATE.UNCHECK &&  currHour < itemHour;
+        });
+
+        if(newReadyItems.length > 0) {
+          newReadyItems[0].state = Constant.CHECK_IN_STATE.READY;
+          readyItems.push(newReadyItems[0]);
+        }
+      }
 
       if(readyItems.length > 0) {
         var firstReadyItem = readyItems[0];
