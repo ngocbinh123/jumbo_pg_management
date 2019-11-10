@@ -90,18 +90,24 @@ export default {
         .catch(this.apiRequestFail)
         .then(this.loginSuccess);
     },
-    loginSuccess(json) {
+    getUserInfo(beaerId) {
+      this.processing = true;
+      apiService.methods
+        .getUserInfo(beaerId)
+        .catch(this.getInfoFail)
+        .then(this.getInfoSuccess);
+    },
+    getInfoSuccess(json) {
       this.processing = false;
-      var forceChangePass = json.abiz_forcechangepassword.value;
-      var beaerId = json.abiz_bearerid;
-      var userId = json.abiz_ntgroupuserid;
-
-      var clientCode = json.abiz_clientcode.value;
-      remember.setUserEmail(this.user.email.trim());
-      remember.setUserName(this.user.email.trim());
-      remember.setUserId(userId);
-      remember.setBearId(beaerId);
-      remember.setFroceChangePass(forceChangePass);
+      remember.setUserName(json.abiz_Name);
+      this.nativageToNextPage();
+    },
+    getInfoFail(error) {
+      this.processing = false;
+      this.nativageToNextPage();
+    },
+    nativageToNextPage() {
+      var forceChangePass = remember.getFroceChangePass();
       if (forceChangePass) {
         confirm({
           title: stringConst.lbl_change_pass,
@@ -117,6 +123,20 @@ export default {
       } else {
         this.gotoHome();
       }
+    },
+    loginSuccess(json) {
+      var forceChangePass = json.abiz_forcechangepassword.value;
+      var beaerId = json.abiz_bearerid;
+      var userId = json.abiz_ntgroupuserid;
+
+      var clientCode = json.abiz_clientcode.value;
+      remember.setUserEmail(this.user.email.trim());
+      remember.setUserName(this.user.email.trim());
+      remember.setUserId(userId);
+      remember.setBearId(beaerId);
+      remember.setFroceChangePass(forceChangePass);
+      this.processing = false;
+      this.getUserInfo(beaerId);
     },
     apiRequestFail(e) {
       var errMsg = e.message;
