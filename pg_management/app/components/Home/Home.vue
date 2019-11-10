@@ -57,17 +57,15 @@ const Constant = require("../../data/Constant");
 const now = new Date();
 export default {
   mounted() {
-    console.log("HOME.VUE", "===> mounth");    
-    // var ls = new ObservableArray(18-7);
     var ls = [];
     // dummy data 
     for(var i = 9; i < 22; i++) {
       var currentHour = now.getHours();
       var itemState = Constant.CHECK_IN_STATE.CHECKED;
 
-      if (i == currentHour && now.getMinutes() <= 15) {
+      if (i == currentHour && now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN) {
         itemState = Constant.CHECK_IN_STATE.READY;
-      } else if(i - currentHour == 1 && now.getMinutes() > 15) {
+      } else if(i - currentHour == 1 && now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
         itemState = Constant.CHECK_IN_STATE.READY;
       } else if(i - currentHour > 1) {
         itemState = Constant.CHECK_IN_STATE.UNCHECK;
@@ -84,11 +82,11 @@ export default {
         this.currCheckInList.push(item);
     }
 
-    var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1);
+    var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
     for(var i=7; i < 23; i=i+4) {
       var itemState = Constant.CHECK_IN_STATE.CHECKED;
       var item = {
-          id: i*100,
+          id: i * 100,
           store: "Takashimaya Vietnam",
           address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
           time: i + ":00",
@@ -99,7 +97,7 @@ export default {
     }
 
     var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
-    for(var i=7; i < 23; i=i+4) {
+    for(var i = 7; i < 23; i= i + 4) {
       var itemState = Constant.CHECK_IN_STATE.UNCHECK;
       var item = {
           id: i*100,
@@ -112,11 +110,8 @@ export default {
         ls.push(item);
     }
     this.checkInList = ls;
-
-    console.log("HOME.VUE", "===> mounth: " + this.checkInList.length);
   },
   created() {
-    console.log("HOME.VUE", "===> created: " + this.checkInList.length);
     var current = new Date();
     var firstDate = new Date(current.getFullYear(), current.getMonth(), 1);
     var lastDate = new Date(current.getFullYear(), current.getMonth() + 1, 0);
@@ -147,7 +142,6 @@ export default {
       const selectedDateStr = args.date.toLocaleDateString();
       this.selectedDate = selectedDateStr;
       this.isSelectedCurrentDate = this.isToday(args.date);
-      console.log("onDateSelected: " + selectedDateStr);
       this.currCheckInList = this.checkInList.filter(function(item) {
         return item.date == selectedDateStr;
       });
@@ -187,29 +181,27 @@ export default {
         }).then(this.callBackCheckIn);
     },
     onClickCheckIn() {
+      this.isChkInProscess = true;
       var readyItems = this.currCheckInList.filter(function(item) { 
         return item.state == Constant.CHECK_IN_STATE.READY;
       });
 
       if(readyItems.length > 0) {
-        var firstReadyItem = readyItems[0]; 
-        console.log("HOME.VUE", "Ready Item: " + firstReadyItem.time + " " + firstReadyItem.date);
+        var firstReadyItem = readyItems[0];
         var readyHourMin = firstReadyItem.time.split(":"); 
         var readyDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), readyHourMin[0], readyHourMin[1], 0);
         var currDate = new Date();
         currDate.setMilliseconds(0);
         var spaceTime = Math.abs(readyDate.getTime() - currDate.getTime());
         if(Constant.CHECK_IN_TIME - spaceTime >= 1) {
-          this.isChkInProscess = true;
-          console.log("HOME.VUE", "====>" + spaceTime +" Allow user check-in at " + currDate.getHours() + ":" + currDate.getMinutes());  
           this.showCheckInPage(firstReadyItem);
         }else {
-          console.log("HOME.VUE", "====>" + spaceTime +" Don't allow user check-in at " + currDate.getHours() + ":" + currDate.getMinutes()); 
+          this.isChkInProscess = false;
           this.showDlg(StringConst.lbl_notification, StringConst.msg_dont_allow_check_in);
           // this.showCheckInPage(firstReadyItem);
         } 
-      }else {
-        console.log("HOME.VUE", "No Ready Item")
+      } else {
+        this.isChkInProscess = false;
       }
     },
     showDlg(dlgTitle, dlgMsg) {
