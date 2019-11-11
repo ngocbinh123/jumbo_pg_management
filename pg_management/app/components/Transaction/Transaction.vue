@@ -51,7 +51,7 @@
           <Image src="res://ic_add_primary" row="1" col="2" class="icon"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in" @tap="onCustomerSelected(customer)">
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
                 <Label :text="customer.name" class="item-header" textWrap="true" row="0" col="2"/>
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
@@ -71,7 +71,7 @@
   </GridLayout>
 </template>
 <script>
-import CheckIn from "../CheckIn/CheckIn";
+import UserDetail from "../Customer/UserDetail";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
@@ -197,6 +197,15 @@ export default {
   methods: {
     selectedIndex(args) {
 
+    },
+    onCustomerSelected(customer) {
+      console.log("TRANSACTION.VUE", "Selected cusomter: " + customer.name);
+       this.$showModal(UserDetail, { 
+        fullscreen: false, 
+        animated: true,
+        transition: Transition.pageTransition,
+        props: { customer: customer }
+        });
     }
   }
 };
