@@ -17,7 +17,7 @@
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <Image src="res://ic_add_primary" row="1" col="2" class="icon"/>
+          <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
@@ -48,7 +48,7 @@
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <Image src="res://ic_add_primary" row="1" col="2" class="icon"/>
+          <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in" @tap="onCustomerSelected(customer)">
@@ -72,6 +72,9 @@
 </template>
 <script>
 import UserDetail from "../Customer/UserDetail";
+import CreateTransaction from "../Transaction/CreateTransaction";
+import CreateCustomer from "../Customer/CreateNewCustomer";
+
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
@@ -206,6 +209,31 @@ export default {
         transition: Transition.pageTransition,
         props: { customer: customer }
         });
+    },
+    createTransaction() {
+      console.log("TRANSACTION.VUE", "createTransaction");
+      this.$showModal(CreateTransaction, { 
+        fullscreen: true, 
+        animated: true,
+        transition: Transition.pageTransition
+        });
+    },
+    createCustomer() {
+      console.log("TRANSACTION.VUE", "createTransaction");
+      this.$showModal(CreateCustomer, { 
+        fullscreen: true, 
+        animated: true,
+        transition: Transition.pageTransition
+        }).then(this.callbackCreateCustomer);
+    },
+    callbackCreateCustomer(response) {
+      if(response == undefined) {
+        return;
+      }
+
+      if(response.isSuccess) {
+        this.customers.unshift(response.customer);
+      }
     }
   }
 };

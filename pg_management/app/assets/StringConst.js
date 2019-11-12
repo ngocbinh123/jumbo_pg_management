@@ -27,5 +27,8 @@ module.exports = {
     msg_pass_should_be_least_6_characters: "Mật khẩu mới phải ít nhất 6 ký tự.",
     msg_new_pass_diff_curr_pass: "Mật khẩu mới phải khác với mật khẩu hiện tại.",
     msg_check_in_success: "Hệ thống đã ghi nhận thời gian chấm công của bạn.",
-    msg_dont_allow_check_in: "Bạn được check-in trước hoặc sau thời gian yêu cầu 15 phút."
+    msg_dont_allow_check_in: "Bạn được check-in trước hoặc sau thời gian yêu cầu 15 phút.",
+    msg_pls_fill_name: "Hãy nhập họ tên khách hàng.",
+    msg_pls_fill_phone: "Hãy nhập số điện thoại của khách hàng.",
+    msg_phone_no_math: "Số điện thoại không đúng."
 };
