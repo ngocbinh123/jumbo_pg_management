@@ -20,71 +20,11 @@
 </template>
 <script>
 import StringConst from "../../assets/StringConst";
+import CustomerMeta from "../../data/formMeta/CustomerMeta";
 export default {
   data() {
     return {
-      customerMetadata: {
-        isReadOnly: false,
-        commitMode: "Immediate",
-        validationMode: "Immediate",
-        propertyAnnotations: [
-          {
-            name: "id",
-            displayName: "Mã Khách Hàng",
-            index: 0,
-            editor: "Number",
-            readOnly: true
-          },
-          {
-            name: "name",
-            displayName: "Họ Tên",
-            index: 1
-          },
-          {
-            name: "sex",
-            displayName: "Giới Tính",
-            index: 2,
-            editor: "Picker",
-            valuesProvider: ["Nam", "Nữ"]
-          },
-          {
-            name: "phone",
-            displayName: "Số Điện THoại",
-            index: 3,
-            editor: "Phone"
-          },
-          {
-            name: "address",
-            displayName: "Địa Chỉ",
-            index: 4,
-            editor: "Picker",
-            valuesProvider: [
-              "Hồ Chí Minh",
-              "Hà Nội",
-              "Vũng Tàu",
-              "Đồng Nai",
-              "Biên Hoà",
-              "Long An",
-              "Cần Thơ",
-              "Tây Ninh",
-              "Bình Dương",
-              "Tiền Giang",
-              "An Giang",
-              "Vĩnh Long",
-              "Châu Đốc",
-              "Đồng Tháp",
-              "Phú Quốc",
-              "Cà Mau",
-              "Đà Lạt",
-              "Nha Trang",
-              "Đà Nẵng",
-              "Bình Định",
-              "Thanh Hoá",
-              "Nơi khác"
-            ]
-          }
-        ]
-      },
+      customerMetadata: CustomerMeta,
       customer: {
         id: Math.floor(Math.random() * 100) + 100,
         name: "",
