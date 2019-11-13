@@ -1,5 +1,13 @@
 const TYPES = ["TYPE-1", "TYPE-2"];
 module.exports = {
+    getProductNameList() {
+        const result = ["Chọn Sản Phẩm"];
+        const ls = this.getProductList();
+        ls.forEach(item => {
+            result.push(item.name);
+        });
+        return result;
+    },
     getProductList() {
         const ls = [];
         for (let index = 101; index < 121; index++) {

@@ -20,7 +20,7 @@
           <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in" @tap="onSelectedTransaction(item)">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
 
@@ -68,12 +68,14 @@
         </GridLayout>
       </TabViewItem>
     </TabView>
+    <ActivityIndicator v-show="isCreateTransaction" busy="true" row="0" col="0"/>
   </GridLayout>
 </template>
 <script>
 import UserDetail from "../Customer/UserDetail";
 import CreateTransaction from "../Transaction/CreateTransaction";
 import CreateCustomer from "../Customer/CreateNewCustomer";
+import TransactionDetail from "./TransactionDetail";
 
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
@@ -81,7 +83,6 @@ import StringConst from "../../assets/StringConst";
 
 export default {
   created() {
-    
     var customer1 = {
       id: 10*10,
       name: "Nguyễn Văn Tân",
@@ -177,10 +178,20 @@ export default {
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
         customer: this.customers[i],
         store:"Takashimaya Vietnam",
-        model: "MOD-" + i,
-        name: "Sản Phẩm " + i,
         time: time,
-        date: "Hôm nay"
+        date: "Hôm nay",
+        transTotal: 280000,
+        displayTransTotal:"280,000 VND",
+        products:[
+          {
+            id:1010,
+            model:"MOD-2019-101",
+            name:"Sản Phẩm 101",
+            number:2,
+            price:140000,
+            total:280000            
+          }
+        ]
       }
       this.transList.push(item);
     }
@@ -190,6 +201,7 @@ export default {
   },
   data() {
     return {
+      isCreateTransaction: false,
       selectedIndex: 0,
       searchTransValue:"",
       date: "",
@@ -198,11 +210,14 @@ export default {
     };
   },
   methods: {
-    selectedIndex(args) {
-
+    onSelectedTransaction(item) {
+      this.$showModal(TransactionDetail, { 
+        fullscreen: true,
+        animated: true,
+        props: { transaction: item }
+      });
     },
     onCustomerSelected(customer) {
-      console.log("TRANSACTION.VUE", "Selected cusomter: " + customer.name);
        this.$showModal(UserDetail, { 
         fullscreen: false, 
         animated: true,
@@ -211,19 +226,31 @@ export default {
         });
     },
     createTransaction() {
-      console.log("TRANSACTION.VUE", "createTransaction");
+      if (this.isCreateTransaction) {
+        return
+      }
+
+      this.isCreateTransaction = true;
       this.$showModal(CreateTransaction, { 
-        fullscreen: true, 
+        fullscreen: true,
         animated: true,
-        transition: Transition.pageTransition
-        });
+        }).then(this.callbackCreateTransaction);
+    },
+    callbackCreateTransaction(response) {
+      this.isCreateTransaction = false;
+
+      if (response == undefined || !response.isSuccess) {
+        return;
+      }
+
+      this.transList.unshift(response.transaction);
+      this.customers.unshift(response.customer);
+
     },
     createCustomer() {
-      console.log("TRANSACTION.VUE", "createTransaction");
       this.$showModal(CreateCustomer, { 
-        fullscreen: true, 
-        animated: true,
-        transition: Transition.pageTransition
+        fullscreen: true,
+         animated: true,
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {
