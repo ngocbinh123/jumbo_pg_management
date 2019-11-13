@@ -10,7 +10,7 @@
     <Button
       id="btn_submit_customer"
       text="Hoàn Thành"
-      class="btn btn-primary"
+      class="btn btn-fill-bg"
       @tap="submiData()"
       row="3"
       col="0"

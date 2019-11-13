@@ -10,6 +10,8 @@ module.exports = {
     lbl_restore_pass: "KHÔI PHỤC MẬT KHẨU",
     lbl_success: "THÀNH CÔNG",
     lbl_fail: "THẤT BẠI",
+    lbl_update_number: "Cập nhật số lượng sản phẩm",
+    lbl_delete: "Xoá",
     lbl_logout_question: "ĐĂNG XUẤT?",
     lbl_logout: "Đăng Xuất",
     lbl_login_success: "ĐĂNG NHẬP THÀNH CÔNG",
@@ -17,6 +19,7 @@ module.exports = {
     lbl_change_pass: "ĐỔI MẬT KHẨU",
     lbl_forgot_pass: "Bạn quên mật khẩu?",
     msg_sure_logout: "Bạn chắc chắn muốn đăng xuất ứng dụng?",
+    msg_sure_delete_product: "Bạn chắc chắn muốn xoá Sản Phẩm này phải không?",
     msg_should_change_pass: "Bạn cần phải thay đổi mật khẩu.",
     msg_fill_emai_pass: "Xin hãy nhập đầy đủ email và mật khẩu.",
     msg_email_not_match: "Email không đúng.",
@@ -34,5 +37,6 @@ module.exports = {
     msg_product_number_out_of_scope_max: "Số lượng sản phẩm tối đa là 10.",
     msg_product_number_out_of_scope_min: "Số lượng sản phẩm tối thiểu là 1.",
     msg_trans_have_no_product: "Bạn cần thêm ít nhất 1 sản phẩm.",
-    msg_please_choos_product: "Bạn chưa chọn sản phẩm."
+    msg_please_choos_product: "Bạn chưa chọn sản phẩm.",
+    msg_please_new_product_number: "Hãy Nhập số lượng sản phẩm mới!"
 };

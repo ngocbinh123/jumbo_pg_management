@@ -25,7 +25,7 @@
 
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2">
       <v-template>
-        <GridLayout rows="*" columns="30,*, 40,70, 100">
+        <GridLayout rows="*" columns="40,*, 40,70, 100" @tap="selectedProduct(item)">
           <Label :text="item.id" class="lbl-id text-center" row="0" col="0" />
           <Label :text="item.name" class="lbl-name text-center" row="0" col="1" />
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
@@ -40,6 +40,8 @@
 import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
 import SelectProduct from "./SelectProduct";
+import ChangeProductNumber from "./ChangeProductNumber";
+
 export default {
   data() {
     return {
@@ -137,6 +139,65 @@ export default {
 
       this.transTotal += response.product.total;
       this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+    },
+    selectedProduct(item) {
+      // "Bạn chọn " + item.name + " là để:"
+      action("Bạn chọn " + item.name + " là để:", 
+      StringConst.lbl_close, 
+      [StringConst.lbl_update_number, StringConst.lbl_delete])
+        .then(result => this.callBackSelectedProduct(result, item));
+    },
+    callBackSelectedProduct(result, item) {
+      if (result == StringConst.lbl_update_number) {
+        this.$showModal(ChangeProductNumber, {
+          fullscreen: false, 
+          props: { product: item }
+        }).then(res => this.callBackChangeSelectedProductNumber(res, item));
+      }else if (result == StringConst.lbl_delete) {
+        confirm({
+          title: StringConst.lbl_delete + " " + item.name,
+          message: StringConst.msg_sure_delete_product,
+          okButtonText: StringConst.lbl_accept,
+          cancelButtonText: StringConst.lbl_cancel
+        }).then(isAccept => {
+          if (isAccept == undefined || !isAccept) {
+            return
+          }
+
+          const itemIndex = this.products.indexOf(item);
+          if (itemIndex > -1 && itemIndex < this.products.length) {
+            this.products.splice(itemIndex, 1);
+            
+            this.transTotal = this.transTotal - item.total; 
+            this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+          }
+        });
+      }
+    },
+    callBackChangeSelectedProductNumber(response, item) {
+      if (response == undefined || !response.isSuccess) {
+        return
+      }
+
+      const oldTotal = item.total;
+      item.number = response.newNumber;
+      item.total = item.number * item.price;
+
+      this.transTotal = this.transTotal - oldTotal + item.total; 
+      this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+    },
+    callBackDeleteSelectedProduct(result, item) {
+      if (result == undefined || !result.result) {
+        return
+      }
+
+      const itemIndex = this.products.indexOf(item);
+      if (itemIndex > -1 && itemIndex < this.products.length) {
+        this.products.splice(itemIndex, 1);
+        
+        this.transTotal = this.transTotal - item.total; 
+        this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+      }
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
