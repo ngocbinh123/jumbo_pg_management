@@ -20,7 +20,7 @@
           <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in" @tap="onSelectedTransaction(item)">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
 
@@ -75,6 +75,7 @@
 import UserDetail from "../Customer/UserDetail";
 import CreateTransaction from "../Transaction/CreateTransaction";
 import CreateCustomer from "../Customer/CreateNewCustomer";
+import TransactionDetail from "./TransactionDetail";
 
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
@@ -82,7 +83,6 @@ import StringConst from "../../assets/StringConst";
 
 export default {
   created() {
-    
     var customer1 = {
       id: 10*10,
       name: "Nguyễn Văn Tân",
@@ -179,7 +179,19 @@ export default {
         customer: this.customers[i],
         store:"Takashimaya Vietnam",
         time: time,
-        date: "Hôm nay"
+        date: "Hôm nay",
+        transTotal: 280000,
+        displayTransTotal:"280,000 VND",
+        products:[
+          {
+            id:1010,
+            model:"MOD-2019-101",
+            name:"Sản Phẩm 101",
+            number:2,
+            price:140000,
+            total:280000            
+          }
+        ]
       }
       this.transList.push(item);
     }
@@ -198,8 +210,14 @@ export default {
     };
   },
   methods: {
+    onSelectedTransaction(item) {
+      this.$showModal(TransactionDetail, { 
+        fullscreen: true,
+        animated: true,
+        props: { transaction: item }
+      });
+    },
     onCustomerSelected(customer) {
-      console.log("TRANSACTION.VUE", "Selected cusomter: " + customer.name);
        this.$showModal(UserDetail, { 
         fullscreen: false, 
         animated: true,
@@ -214,7 +232,8 @@ export default {
 
       this.isCreateTransaction = true;
       this.$showModal(CreateTransaction, { 
-        fullscreen: true
+        fullscreen: true,
+        animated: true,
         }).then(this.callbackCreateTransaction);
     },
     callbackCreateTransaction(response) {
@@ -229,9 +248,9 @@ export default {
 
     },
     createCustomer() {
-      console.log("TRANSACTION.VUE", "createTransaction");
       this.$showModal(CreateCustomer, { 
-        fullscreen: true
+        fullscreen: true,
+         animated: true,
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {

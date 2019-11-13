@@ -118,7 +118,8 @@ export default {
     },
     addProduct() {
        this.$showModal(SelectProduct, { 
-        fullscreen: false
+        fullscreen: false,
+        animated: true,
         }).then(this.callbackAddProduct);
     },
     callbackAddProduct(response) {
@@ -151,6 +152,7 @@ export default {
       if (result == StringConst.lbl_update_number) {
         this.$showModal(ChangeProductNumber, {
           fullscreen: false, 
+          animated: true,
           props: { product: item }
         }).then(res => this.callBackChangeSelectedProductNumber(res, item));
       }else if (result == StringConst.lbl_delete) {
