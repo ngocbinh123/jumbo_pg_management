@@ -1,77 +1,158 @@
 <template>
-  <GridLayout rows="50,100,*" columns="50,*" class="page-parent">
-    <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-        <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center"/>
+  <GridLayout rows="50,50,*,50,60,*,10" columns="40,*,40" class="page-parent">
+    <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
+      <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
     <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
+    <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" />
 
-    <Label text="Khách Hàng" class="header" row="1" col="0" colSpan="2"  />
-    <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="2" />
+    <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="3" />
+    <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="3" />
+
+    <Label text="Chi Tiết Đơn Hàng:" class="header" row="3" col="0" colSpan="2" />
+    <Image id="btn_add_procuct" src="res://ic_add_primary" @tap="addProduct()" row="3" col="2" />
+   
+    <GridLayout class="lout-columns" rows="*,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
+      <label text="Tổng Cộng:" class="lbl-sum text-right" row="0" col="1" colSpan="2" />
+      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="0" col="3" colSpan="2"/>
+
+      <Label text="ID" class="column-name text-center" row="1" col="0" />
+      <Label text="Tên SP" class="column-name text-center" row="1" col="1" />
+      <Label text="SL" class="column-name text-center" row="1" col="2" />
+      <Label text="Đơn Giá" class="column-name text-center" row="1" col="3" />
+      <Label text="Tổng" class="column-name text-center" row="1" col="4" />
+    </GridLayout>
+
+    <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2">
+      <v-template>
+        <GridLayout rows="*" columns="30,*, 40,70, 100">
+          <Label :text="item.id" class="lbl-id text-center" row="0" col="0" />
+          <Label :text="item.name" class="lbl-name text-center" row="0" col="1" />
+          <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
+          <Label :text="item.price" class="lbl-pricce text-center" row="0" col="3" />
+          <Label :text="item.total" class="lbl-total text-center" row="0" col="4" />
+        </GridLayout>
+      </v-template>
+    </ListView>
   </GridLayout>
 </template>
 <script>
+import StringConst from "../../assets/StringConst";
+import CustomerMeta from "../../data/formMeta/CustomerMeta";
+import SelectProduct from "./SelectProduct";
 export default {
   data() {
     return {
-      customerMetadata: {
-        "isReadOnly": false,
-        "commitMode": "Immediate",
-        "validationMode": "Immediate",
-        "propertyAnnotations":[
-          {
-            "name": "id",
-            "displayName": "Mã Khách Hàng",
-            "index": 0,
-            "editor": "Number",
-            'readOnly': true
-          },
-          {
-            "name": "name",
-            "displayName": "Họ Tên",
-            "index": 1,
-          },
-          {
-            "name": "sex",
-            "displayName": "Giới Tính",
-            "index": 2,
-            "editor": "Picker",
-            "valuesProvider": ["Nam", "Nữ"]
-          },
-          {
-            "name": "phone",
-            "displayName": "Số Điện THoại",
-            "index": 3,
-            "editor": "Number",
-          },
-           {
-            "name": "address",
-            "displayName": "Địa Chỉ",
-            "index": 4,
-            "editor": "Picker",
-            "valuesProvider": ["Hồ Chí Minh", "Hà Nội", "Vũng Tàu", "Đồng Nai", "Biên Hoà", "Long An", "Cần Thơ", "Tây Ninh", "Bình Dương", "Tiền Giang", "An Giang", "Vĩnh Long", "Châu Đốc", "Đồng Tháp", "Phú Quốc", "Cà Mau", "Đà Lạt", "Nha Trang", "Đà Nẵng", "Bình Định", "Thanh Hoá", "Nơi khác"]
-          },
-        ]
+      transTotal:0,
+      displayTransTotal:"0 VND",
+      customerMetadata: CustomerMeta,
+      customer: {
+        id: Math.floor(Math.random() * 100) + 100,
+        name: "",
+        sex: "Nam",
+        phone: "",
+        address: "Hồ Chí Minh"
       },
-      customer:{
-        id:200, 
-        name:"Nguyen Văn A",
-        sex:"Nam",
-        phone:"",
-        address:"Hồ Chí Minh"
-
-      },
-        products: ["aaa","bbb"
-        ]
+      products:[]
     };
   },
   methods: {
     closePage() {
       this.$modal.close();
+    },
+    submiData() {
+      if (!this.customer.name) {
+        this.showDlg(
+          StringConst.lbl_notification,
+          StringConst.msg_pls_fill_name
+        );
+        return;
+      } else if (!this.customer.phone) {
+        this.showDlg(
+          StringConst.lbl_notification,
+          StringConst.msg_pls_fill_phone
+        );
+        return;
+      } else if (this.customer.phone.length != 10 || !this.customer.phone.startsWith("0")) {
+        this.showDlg(
+          StringConst.lbl_notification,
+          StringConst.msg_phone_no_math
+        );
+        return;
+      }else if(this.transTotal == 0) {
+        this.showDlg(
+          StringConst.lbl_notification,
+          StringConst.msg_trans_have_no_product
+        );
+        return;
+      }
+
+      const now = new Date();
+      var time = now.getHours() + ":";
+      var min = now.getMinutes();
+      if (min < 10) {
+        time+= "0"+min;
+      }else {
+        time+=min;
+      }
+
+      var newTransaction = {
+        id: Math.floor(Math.random() * 100) + 100,
+        code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
+        customer: this.customer,
+        store:"Takashimaya Vietnam",
+        time: time,
+        date: "Hôm nay",
+        transTotal: this.transTotal,
+        displayTransTotal: this.displayTransTotal,
+        products: this.products
+      }
+
+      this.$modal.close({
+        isSuccess: true,
+        customer: this.customer,
+        transaction: newTransaction
+      });
+    },
+    addProduct() {
+       this.$showModal(SelectProduct, { 
+        fullscreen: false
+        }).then(this.callbackAddProduct);
+    },
+    callbackAddProduct(response) {
+      if(response == undefined || !response.isSuccess) {
+        return;
+      }
+
+      var found = this.products.find(function(element) { 
+        return element.id == response.product.id; 
+      });
+
+      if (found == undefined || found == null) {
+        this.products.unshift(response.product);
+      }else {
+        found.number += response.product.number;
+        found.total += response.product.total;
+      }
+
+      this.transTotal += response.product.total;
+      this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+    },
+    showDlg(dlgTitle, dlgMsg) {
+      return alert({
+        title: dlgTitle,
+        okButtonText: StringConst.lbl_close,
+        message: dlgMsg
+      });
+    },
+    formatCurrentcy(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " VND";
     }
   }
 };
 </script>
 <style scroped lang="scss">
+@import "../../app-variables.scss";
 .page-parent {
   justify-content: center;
   align-items: center;
@@ -81,19 +162,59 @@ export default {
   text-align: left;
   vertical-align: middle;
 }
-#btn_back {
-    width: 24;
-    height: 24;
-    position: relative;
-    top: 0;
-    left: 0;
+#btn_done,
+#btn_done, #btn_add_procuct {
+  width: 24;
+  height: 24;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+#btn_done:active,
+:hover {
+  background: $color-primary;
+  border-color: $color-primary;
+  border-width: 1;
 }
 
 .drobox {
-    border-color: grey;
-    border-width: 1;
-    text-align: center;
-    align-content: center;
+  border-color: grey;
+  border-width: 1;
+  text-align: center;
+  align-content: center;
+}
+#btn_submit_trans {
+  margin-left: 10;
+  margin-right: 10;
+}
+.column-name {
+  font-family: "f_arima_madurai_bold";
+  font-weight: bold;
+  font-size: 18px;
+}
 
+.lbl-id,
+.lbl-name,
+.lbl-number,
+.lbl-price,
+.lbl-total {
+  font-size: 16;
+}
+
+.lout-columns {
+  border-bottom-color: $color-border;
+  border-bottom-width: 0.5;
+}
+.lbl-sum, .lbl-sum-value {
+  font-family: "f_arima_madurai_extra_bold";
+  font-weight: bold;
+  font-size: 16px;
+  text-align: right;
+}
+
+.lbl-sum-value {
+  color: $color-accent;
+  padding-right: 10;
 }
 </style>

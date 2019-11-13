@@ -48,7 +48,7 @@ export default {
       } else if (!this.customer.phone) {
         this.showDlg(
           StringConst.lbl_notification,
-          StringConst.msg_pls_fill_name
+          StringConst.msg_pls_fill_phone
         );
         return;
       } else if (

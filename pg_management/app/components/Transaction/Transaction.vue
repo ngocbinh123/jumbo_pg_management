@@ -68,6 +68,7 @@
         </GridLayout>
       </TabViewItem>
     </TabView>
+    <ActivityIndicator v-show="isCreateTransaction" busy="true" row="0" col="0"/>
   </GridLayout>
 </template>
 <script>
@@ -177,8 +178,6 @@ export default {
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
         customer: this.customers[i],
         store:"Takashimaya Vietnam",
-        model: "MOD-" + i,
-        name: "Sản Phẩm " + i,
         time: time,
         date: "Hôm nay"
       }
@@ -190,6 +189,7 @@ export default {
   },
   data() {
     return {
+      isCreateTransaction: false,
       selectedIndex: 0,
       searchTransValue:"",
       date: "",
@@ -198,9 +198,6 @@ export default {
     };
   },
   methods: {
-    selectedIndex(args) {
-
-    },
     onCustomerSelected(customer) {
       console.log("TRANSACTION.VUE", "Selected cusomter: " + customer.name);
        this.$showModal(UserDetail, { 
@@ -211,19 +208,30 @@ export default {
         });
     },
     createTransaction() {
-      console.log("TRANSACTION.VUE", "createTransaction");
+      if (this.isCreateTransaction) {
+        return
+      }
+
+      this.isCreateTransaction = true;
       this.$showModal(CreateTransaction, { 
-        fullscreen: true, 
-        animated: true,
-        transition: Transition.pageTransition
-        });
+        fullscreen: true
+        }).then(this.callbackCreateTransaction);
+    },
+    callbackCreateTransaction(response) {
+      this.isCreateTransaction = false;
+
+      if (response == undefined || !response.isSuccess) {
+        return;
+      }
+
+      this.transList.unshift(response.transaction);
+      this.customers.unshift(response.customer);
+
     },
     createCustomer() {
       console.log("TRANSACTION.VUE", "createTransaction");
       this.$showModal(CreateCustomer, { 
-        fullscreen: true, 
-        animated: true,
-        transition: Transition.pageTransition
+        fullscreen: true
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {
