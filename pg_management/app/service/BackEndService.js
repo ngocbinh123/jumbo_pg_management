@@ -38,6 +38,15 @@ module.exports = {
                 })
                 .then(this.checkResponse);
         },
+        getUserInfo(bearer) {
+            var headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.userInfoUrl, {
+                    method: "POST",
+                    headers: headers
+                })
+                .then(this.checkResponse);
+        },
         checkResponse(response) {
             var body = response._bodyInit;
             if (body == "") {

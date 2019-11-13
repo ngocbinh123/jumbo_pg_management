@@ -13,8 +13,8 @@
         @tabReselected="onBottomNavigationTabReselected"
         row="1"
       >
-        <BottomNavigationTab title="Cửa Hàng" icon="res://ic_home" />
-        <BottomNavigationTab title="Sản Phẩm" icon="res://ic_cart" />
+        <BottomNavigationTab title="Chấm Công" icon="res://ic_home" />
+        <BottomNavigationTab title="Đơn Hàng" icon="res://ic_cart" />
         <BottomNavigationTab title="Tài Khoản" icon="res://ic_user" />
       </BottomNavigationBar>
     </GridLayout>
