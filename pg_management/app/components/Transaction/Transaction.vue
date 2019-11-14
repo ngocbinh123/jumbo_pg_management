@@ -39,7 +39,7 @@
           </ListView>
         </GridLayout>
       </TabViewItem>
-      <TabViewItem title="KHÁCH HÀNG">
+      <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 40, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
           <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/>
@@ -72,96 +72,22 @@
   </GridLayout>
 </template>
 <script>
+// pages 
 import UserDetail from "../Customer/UserDetail";
 import CreateTransaction from "../Transaction/CreateTransaction";
 import CreateCustomer from "../Customer/CreateNewCustomer";
 import TransactionDetail from "./TransactionDetail";
 
+// other
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 
+// models
+import CustomerModel from "../../data/objects/Customer";
+
 export default {
   created() {
-    var customer1 = {
-      id: 10*10,
-      name: "Nguyễn Văn Tân",
-      sex: "Nam",
-      phone: "0921111222",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer1);
-
-    var customer2 = {
-      id: 11*10,
-      name: "Trần Ngọc Dung",
-      sex: "Nữ",
-      phone: "0931434343",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer2);
-
-    var customer3 = {
-      id: 12*10,
-      name: "Lê Tuấn Thanh",
-       sex: "Nam",
-      phone: "0931232654",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer3);
-
-    var customer4 = {
-      id: 13*10,
-      name: "Hà Nguyễn Minh Tuấn",
-       sex: "Nam",
-      phone: "09315566654",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer4);
-
-    var customer5 = {
-      id: 14*10,
-      name: "Phạm Thị Loan",
-      sex: "Nữ",
-      phone: "0931191169",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer5);
-
-    var customer6 = {
-      id: 15*10,
-      name: "Đỗ Văn Công",
-      sex: "Nam",
-      phone: "09222876123",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer6);
-
-    var customer7 = {
-      id: 16*10,
-      name: "Lê Thị Tú",
-      sex: "Nữ",
-      phone: "0931551124",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer7);
-
-    var customer8 = {
-      id: 17*10,
-      name: "Huỳnh Anh Tuấn",
-      sex: "Nam",
-      phone: "09312411581",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer8);
-
-    var customer9 = {
-      id: 18*10,
-      name: "Phạm Nguyễn Thanh Tâm",
-      sex: "Nam",
-      phone: "0931241179",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer9);
+    this.customers = CustomerModel.customers;
 
     for(var i = 0; i < this.customers.length; i++) {
       const now = new Date();
