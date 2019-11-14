@@ -18,9 +18,9 @@
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList" @itemTap="onSelectedTransaction">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in" @tap="onSelectedTransaction(item)">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
 
@@ -49,9 +49,9 @@
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers"  @itemTap="onCustomerSelected">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in" @tap="onCustomerSelected(customer)">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
                 <Label :text="customer.name" class="item-header" textWrap="true" row="0" col="2"/>
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
@@ -77,7 +77,6 @@ import CreateTransaction from "../Transaction/CreateTransaction";
 import CreateCustomer from "../Customer/CreateNewCustomer";
 import TransactionDetail from "./TransactionDetail";
 
-import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 
@@ -210,19 +209,18 @@ export default {
     };
   },
   methods: {
-    onSelectedTransaction(item) {
+    onSelectedTransaction(event) {
       this.$showModal(TransactionDetail, { 
         fullscreen: true,
         animated: true,
-        props: { transaction: item }
+        props: { transaction: event.item }
       });
     },
-    onCustomerSelected(customer) {
+    onCustomerSelected(event) {
        this.$showModal(UserDetail, { 
         fullscreen: false, 
         animated: true,
-        transition: Transition.pageTransition,
-        props: { customer: customer }
+        props: { customer: event.item }
         });
     },
     createTransaction() {
@@ -244,8 +242,7 @@ export default {
       }
 
       this.transList.unshift(response.transaction);
-      this.customers.unshift(response.customer);
-
+      this.customers.unshift(response.transaction.customer);
     },
     createCustomer() {
       this.$showModal(CreateCustomer, { 
@@ -254,13 +251,11 @@ export default {
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {
-      if(response == undefined) {
+      if(response == undefined || !response.isSuccess) {
         return;
       }
 
-      if(response.isSuccess) {
-        this.customers.unshift(response.customer);
-      }
+      this.customers.unshift(response.customer);
     }
   }
 };
@@ -268,10 +263,6 @@ export default {
 
 <style scoped lang="scss">
 @import "../../app-variables.scss";
-
-#trans_parent {
-}
-
 .page_title_small {
   color: $color-accent;
   margin: 0;
@@ -322,5 +313,4 @@ export default {
   font-size: 16;
   vertical-align: middle; 
 }
-
 </style>
