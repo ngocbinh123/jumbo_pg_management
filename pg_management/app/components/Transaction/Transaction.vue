@@ -18,9 +18,9 @@
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList" @itemTap="onSelectedTransaction">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in" @tap="onSelectedTransaction(item)">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
 
@@ -39,7 +39,7 @@
           </ListView>
         </GridLayout>
       </TabViewItem>
-      <TabViewItem title="KHÁCH HÀNG">
+      <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 40, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
           <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/>
@@ -49,9 +49,9 @@
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers"  @itemTap="onCustomerSelected">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in" @tap="onCustomerSelected(customer)">
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
                 <Label :text="customer.name" class="item-header" textWrap="true" row="0" col="2"/>
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
@@ -72,97 +72,22 @@
   </GridLayout>
 </template>
 <script>
+// pages 
 import UserDetail from "../Customer/UserDetail";
 import CreateTransaction from "../Transaction/CreateTransaction";
 import CreateCustomer from "../Customer/CreateNewCustomer";
 import TransactionDetail from "./TransactionDetail";
 
-import Transition from "../../share/Transition";
+// other
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 
+// models
+import CustomerModel from "../../data/objects/Customer";
+
 export default {
   created() {
-    var customer1 = {
-      id: 10*10,
-      name: "Nguyễn Văn Tân",
-      sex: "Nam",
-      phone: "0921111222",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer1);
-
-    var customer2 = {
-      id: 11*10,
-      name: "Trần Ngọc Dung",
-      sex: "Nữ",
-      phone: "0931434343",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer2);
-
-    var customer3 = {
-      id: 12*10,
-      name: "Lê Tuấn Thanh",
-       sex: "Nam",
-      phone: "0931232654",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer3);
-
-    var customer4 = {
-      id: 13*10,
-      name: "Hà Nguyễn Minh Tuấn",
-       sex: "Nam",
-      phone: "09315566654",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer4);
-
-    var customer5 = {
-      id: 14*10,
-      name: "Phạm Thị Loan",
-      sex: "Nữ",
-      phone: "0931191169",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer5);
-
-    var customer6 = {
-      id: 15*10,
-      name: "Đỗ Văn Công",
-      sex: "Nam",
-      phone: "09222876123",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer6);
-
-    var customer7 = {
-      id: 16*10,
-      name: "Lê Thị Tú",
-      sex: "Nữ",
-      phone: "0931551124",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer7);
-
-    var customer8 = {
-      id: 17*10,
-      name: "Huỳnh Anh Tuấn",
-      sex: "Nam",
-      phone: "09312411581",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer8);
-
-    var customer9 = {
-      id: 18*10,
-      name: "Phạm Nguyễn Thanh Tâm",
-      sex: "Nam",
-      phone: "0931241179",
-      address:"Hồ Chí Minh"
-    };
-    this.customers.push(customer9);
+    this.customers = CustomerModel.customers;
 
     for(var i = 0; i < this.customers.length; i++) {
       const now = new Date();
@@ -210,19 +135,18 @@ export default {
     };
   },
   methods: {
-    onSelectedTransaction(item) {
+    onSelectedTransaction(event) {
       this.$showModal(TransactionDetail, { 
         fullscreen: true,
         animated: true,
-        props: { transaction: item }
+        props: { transaction: event.item }
       });
     },
-    onCustomerSelected(customer) {
+    onCustomerSelected(event) {
        this.$showModal(UserDetail, { 
         fullscreen: false, 
         animated: true,
-        transition: Transition.pageTransition,
-        props: { customer: customer }
+        props: { customer: event.item }
         });
     },
     createTransaction() {
@@ -244,8 +168,7 @@ export default {
       }
 
       this.transList.unshift(response.transaction);
-      this.customers.unshift(response.customer);
-
+      this.customers.unshift(response.transaction.customer);
     },
     createCustomer() {
       this.$showModal(CreateCustomer, { 
@@ -254,13 +177,11 @@ export default {
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {
-      if(response == undefined) {
+      if(response == undefined || !response.isSuccess) {
         return;
       }
 
-      if(response.isSuccess) {
-        this.customers.unshift(response.customer);
-      }
+      this.customers.unshift(response.customer);
     }
   }
 };
@@ -268,10 +189,6 @@ export default {
 
 <style scoped lang="scss">
 @import "../../app-variables.scss";
-
-#trans_parent {
-}
-
 .page_title_small {
   color: $color-accent;
   margin: 0;
@@ -322,5 +239,4 @@ export default {
   font-size: 16;
   vertical-align: middle; 
 }
-
 </style>
