@@ -98,31 +98,31 @@ export default {
         .then(this.getInfoSuccess);
     },
     getInfoSuccess(json) {
-      this.processing = false;
+      // this.processing = false;
       remember.setUserName(json.abiz_Name);
-      this.nativageToNextPage();
+      this.gotoHome();
     },
     getInfoFail(error) {
-      this.processing = false;
-      this.nativageToNextPage();
+      // this.processing = false;
+      this.gotoHome();
     },
     nativageToNextPage() {
-      var forceChangePass = remember.getFroceChangePass();
-      if (forceChangePass) {
-        confirm({
-          title: stringConst.lbl_change_pass,
-          message: stringConst.msg_should_change_pass,
-          okButtonText: stringConst.lbl_accept
-        }).then(function(result) {
-          Vue.prototype.$navigateTo(ChangePass, {
-            clearHistory: true,
-            animated: true,
-            transition: transition.pageTransition
-          });
-        });
-      } else {
-        this.gotoHome();
-      }
+      // var forceChangePass = remember.getFroceChangePass();
+      // if (forceChangePass) {
+      //   confirm({
+      //     title: stringConst.lbl_change_pass,
+      //     message: stringConst.msg_should_change_pass,
+      //     okButtonText: stringConst.lbl_accept
+      //   }).then(function(result) {
+      //     Vue.prototype.$navigateTo(ChangePass, {
+      //       clearHistory: true,
+      //       animated: true,
+      //       transition: transition.pageTransition
+      //     });
+      //   });
+      // } else {
+      //   this.gotoHome();
+      // }
     },
     loginSuccess(json) {
       var forceChangePass = json.abiz_forcechangepassword.value;
@@ -136,7 +136,22 @@ export default {
       remember.setBearId(beaerId);
       remember.setFroceChangePass(forceChangePass);
       this.processing = false;
-      this.getUserInfo(beaerId);
+      if (forceChangePass) {
+        confirm({
+          title: stringConst.lbl_change_pass,
+          message: stringConst.msg_should_change_pass,
+          okButtonText: stringConst.lbl_accept
+        }).then(function(result) {
+          Vue.prototype.$navigateTo(ChangePass, {
+            clearHistory: true,
+            animated: true,
+            transition: transition.pageTransition
+          });
+        });
+      }else {
+        this.getUserInfo(beaerId);
+      }
+
     },
     apiRequestFail(e) {
       var errMsg = e.message;
@@ -187,11 +202,14 @@ export default {
       apiService.methods
         .resetPass(email)
         .catch(this.apiRequestFail)
-        .then(this.loginSuccess);
+        .then(this.resetPassSuccess);
     },
     resetPassSuccess(json) {
+      if (!json) {
+        return;
+      }
       this.processing = false;
-      this.showDlg(stringConst.lbl_success, stringConst.msg_enter_your_email);
+      this.showDlg(stringConst.lbl_success, stringConst.msg_reset_pass_success);
     },
     startLogigning() {
       if (this.user.email && this.user.password) {

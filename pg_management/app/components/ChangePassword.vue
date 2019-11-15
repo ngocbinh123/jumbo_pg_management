@@ -14,7 +14,7 @@
           <TextField
             id="txt_new_pass"
             v-model="user.newPass"
-            hint="Mật khẩu"
+            hint="Mật khẩu mới"
             secure="true"
             autocorrect="false"
           />
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import Home from "./App";
+import Login from "./Login";
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
 const remember = require("../share/Remember");
@@ -37,8 +37,8 @@ export default {
     return {
       processing: false,
       user: {
-        oldPass: "binh@2020",
-        newPass: "binh@2021"
+        oldPass: "",
+        newPass: ""
       }
     };
   },
@@ -86,10 +86,10 @@ export default {
       }
       remember.setFroceChangePass(false);
       this.processing = false;
-      this.$navigateTo(Home, {
+      this.$navigateTo(Login, {
         clearHistory: true,
         animated: true,
-        transition: transition.pageTransition
+        transition: transition.prePageTransition
       });
     },
     apiRequestFail(e) {

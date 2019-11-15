@@ -38,5 +38,12 @@ module.exports = {
     msg_product_number_out_of_scope_min: "Số lượng sản phẩm tối thiểu là 1.",
     msg_trans_have_no_product: "Bạn cần thêm ít nhất 1 sản phẩm.",
     msg_please_choos_product: "Bạn chưa chọn sản phẩm.",
-    msg_please_new_product_number: "Hãy Nhập số lượng sản phẩm mới!"
+    msg_please_new_product_number: "Hãy Nhập số lượng sản phẩm mới!",
+
+    msg_error_unexpected: "Đã có sự cố ngoài ý muốn. Xin hãy thử lại",
+    msg_500_error: "Đã xảy ra sự cố trên hệ thống.",
+    msg_401_error: "Thông tin không hợp lệ. Xin hãy kiểm tra lại.",
+    msg_400_error: "Thông tin không đúng. Xin hãy kiểm tra lại.",
+    msg_request_success: "Yêu cầu của bạn đã được xử lý thành công.",
+    msg_reset_pass_success: "Chúng tôi đã gửi mật khẩu mới tới email của bạn."
 };

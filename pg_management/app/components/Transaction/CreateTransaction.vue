@@ -1,17 +1,20 @@
 <template>
-  <GridLayout rows="50,50,*,50,60,*,10" columns="40,*,40" class="page-parent">
+  <GridLayout rows="50,50,*,60,60,*,10" columns="40,*,50" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
       <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
     <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
     <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" />
+    <!-- <Button class="btn btn-right" text="O" @tap="submiData()" row="0" col="2" /> -->
+
 
     <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="3" />
     <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="3" />
 
-    <Label text="Chi Tiết Đơn Hàng:" class="header" row="3" col="0" colSpan="2" />
-    <Image id="btn_add_procuct" src="res://ic_add_primary" @tap="addProduct()" row="3" col="2" />
-   
+    <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
+    <!-- <Image id="btn_add_procuct" src="res://ic_add_primary" @tap="addProduct()" row="3" col="2" /> -->
+    <Button class="btn btn-add" text="+" @tap="addProduct()" row="3" col="2" />
+
     <GridLayout class="lout-columns" rows="*,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
       <label text="Tổng Cộng:" class="lbl-sum text-right" row="0" col="1" colSpan="2" />
       <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="0" col="3" colSpan="2"/>

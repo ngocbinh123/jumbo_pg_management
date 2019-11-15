@@ -9,15 +9,16 @@
     :selectedIndex="selectedIndex" 
     col="0" row="0">
       <TabViewItem title="ĐƠN HÀNG">
-        <GridLayout rows="10, 40, *" columns="10, *, 50">
+        <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/>
+          <!-- <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/>
+          <!-- <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/> -->
+          <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList" @itemTap="onSelectedTransaction">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
@@ -40,15 +41,16 @@
         </GridLayout>
       </TabViewItem>
       <TabViewItem title="KHÁCH HÀNG" >
-        <GridLayout rows="10, 40, *" columns="10, *, 50">
+        <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/>
+          <!-- <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/>
+          <!-- <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/> -->
+          <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers"  @itemTap="onCustomerSelected">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
