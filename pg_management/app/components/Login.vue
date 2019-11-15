@@ -54,8 +54,8 @@ export default {
     return {
       processing: false,
       user: {
-        email: "nguyengocbinh@gmail.com",
-        password: "binh@2019"
+        email: "huy.nguyen@abiz.co",
+        password: "huynguyen@123"
       }
     };
   },
@@ -98,31 +98,31 @@ export default {
         .then(this.getInfoSuccess);
     },
     getInfoSuccess(json) {
-      this.processing = false;
+      // this.processing = false;
       remember.setUserName(json.abiz_Name);
-      this.nativageToNextPage();
+      this.gotoHome();
     },
     getInfoFail(error) {
-      this.processing = false;
-      this.nativageToNextPage();
+      // this.processing = false;
+      this.gotoHome();
     },
     nativageToNextPage() {
-      var forceChangePass = remember.getFroceChangePass();
-      if (forceChangePass) {
-        confirm({
-          title: stringConst.lbl_change_pass,
-          message: stringConst.msg_should_change_pass,
-          okButtonText: stringConst.lbl_accept
-        }).then(function(result) {
-          Vue.prototype.$navigateTo(ChangePass, {
-            clearHistory: true,
-            animated: true,
-            transition: transition.pageTransition
-          });
-        });
-      } else {
-        this.gotoHome();
-      }
+      // var forceChangePass = remember.getFroceChangePass();
+      // if (forceChangePass) {
+      //   confirm({
+      //     title: stringConst.lbl_change_pass,
+      //     message: stringConst.msg_should_change_pass,
+      //     okButtonText: stringConst.lbl_accept
+      //   }).then(function(result) {
+      //     Vue.prototype.$navigateTo(ChangePass, {
+      //       clearHistory: true,
+      //       animated: true,
+      //       transition: transition.pageTransition
+      //     });
+      //   });
+      // } else {
+      //   this.gotoHome();
+      // }
     },
     loginSuccess(json) {
       var forceChangePass = json.abiz_forcechangepassword.value;
@@ -136,7 +136,22 @@ export default {
       remember.setBearId(beaerId);
       remember.setFroceChangePass(forceChangePass);
       this.processing = false;
-      this.getUserInfo(beaerId);
+      if (forceChangePass) {
+        confirm({
+          title: stringConst.lbl_change_pass,
+          message: stringConst.msg_should_change_pass,
+          okButtonText: stringConst.lbl_accept
+        }).then(function(result) {
+          Vue.prototype.$navigateTo(ChangePass, {
+            clearHistory: true,
+            animated: true,
+            transition: transition.pageTransition
+          });
+        });
+      }else {
+        this.getUserInfo(beaerId);
+      }
+
     },
     apiRequestFail(e) {
       var errMsg = e.message;

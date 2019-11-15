@@ -91,6 +91,24 @@
     margin-right: 0;
 }
 
+.btn-add {
+    font-family: "f_arima_madurai_bold";
+    font-size: 30;
+    border-radius: 100%;
+    border-width: 0.5;
+    background-color: white;
+    border-color: $color-primary-dark;
+    margin-left: 0;
+    color: $color-primary-dark;
+    margin-right: 8;
+    padding: 0;
+}
+
+.btn-add:active {
+    background-color: $color-primary-dark;
+    color: white;
+}
+
 .btn-secondary {
     font-family: "f_arima_madurai_extra_bold";
     color: $color-primary;

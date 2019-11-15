@@ -1,9 +1,10 @@
 <template>
   <StackLayout id="home_parent">
     <RadCalendar
+      id="chkInCalendar"
       eventsViewMode="None"
       selectionMode="Single"
-      viewMode="Week"
+      :viewMode="viewCalendarMode"
       transitionMode="Stack"
       :minDate="minDate"
       :maxDate="maxDate"
@@ -120,6 +121,7 @@ export default {
   },
   data() {
     return {
+      viewCalendarMode: "Week",
       isChkInProscess: false,
       minDate: new Date(now.getFullYear(), now.getMonth(), 1),
       maxDate: new Date(now.getFullYear(), now.getMonth() + 1, 0),
@@ -153,6 +155,8 @@ export default {
     onNavigatingToDateStarted(args) {
     },
     onViewModeChanged(args) {
+      console.log("onViewModeChanged: " + args.newValue);
+      args.object.viewMode = "Week";
     },
     callBackCheckIn(data) {
       this.isChkInProscess = false;
