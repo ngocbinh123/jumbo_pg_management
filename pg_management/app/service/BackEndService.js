@@ -1,3 +1,6 @@
+const StringConst = require("../assets/StringConst");
+const ErrorParser = require("./ErrorParser");
+
 const fetchModule = require("tns-core-modules/fetch");
 const config = require("./Config");
 module.exports = {
@@ -49,21 +52,20 @@ module.exports = {
         },
         checkResponse(response) {
             var body = response._bodyInit;
-            if (body == "") {
-                if (!response.ok) {
-                    throw Error("Đã có sự cố ngoài ý muốn.");
+
+            if (response.ok) {
+                if (!body) {
+                    return {
+                        message: StringConst.msg_request_success
+                    };
                 }
-                return {
-                    message: "Thành công."
-                };
+
+                var contentJson = JSON.parse(body);
+                return contentJson;
             }
 
-            var contentJson = JSON.parse(body);
-            if (!response.ok) {
-                var errMsg = contentJson.error_message;
-                throw Error(errMsg);
-            }
-            return contentJson;
+            var error = ErrorParser.parseFromResponse(response);
+            throw error;
         }
     }
 };

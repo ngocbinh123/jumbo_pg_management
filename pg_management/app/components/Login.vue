@@ -54,8 +54,8 @@ export default {
     return {
       processing: false,
       user: {
-        email: "huy.nguyen@abiz.co",
-        password: "huynguyen@123"
+        email: "nguyengocbinh@gmail.com",
+        password: "binh@2019"
       }
     };
   },
@@ -202,11 +202,14 @@ export default {
       apiService.methods
         .resetPass(email)
         .catch(this.apiRequestFail)
-        .then(this.loginSuccess);
+        .then(this.resetPassSuccess);
     },
     resetPassSuccess(json) {
+      if (!json) {
+        return;
+      }
       this.processing = false;
-      this.showDlg(stringConst.lbl_success, stringConst.msg_enter_your_email);
+      this.showDlg(stringConst.lbl_success, stringConst.msg_reset_pass_success);
     },
     startLogigning() {
       if (this.user.email && this.user.password) {

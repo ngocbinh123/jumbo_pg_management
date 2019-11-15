@@ -42,5 +42,8 @@ module.exports = {
 
     msg_error_unexpected: "Đã có sự cố ngoài ý muốn. Xin hãy thử lại",
     msg_500_error: "Đã xảy ra sự cố trên hệ thống.",
-    msg_401_error: "Thông tin không hợp lệ. Xin hãy kiểm tra lại."
+    msg_401_error: "Thông tin không hợp lệ. Xin hãy kiểm tra lại.",
+    msg_400_error: "Thông tin không đúng. Xin hãy kiểm tra lại.",
+    msg_request_success: "Yêu cầu của bạn đã được xử lý thành công.",
+    msg_reset_pass_success: "Chúng tôi đã gửi mật khẩu mới tới email của bạn."
 };

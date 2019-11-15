@@ -14,7 +14,7 @@
           <TextField
             id="txt_new_pass"
             v-model="user.newPass"
-            hint="Mật khẩu"
+            hint="Mật khẩu mới"
             secure="true"
             autocorrect="false"
           />
@@ -37,8 +37,8 @@ export default {
     return {
       processing: false,
       user: {
-        oldPass: "VRvgwrjgBi",
-        newPass: "VRvgwrjgBi"
+        oldPass: "",
+        newPass: ""
       }
     };
   },
