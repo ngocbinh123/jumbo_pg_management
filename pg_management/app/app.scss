@@ -4,14 +4,21 @@
 @import '~nativescript-theme-core/scss/dark';
 // Override variables here
 @import '~nativescript-theme-core/scss/index';
+// @import '~/../assets/css/fontawesome.css';
 // Global SCSS styling
-// @see https://docs.nativescript.org/ui/styling
-.fa {
-    font-family: "Font Awesome 5 Free", "fa-regular-400", "fa-solid-900";
+// @see https://docs.nativescript.org/ui/styling.fa {
+.fa-brands {
+    font-family: "Font Awesome 5 Brands", "fa-brands-400";
+}
+
+.far {
+    font-family: "Font Awesome 5 Free", "fa-regular-400";
+    font-weight: 400;
 }
 
 .fas {
     font-family: "Font Awesome 5 Free", "fa-solid-900";
+    font-weight: 900;
 }
 
 .tool-bar {
@@ -264,4 +271,8 @@ ListView {
 
 .text-ver-middle {
     vertical-align: middle;
+}
+
+.text-color-white {
+    color: white;
 }

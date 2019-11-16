@@ -14,7 +14,7 @@ import Login from "../Login";
 export default {
   data() {
     return {
-      isProcessing: false;
+      isProcessing: false
     };
   },
   methods: {
