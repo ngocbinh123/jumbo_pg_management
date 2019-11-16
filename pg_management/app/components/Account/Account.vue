@@ -12,9 +12,18 @@ import CurrentUser from "../../data/CurrentUser";
 import Login from "../Login";
 
 export default {
+  data() {
+    return {
+      isProcessing: false;
+    };
+  },
   methods: {
     confirmLogoutOut() {
-        confirm({
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+      confirm({
         title:  ResourceString.lbl_logout_question,
         okButtonText: ResourceString.lbl_logout,
         cancelButtonText: ResourceString.lbl_no,
@@ -23,6 +32,7 @@ export default {
     },
     startLogout(isAccept) {
       if (!isAccept) {
+        this.isProcessing = false;
         return;
       }
       CurrentUser.methods.logout();

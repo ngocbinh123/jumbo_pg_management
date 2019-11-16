@@ -70,7 +70,7 @@
         </GridLayout>
       </TabViewItem>
     </TabView>
-    <ActivityIndicator v-show="isCreateTransaction" busy="true" row="0" col="0"/>
+    <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0"/>
   </GridLayout>
 </template>
 <script>
@@ -128,7 +128,7 @@ export default {
   },
   data() {
     return {
-      isCreateTransaction: false,
+      isProcessing: false,
       selectedIndex: 0,
       searchTransValue:"",
       date: "",
@@ -138,32 +138,42 @@ export default {
   },
   methods: {
     onSelectedTransaction(event) {
+      if (this.isProcessing) {
+        return
+      }
+
+      this.isProcessing = true;
       this.$showModal(TransactionDetail, { 
         fullscreen: true,
         animated: true,
         props: { transaction: event.item }
-      });
+      }).then(result => {this.isProcessing = false});
     },
     onCustomerSelected(event) {
-       this.$showModal(UserDetail, { 
+      if (this.isProcessing) {
+        return;
+      }
+
+      this.isProcessing = true;
+      this.$showModal(UserDetail, { 
         fullscreen: false, 
         animated: true,
         props: { customer: event.item }
-        });
+      }).then(result => {this.isProcessing = false});
     },
     createTransaction() {
-      if (this.isCreateTransaction) {
+      if (this.isProcessing) {
         return
       }
 
-      this.isCreateTransaction = true;
+      this.isProcessing = true;
       this.$showModal(CreateTransaction, { 
         fullscreen: true,
         animated: true,
         }).then(this.callbackCreateTransaction);
     },
     callbackCreateTransaction(response) {
-      this.isCreateTransaction = false;
+      this.isProcessing = false;
 
       if (response == undefined || !response.isSuccess) {
         return;
@@ -173,12 +183,18 @@ export default {
       this.customers.unshift(response.transaction.customer);
     },
     createCustomer() {
+      if (this.isProcessing) {
+        return
+      }
+
+      this.isProcessing = true;
       this.$showModal(CreateCustomer, { 
         fullscreen: true,
          animated: true,
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {
+      this.isProcessing = false;
       if(response == undefined || !response.isSuccess) {
         return;
       }

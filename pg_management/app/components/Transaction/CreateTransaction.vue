@@ -48,6 +48,7 @@ import ChangeProductNumber from "./ChangeProductNumber";
 export default {
   data() {
     return {
+      isProcessing: false,
       transTotal:0,
       displayTransTotal:"0 VND",
       customerMetadata: CustomerMeta,
@@ -120,12 +121,17 @@ export default {
       });
     },
     addProduct() {
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
        this.$showModal(SelectProduct, { 
         fullscreen: false,
         animated: true,
         }).then(this.callbackAddProduct);
     },
     callbackAddProduct(response) {
+      this.isProcessing = false;
       if(response == undefined || !response.isSuccess) {
         return;
       }
