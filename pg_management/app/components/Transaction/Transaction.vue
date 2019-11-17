@@ -17,23 +17,27 @@
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <!-- <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/> -->
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList" @itemTap="onSelectedTransaction">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
+              <GridLayout flexDirection="row" rows="*,*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
 
                 <Label :text="item.date" class="text-center date" row="1" col="1"/>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
-                  <Image src="res://ic_place_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon"  width="8%" />
                   <Label :text="item.store" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
-                  <Image src="res://ic_person_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-user' | fonticon" class="far font-icon" width="8%" />
                   <Label :text="item.customer.name" class="item-header-sub" />                  
+                </StackLayout>
+
+                <StackLayout orientation="horizontal" class="parent-center" row="3" col="2">
+                  <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon"  width="8%"/>
+                  <Label :text="item.displayTransTotal" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
@@ -43,13 +47,11 @@
       <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <!-- <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <!-- <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/> -->
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers"  @itemTap="onCustomerSelected">
             <v-template>
@@ -57,11 +59,11 @@
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
                 <Label :text="customer.name" class="item-header" textWrap="true" row="0" col="2"/>
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
-                  <Image src="res://ic_phone_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
                   <Label :text="customer.phone" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
-                  <Image src="res://ic_place_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
                   <Label :text="customer.address" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
@@ -244,7 +246,7 @@ export default {
   font-family: "f_arima_madurai_regular";
   font-size: 14;
   vertical-align: middle; 
-  margin-left: 4; 
+  margin-left: 8; 
 }
 
 .time {

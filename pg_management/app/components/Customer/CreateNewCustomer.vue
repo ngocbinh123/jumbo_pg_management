@@ -3,7 +3,7 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
       <Label text="KHÁC HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
     <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
     <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="2" />

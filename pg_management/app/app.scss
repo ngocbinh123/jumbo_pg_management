@@ -50,6 +50,27 @@
     }
 }
 
+.btn-back,
+.btn-done {
+    color: white;
+    font-size: 24;
+    vertical-align: middle;
+    text-align: left;
+    margin-left: 8;
+}
+
+.btn-done {
+    text-align: right;
+    margin-right: 8;
+}
+
+.btn-back:active,
+ :hover,
+ :target {
+    color: $color-accent;
+    background: red;
+}
+
 .page_title,
 .page_title_small {
     font-family: "f_arima_madurai_bold";
@@ -275,4 +296,38 @@ ListView {
 
 .text-color-white {
     color: white;
+}
+
+.text-color-primary {
+    color: $color-primary;
+}
+
+.text-color-primary-dark {
+    color: $color-primary-dark;
+}
+
+.text-color-accent {
+    color: $color-accent;
+}
+
+.font-icon {
+    color: $color-primary;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.font-icon-size-24 {
+    font-size: 24;
+}
+
+.font-icon-size-18 {
+    font-size: 18;
+}
+
+.font-icon-size-16 {
+    font-size: 16;
+}
+
+.font-icon-size-14 {
+    font-size: 14;
 }

@@ -5,6 +5,7 @@ import ChangePass from './components/ChangePassword'
 import BottomNavigationBar from 'nativescript-bottom-navigation/vue';
 import RadDataForm from 'nativescript-ui-dataform/vue';
 import { TNSFontIcon, fonticon } from 'nativescript-fonticon';
+
 import store from './store'
 
 const remember = require("./share/Remember");

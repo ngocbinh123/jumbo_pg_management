@@ -3,8 +3,11 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
       <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
-    <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
+
+    <!-- <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" /> -->
+    <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="submiData()" row="0" col="2" />
+
     <!-- <Button class="btn btn-right" text="O" @tap="submiData()" row="0" col="2" /> -->
 
 
@@ -26,9 +29,9 @@
       <Label text="Tổng" class="column-name text-center" row="1" col="4" />
     </GridLayout>
 
-    <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2">
+    <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
-        <GridLayout rows="*" columns="40,*, 40,70, 100" @tap="selectedProduct(item)">
+        <GridLayout rows="*" columns="40,*, 40,70, 100" class="lout-padding-ver">
           <Label :text="item.id" class="lbl-id text-center" row="0" col="0" />
           <Label :text="item.name" class="lbl-name text-center" row="0" col="1" />
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
@@ -150,8 +153,8 @@ export default {
       this.transTotal += response.product.total;
       this.displayTransTotal = this.formatCurrentcy(this.transTotal);
     },
-    selectedProduct(item) {
-      // "Bạn chọn " + item.name + " là để:"
+    selectedProduct(event) {
+      const item = event.item;
       action("Bạn chọn " + item.name + " là để:", 
       StringConst.lbl_close, 
       [StringConst.lbl_update_number, StringConst.lbl_delete])
@@ -288,5 +291,9 @@ export default {
 .lbl-sum-value {
   color: $color-accent;
   padding-right: 10;
+}
+
+.lout-padding-ver {
+  padding: 4 0;
 }
 </style>
