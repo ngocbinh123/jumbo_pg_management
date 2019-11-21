@@ -5,6 +5,10 @@ module.exports = {
     resetPassUrl: API_PREFIX + "login/resetpassword",
     changePass: API_PREFIX + "ntgroupuser/changepassword",
     userInfoUrl: API_PREFIX + "ntgroupuser/current",
+    updateUserInfo: API_PREFIX + "ntgroupuser/update",
+    getProvincesUrl: API_PREFIX + "masterdata/lookup",
+    getProvincesUrl: API_PREFIX + "masterdata/lookup",
+    getDistrictsUrl: API_PREFIX + "masterdata/lookup",
 
     headers: {
         "Content-Type": "application/json"

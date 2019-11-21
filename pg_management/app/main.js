@@ -2,16 +2,19 @@ import Vue from 'nativescript-vue'
 import App from './components/App'
 import Login from './components/Login'
 import ChangePass from './components/ChangePassword'
+import SplashScreen from './components/SplashScreen';
 import BottomNavigationBar from 'nativescript-bottom-navigation/vue';
 import RadDataForm from 'nativescript-ui-dataform/vue';
 import { TNSFontIcon, fonticon } from 'nativescript-fonticon';
-
 import store from './store'
+// import VueDevtools from 'nativescript-vue-devtools';
+
+// Vue.prototype.$store = store;
+// store.dispatch("init");
 
 const remember = require("./share/Remember");
 Vue.use(BottomNavigationBar);
 Vue.use(RadDataForm);
-
 Vue.registerElement("DropDown", () => require("nativescript-drop-down/drop-down").DropDown)
 
 TNSFontIcon.debug = true
@@ -37,8 +40,10 @@ new Vue({
         if (forceChangePass) {
             return h('frame', [h(ChangePass)]);
         } else if (bearId) {
-            return h('frame', [h(App)]);
+            return h('frame', [h(SplashScreen)]);
         }
         return h('frame', [h(Login)]);
+        // return h('frame', [h(SplashScreen)]);
+
     }
 }).$start()

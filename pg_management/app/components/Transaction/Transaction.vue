@@ -53,7 +53,7 @@
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers"  @itemTap="onCustomerSelected">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in $store.state.customers"  @itemTap="onCustomerSelected">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
@@ -91,6 +91,7 @@ import CustomerModel from "../../data/objects/Customer";
 
 export default {
   created() {
+    // this.$store.dispatch('getAllCustomers');
     this.customers = CustomerModel.customers;
 
     for(var i = 0; i < this.customers.length; i++) {
@@ -130,11 +131,12 @@ export default {
   },
   data() {
     return {
+      count: this.$store.state.count,
       isProcessing: false,
       selectedIndex: 0,
       searchTransValue:"",
       date: "",
-      customers:[],
+      customers: [],
       transList:[]
     };
   },
@@ -182,13 +184,11 @@ export default {
       }
 
       this.transList.unshift(response.transaction);
-      this.customers.unshift(response.transaction.customer);
     },
     createCustomer() {
       if (this.isProcessing) {
         return
       }
-
       this.isProcessing = true;
       this.$showModal(CreateCustomer, { 
         fullscreen: true,
@@ -200,8 +200,6 @@ export default {
       if(response == undefined || !response.isSuccess) {
         return;
       }
-
-      this.customers.unshift(response.customer);
     }
   }
 };

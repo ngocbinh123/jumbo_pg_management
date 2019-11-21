@@ -21,15 +21,16 @@
 <script>
 import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
+
 export default {
   data() {
     return {
       customerMetadata: CustomerMeta,
       customer: {
         id: Math.floor(Math.random() * 100) + 100,
-        name: "",
+        name: "Nguyễn Thanh Hưng",
         sex: "Nam",
-        phone: "",
+        phone: "0931434656",
         address: "Hồ Chí Minh"
       }
     };
@@ -61,6 +62,8 @@ export default {
         );
         return;
       }
+      this.$store.dispatch('insertCustomer', this.customer);
+
       this.$modal.close({
         isSuccess: true,
         customer: this.customer
