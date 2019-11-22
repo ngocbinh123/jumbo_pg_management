@@ -116,6 +116,7 @@
 
 <script>
 import DatePickerDlg from "../Dialog/DatePickerDlg";
+import AddressDlg from "../Dialog/AddressDlg";
 import Transition from "../../share/Transition";
 import ResourceString from "../../assets/StringConst";
 import CurrentUser from "../../data/CurrentUser";
@@ -209,7 +210,38 @@ import ApiService from "../../service/BackEndService";
       this.isProcessing = false;
     },
     onClickUpdateAddress() {
-      this.showDlg("CẬP NHẬT ĐỊA CHỈ", "Bạn muốn cập nhật địa chỉ phải không?");
+      if (this.isProcessing) {
+        return;
+      }
+
+      this.$showModal(AddressDlg, { 
+        fullscreen: true, 
+        animated: true,
+        props: { 
+          title: ResourceString.lbl_update_address
+        }
+      }).then(this.callBackOnTapUpdateAddress);
+    },
+    callBackOnTapUpdateAddress(result) {
+      if (result == undefined) {
+        return;
+      }
+
+      this.isProcessing = true;
+      const addressObj = {
+        provinceId: result.selectedProvince.id,
+        districtId: result.selectedDistrict.id,
+        ward: result.selectedWard,
+        street: result.selectedStreet
+      };
+      ApiService.methods.updateAddress(addressObj, CurrentUser.methods.getBearId())
+        .then(obj => this.callBackUpdateAddress(obj, result.addressStr))
+        .catch(this.callBackServiceFail);
+    },
+    callBackUpdateAddress(obj, addressStr) {
+      this.user.address = addressStr;
+      CurrentUser.methods.updateAddress(addressStr);
+      this.isProcessing = false;
     },
     confirmLogoutOut() {
       if (this.isProcessing) {

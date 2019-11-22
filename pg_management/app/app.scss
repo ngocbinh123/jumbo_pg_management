@@ -284,10 +284,27 @@ ListView {
 
 .edt-border {
     border-color: $color-border;
-    border-radius: 2;
+    border-radius: 4;
     border-width: 0.5;
     padding: 2 10;
     margin-right: 30%;
+}
+
+.edt-box {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 8 12;
+    margin: 4 12;
+    font-family: "f_arima_madurai_extra_regular";
+}
+
+.dropbox {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 2 12;
+    margin: 4 12;
 }
 
 .text-ver-middle {
@@ -349,4 +366,8 @@ ListView {
 
 .font-icon-size-14 {
     font-size: 14;
+}
+
+.margin-left {
+    margin-left: 12;
 }

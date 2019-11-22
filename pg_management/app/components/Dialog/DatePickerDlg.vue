@@ -39,7 +39,7 @@ export default {
     },
     methods: {
         closePage() {
-        this.$modal.close();
+          this.$modal.close();
         },
         submiData() {
             this.$modal.close({
@@ -55,28 +55,5 @@ export default {
 .page-parent {
   justify-content: center;
   align-items: center;
-}
-
-.txt-value {
-  text-align: left;
-  vertical-align: middle;
-}
-#btn_back {
-  width: 24;
-  height: 24;
-  position: relative;
-  top: 0;
-  left: 0;
-}
-
-.drobox {
-  border-color: grey;
-  border-width: 1;
-  text-align: center;
-  align-content: center;
-}
-#btn_add_product {
-  margin-left: 10;
-  margin-right: 10;
 }
 </style>

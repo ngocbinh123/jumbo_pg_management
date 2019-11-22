@@ -43,6 +43,15 @@ const store = new Vuex.Store({
                 });
             }
         },
+        loadProvinces(state, data) {
+            state.provinces = [];
+            for (var i = 0; i < data.provinces.length; i++) {
+                state.customers.push({
+                    id: data.provinces[i][0],
+                    name: data.provinces[i][1]
+                });
+            }
+        },
         save(state, data) {
             state.customers.unshift(data.customer);
         },
@@ -139,6 +148,14 @@ const store = new Vuex.Store({
                 console.log("CREATE TABLE PROVINCE ERROR", error);
             });
         },
+        getAllProvinces(context) {
+            const query = QueryBuilder.buildQuerySelectAll(TABLE_PROVINCE, COLS_PROVINCE);
+            context.state.database.all(query, []).then(result => {
+                context.commit("loadProvinces", { provinces: result });
+            }, error => {
+                console.log("SELECT PROVINCES ERROR", error);
+            });
+        },
         insertProvinces(context, data) {
             const query = QueryBuilder.buildQueryDeleteAll(TABLE_PROVINCE);
             context.state.database.execSQL(query, []).then(result => {
@@ -146,7 +163,18 @@ const store = new Vuex.Store({
                 this.state.provinces = [];
                 var records = data.records;
                 records.forEach(proviceRecord => {
-                    this.insertProvince(context, proviceRecord);
+
+                    const insertQuery = QueryBuilder.buildQueryInsert(TABLE_PROVINCE, COLS_PROVINCE, "?,?");
+                    context.state.database.execSQL(insertQuery, [proviceRecord.abiz_locationid, proviceRecord.abiz_name]).then(id => {
+                        context.commit("saveProvince", {
+                            province: {
+                                id: proviceRecord.abiz_locationid,
+                                name: proviceRecord.abiz_name
+                            }
+                        });
+                    }, error => {
+                        console.log("INSERT PROVINCE RECORD ERROR", error);
+                    });
                 });
 
             }, error => {
@@ -155,8 +183,7 @@ const store = new Vuex.Store({
         },
         insertProvince(context, data) {
             const query = QueryBuilder.buildQueryInsert(TABLE_PROVINCE, COLS_PROVINCE, "?,?");
-            context.state.database.execSQL(query, [data.id, data.name]).then(id => {
-                data.id = id;
+            context.state.database.execSQL(query, [data.abiz_locationid, data.abiz_name]).then(id => {
                 context.commit("saveProvince", { province: data });
             }, error => {
                 console.log("INSERT PROVINCE RECORD ERROR", error);

@@ -29,7 +29,6 @@ import Customer from "../data/objects/Customer";
 import Remember from "../share/Remember";
 import ApiService from "../service/BackEndService";
 import CurrentUser from '../data/CurrentUser';
-import Constant from "../data/Constant";
 export default {
   components: {
     Home,
@@ -38,17 +37,11 @@ export default {
   },
   data() {
     return {
-      selectedIndex: 0,
-      msg: "Hello World!"
+      selectedIndex: 0
     };
   },
   created() {
     this.$store.dispatch('getAllCustomers');
-    const nowInt = (new Date()).getTime();
-    const lastTimeUpdateProvince = Remember.getLastTimeUpadteProvinces();
-    if (!lastTimeUpdateProvince || (nowInt - lastTimeUpdateProvince) > Constant.TIME_CACHE_PROVINCES) {
-      this.getProvinces();
-    }
   },
   methods: {
     onBottomNavigationTabPressed: function(args) {
@@ -61,24 +54,6 @@ export default {
     },
     onBottomNavigationTabReselected: function(args) {
       console.log(`reselected tab index:  ${args.index}`);
-    },
-    getProvinces() {
-      this.processing = true;
-      ApiService.methods
-        .getProvinces(CurrentUser.methods.getBearId())
-        .catch(this.callBackFail)
-        .then(this.getProvincesSuccess);
-    },
-    getProvincesSuccess(obj) {
-      if (obj.records.length > 0) {
-        const now = (new Date()).getTime();
-        Remember.setLastTimeUpadteProvinces(now);
-        this.$store.dispatch('insertProvinces', obj);
-      }
-      this.processing = false;
-    },
-    callBackFail(error) {
-      this.processing = false;
     }
   }
 };
