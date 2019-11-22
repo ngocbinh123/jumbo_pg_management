@@ -58,6 +58,6 @@ module.exports = {
     msg_reset_pass_success: "Chúng tôi đã gửi mật khẩu mới tới email của bạn.",
     msg_please_fill_phone: "Xin hãy nhập số điện thoại mới.",
     msg_birthday_enough_year_old: "Bạn phải chọn thời gian sao cho đủ 18 tuổi.",
-    msg_should_choose_province_before: "Bạn cần chọn Tình/ Thành Phố trước.",
+    msg_should_choose_province_before: "Bạn cần chọn Tỉnh/ Thành Phố trước.",
     msg_should_fill_address: "Bạn cần điền đầy đủ thông tin (Số nhà, đường, phường, quận/huyện, tỉnh/ thành phố)."
 };
