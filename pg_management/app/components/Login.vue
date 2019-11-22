@@ -139,9 +139,10 @@ export default {
     getDataBeforeGotoHome() {
       this.processing = true;
       var customers = Customer.customers;
-      // for(var index = 0; index < customers.length; index++) {
-      //   this.$store.dispatch('insertCustomer', customers[index]);
-      // }
+      // this.$store.dispatch('insertAllCustomers', customers);
+      for(var index = 0; index < customers.length; index++) {
+        this.$store.dispatch('insertCustomer', customers[index]);
+      }
 
       this.gotoHome();
     },

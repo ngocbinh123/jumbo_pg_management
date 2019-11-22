@@ -43,12 +43,12 @@ export default {
     };
   },
   created() {
-    // this.$store.dispatch('getAllCustomers');
-    // const nowInt = (new Date()).getTime();
-    // const lastTimeUpdateProvince = Remember.getLastTimeUpadteProvinces();
-    // if (!lastTimeUpdateProvince || (nowInt - lastTimeUpdateProvince) > Constant.TIME_CACHE_PROVINCES) {
-    //   this.getProvinces();
-    // }
+    this.$store.dispatch('getAllCustomers');
+    const nowInt = (new Date()).getTime();
+    const lastTimeUpdateProvince = Remember.getLastTimeUpadteProvinces();
+    if (!lastTimeUpdateProvince || (nowInt - lastTimeUpdateProvince) > Constant.TIME_CACHE_PROVINCES) {
+      this.getProvinces();
+    }
   },
   methods: {
     onBottomNavigationTabPressed: function(args) {

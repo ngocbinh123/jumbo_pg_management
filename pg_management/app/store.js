@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import QueryBuilder from './storaged/QueryBuilder';
-
+import Customers from './data/objects/Customer';
 Vue.use(Vuex);
 
 const Sqlite = require("nativescript-sqlite");
@@ -53,7 +53,45 @@ const store = new Vuex.Store({
     actions: {
         init(context) {
             (new Sqlite(DB_NAME)).then(db => {
-                this.createTables(context, db, 0);
+                var createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_CUSTOMER, COLS_CUSTOMER_FOR_CREATE_TB);
+                db.execSQL(createTableSQL)
+                    .then((result) => {
+                        console.log("CREATE TABLE CUSTOMER SUCCESS", result);
+                        createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
+                        db.execSQL(createTableSQL)
+                            .then((result) => {
+                                console.log("CREATE TABLE PROVINCE SUCCESS", result);
+                                createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
+                                db.execSQL(createTableSQL)
+                                    .then((result) => {
+                                        console.log("CREATE TABLE PRODUCT SUCCESS", result);
+                                        context.commit("init", { database: db });
+                                    }).catch((err) => {
+                                        console.log("CREATE TABLE PRODUCT ERROR", err);
+                                    });
+                            }).catch((err) => {
+                                console.log("CREATE TABLE PROVINCE ERROR", err);
+                            });
+                    }).catch((err) => {
+                        console.log("CREATE TABLE CUSTOMER ERROR", err);
+                    });
+
+                // createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
+                // db.execSQL(createTableSQL)
+                //     .then((result) => {
+                //         console.log("CREATE TABLE PROVINCE SUCCESS", result);
+                //     }).catch((err) => {
+                //         console.log("CREATE TABLE PROVINCE ERROR", err);
+                //     });
+
+                // createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
+                // db.execSQL(createTableSQL)
+                //     .then((result) => {
+                //         console.log("CREATE TABLE PRODUCT SUCCESS", result);
+                //     }).catch((err) => {
+                //         console.log("CREATE TABLE PRODUCT ERROR", err);
+                //     });
+                // this.createTables(context, db, 0);
             }, error => {
                 console.log("OPEN DB ERROR", error);
             });
@@ -77,6 +115,7 @@ const store = new Vuex.Store({
         createTableCustomer(context, db, step) {
             const query = QueryBuilder.buildQueryCreateTB(TABLE_CUSTOMER, COLS_CUSTOMER_FOR_CREATE_TB);
             db.execSQL(query).then(result => {
+                console.log("CREATE TABLE CUSTOMER RESULT", result);
                 this.createTables(context, db, step + 1);
             }, error => {
                 console.log("CREATE TABLE CUSTOMER ERROR", error);
@@ -85,6 +124,7 @@ const store = new Vuex.Store({
         createTableProduct(context, db, step) {
             const query = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
             db.execSQL(query).then(result => {
+                console.log("CREATE TABLE PRODUCT RESULT", result);
                 this.createTables(context, db, step + 1);
             }, error => {
                 console.log("CREATE TABLE PRODUCT ERROR", error);
@@ -93,6 +133,7 @@ const store = new Vuex.Store({
         createTableProvince(context, db) {
             const query = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
             db.execSQL(query).then(result => {
+                console.log("CREATE TABLE PROVINCE RESULT", result);
                 this.createTables(context, db, step + 1);
             }, error => {
                 console.log("CREATE TABLE PROVINCE ERROR", error);
@@ -109,7 +150,7 @@ const store = new Vuex.Store({
                 });
 
             }, error => {
-                console.log("INSERT ERROR", error);
+                console.log("DELETE ALL RECORDS IN PROVINCE ERROR", error);
             });
         },
         insertProvince(context, data) {
@@ -118,33 +159,39 @@ const store = new Vuex.Store({
                 data.id = id;
                 context.commit("saveProvince", { province: data });
             }, error => {
-                console.log("INSERT ERROR", error);
+                console.log("INSERT PROVINCE RECORD ERROR", error);
             });
         },
-        insertAllCustomers(context, customers) {
-            var query = "";
-            for (var index = 0; index < customers.length; index++) {
-                // var customer = customers[index];
-                // const valuesStr = "'" + customer.name + "','" + customer.sex + "','" + customer.phone + "','" + customer.address + "'";
-                // query += QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, valuesStr);
-            }
-            // console.log("INSERT ALL CUSTOMERS", query);
-            // context.state.database.execSQL(query, []).then(result => {
-            //     // context.commit("save", { customer: data });
-            //     console.log("INSERT RESULT", result);
 
-            // }, error => {
-            //     console.log("INSERT ERROR", error);
-            // });
+        insertAllCustomers(context, customers) {
+            // prepare : is a function that need to charges
+            // const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
+            // var prep = context.state.database.prepare(query);
+            // for (var i = 0; i < customers.length; i++) {
+            //     const customerItem = customers[i];
+            //     prep.execute([customerItem.name, customerItem.sex, customerItem.phone, customerItem.address]);
+            // }
+            // prep.finished();
+
+            const query = QueryBuilder.buildQueryDeleteAll(TABLE_CUSTOMER);
+            context.state.database.execSQL(query, []).then(result => {
+                this.state.customers = [];
+                customers.forEach(customereRecord => {
+                    this.insertCustomer(context, customereRecord);
+                });
+
+            }, error => {
+                console.log("DELETE ALL RECORDS IN CUSTOMER ERROR", error);
+            });
         },
         insertCustomer(context, data) {
-            // const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
-            // context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address]).then(id => {
-            //     data.id = id;
-            //     context.commit("save", { customer: data });
-            // }, error => {
-            //     console.log("INSERT ERROR", error);
-            // });
+            const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
+            context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address]).then(id => {
+                data.id = id;
+                context.commit("save", { customer: data });
+            }, error => {
+                console.log("INSERT ERROR", error);
+            });
         },
         getAllCustomers(context) {
             const query = QueryBuilder.buildQuerySelectAll(TABLE_CUSTOMER, COLS_CUSTOMER);
