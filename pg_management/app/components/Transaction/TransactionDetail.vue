@@ -10,8 +10,6 @@
     <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"  row="3" col="0" />
     <Label :text="transaction.customer.name" class="text-center txt-value" textWrap="true" row="3" col="1" colSpan="4"/>
 
-    <Label :text="transaction.customer.id" class="txt-value text-center" textWrap="true" row="3" col="4" /> -->
-
     <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" />
     <Label :text="transaction.customer.phone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
