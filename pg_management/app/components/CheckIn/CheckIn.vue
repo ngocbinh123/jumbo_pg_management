@@ -1,19 +1,24 @@
 <template>
   <GridLayout class="page-parent" rows="50,*" columns="30,*">
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0"/>
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
+    
     <Label text="THÔNG TIN CHẤM CÔNG" class="title-white text-center"  row="0" col="0" colSpan="2"/>
     <FlexboxLayout row="0" col="0" rowSpan="2" colSpan="2">
-      <GridLayout class="page-content" rows="auto,auto,auto,auto,40,50" columns="50, *" >
-        <Image src="res://ic_id_card_primary" class="icon" row="0" col="0" />
+      <GridLayout class="page-content" rows="40,40,40,40,40,50" columns="50, *" >
+        <!-- <Image src="res://ic_id_card_primary" class="icon" row="0" col="0" /> -->
+        <Label :text="'fa-address-card' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="0" col="0" />
         <Label class="lbl-value" :text="userId" row="0" col="1"/>
         
-        <Image src="res://ic_person_primary" class="icon" row="1" col="0" />
+        <!-- <Image src="res://ic_person_primary" class="icon" row="1" col="0" /> -->
+        <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="1" col="0" />
         <Label class="lbl-value" :text="userName" row="1" col="1"/>
 
-        <Image src="res://ic_alarm_primary" class="icon" row="2" col="0" />
+        <!-- <Image src="res://ic_alarm_primary" class="icon" row="2" col="0" /> -->
+        <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="2" col="0" />
         <Label :text="checkInTime" class="lbl-value text-bold" row="2" col="1"/>
 
-        <Image src="res://ic_place_primary" class="icon" row="3" col="0" />
+        <!-- <Image src="res://ic_place_primary" class="icon" row="3" col="0" /> -->
+        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-24"  @tap="closePage()" row="3" col="0" />
         <Label :text="checkInItem.store" class="lbl-value" row="3" col="1" />
         <Button
           id="btn_submit"

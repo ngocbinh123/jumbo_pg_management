@@ -17,23 +17,27 @@
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <!-- <Image src="res://ic_add_primary" row="1" col="2" class="icon"  @tap="createTransaction()"/> -->
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList" @itemTap="onSelectedTransaction">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
+              <GridLayout flexDirection="row" rows="*,*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
 
                 <Label :text="item.date" class="text-center date" row="1" col="1"/>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
-                  <Image src="res://ic_place_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon"  width="8%" />
                   <Label :text="item.store" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
-                  <Image src="res://ic_person_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-user' | fonticon" class="far font-icon" width="8%" />
                   <Label :text="item.customer.name" class="item-header-sub" />                  
+                </StackLayout>
+
+                <StackLayout orientation="horizontal" class="parent-center" row="3" col="2">
+                  <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon"  width="8%"/>
+                  <Label :text="item.displayTransTotal" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
@@ -43,25 +47,23 @@
       <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <!-- <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
-          <!-- <Image src="res://ic_add_primary" row="1" col="2" class="icon" @tap="createCustomer()"/> -->
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in customers"  @itemTap="onCustomerSelected">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in $store.state.customers"  @itemTap="onCustomerSelected">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
                 <Label :text="customer.name" class="item-header" textWrap="true" row="0" col="2"/>
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
-                  <Image src="res://ic_phone_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
                   <Label :text="customer.phone" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
-                  <Image src="res://ic_place_primary" row="1" col="2" class="icon-small"/>
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
                   <Label :text="customer.address" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
@@ -70,7 +72,7 @@
         </GridLayout>
       </TabViewItem>
     </TabView>
-    <ActivityIndicator v-show="isCreateTransaction" busy="true" row="0" col="0"/>
+    <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0"/>
   </GridLayout>
 </template>
 <script>
@@ -89,6 +91,7 @@ import CustomerModel from "../../data/objects/Customer";
 
 export default {
   created() {
+    // this.$store.dispatch('getAllCustomers');
     this.customers = CustomerModel.customers;
 
     for(var i = 0; i < this.customers.length; i++) {
@@ -128,62 +131,83 @@ export default {
   },
   data() {
     return {
-      isCreateTransaction: false,
+      count: this.$store.state.count,
+      isProcessing: false,
       selectedIndex: 0,
       searchTransValue:"",
       date: "",
-      customers:[],
+      customers: [],
       transList:[]
     };
   },
   methods: {
     onSelectedTransaction(event) {
+      if (this.isProcessing) {
+        return
+      }
+
+      this.isProcessing = true;
       this.$showModal(TransactionDetail, { 
         fullscreen: true,
         animated: true,
         props: { transaction: event.item }
-      });
+      }).then(result => {this.isProcessing = false});
     },
     onCustomerSelected(event) {
-       this.$showModal(UserDetail, { 
+      if (this.isProcessing) {
+        return;
+      }
+
+      this.isProcessing = true;
+      this.$showModal(UserDetail, { 
         fullscreen: false, 
         animated: true,
         props: { customer: event.item }
-        });
+      }).then(result => {this.isProcessing = false});
     },
     createTransaction() {
-      if (this.isCreateTransaction) {
+      if (this.isProcessing) {
         return
       }
 
-      this.isCreateTransaction = true;
+      this.isProcessing = true;
       this.$showModal(CreateTransaction, { 
         fullscreen: true,
         animated: true,
         }).then(this.callbackCreateTransaction);
     },
     callbackCreateTransaction(response) {
-      this.isCreateTransaction = false;
+      this.isProcessing = false;
 
       if (response == undefined || !response.isSuccess) {
         return;
       }
 
       this.transList.unshift(response.transaction);
-      this.customers.unshift(response.transaction.customer);
+      this.$store.dispatch('insertCustomer', response.transaction.customer);
     },
     createCustomer() {
+      if (this.isProcessing) {
+        return
+      }
+      this.isProcessing = true;
       this.$showModal(CreateCustomer, { 
         fullscreen: true,
          animated: true,
         }).then(this.callbackCreateCustomer);
     },
     callbackCreateCustomer(response) {
+      this.isProcessing = false;
       if(response == undefined || !response.isSuccess) {
         return;
       }
-
-      this.customers.unshift(response.customer);
+    },
+    showDlg(dlgTitle, dlgMsg) {
+      return alert({
+        title: dlgTitle,
+        okButtonText: stringConst.lbl_close,
+        message: dlgMsg
+      });
     }
   }
 };
@@ -228,7 +252,7 @@ export default {
   font-family: "f_arima_madurai_regular";
   font-size: 14;
   vertical-align: middle; 
-  margin-left: 4; 
+  margin-left: 8; 
 }
 
 .time {

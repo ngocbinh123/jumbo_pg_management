@@ -3,7 +3,8 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
       <Label text="THÊM SẢN PHẨM" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
+
     <RadDataForm :source="product" :metadata="selectProductMeta" row="2" col="0" colSpan="2" />
     <Button
       id="btn_add_product"

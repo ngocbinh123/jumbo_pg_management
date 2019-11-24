@@ -3,7 +3,7 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
       <Label text="CẬP NHẬT SỐ LƯỢNG" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
     <GridLayout rows="*,20,*" columns="100,10,*" row="2" col="0" colSpan="2">
         <Label text="Sản Phẩm:" class="text-right" row="0" col="0" />

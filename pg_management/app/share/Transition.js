@@ -8,5 +8,10 @@ module.exports = {
         name: "slideRight",
         duration: 350,
         curve: "easeIn"
+    },
+    pushPageTransition: {
+        name: "slideTop",
+        duration: 350,
+        curve: "easeIn"
     }
 }

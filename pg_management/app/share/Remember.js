@@ -1,10 +1,31 @@
 const appSettings = require("application-settings");
 
 const KEY_USER_ID = "KEY_USER_ID";
+const KEY_USER_CODE = "KEY_USER_CODE";
 const KEY_USER_NAME = "KEY_USER_NAME";
 const KEY_USER_EMAIL = "KEY_USER_EMAIL";
+const KEY_USER_BIRTHDAY = "KEY_USER_BIRTHDAY";
+
+const KEY_USER_ADDRESS = "KEY_USER_ADDRESS";
+const KEY_USER_GENDER = "KEY_USER_GENDER";
+const KEY_USER_PHONE = "KEY_USER_PHONE";
+const KEY_USER_ID_CARD = "KEY_USER_ID_CARD";
+const KEY_USER_CLIENT_CODE = "KEY_USER_CLIENT_CODE";
+const KEY_USER_CATEGORY = "KEY_USER_CATEGORY";
+
+const KEY_USER_GID = "KEY_USER_GID";
+const KEY_USER_CHANNEL = "KEY_USER_CHANNEL";
+
+const KEY_USER_MANAGER_NAME = "KEY_USER_MANAGER_NAME";
+const KEY_USER_MANAGER_PHONE = "KEY_USER_MANAGER_PHONE";
+const KEY_USER_MANAGER_EMAIL = "KEY_USER_MANAGER_EMAIL";
+
+
 const KEY_FORCE_CHANGE_PASS = "KEY_FORCE_CHANGE_PASS";
 const KEY_BEAR_ID = "KEY_BEAR_ID";
+
+const KEY_LAST_TIME_OF_UPDATED_PROVINCE = "KEY_LAST_TIME_OF_UPDATED_PROVINCE";
+
 
 module.exports = {
     getUserId() {
@@ -12,6 +33,12 @@ module.exports = {
     },
     setUserId(userId) {
         appSettings.setString(KEY_USER_ID, userId);
+    },
+    getUserCode() {
+        return appSettings.getString(KEY_USER_CODE, "");
+    },
+    setUserCode(code) {
+        appSettings.setString(KEY_USER_CODE, code);
     },
     getUserName() {
         return appSettings.getString(KEY_USER_NAME, "");
@@ -25,6 +52,91 @@ module.exports = {
     setUserEmail(email) {
         appSettings.setString(KEY_USER_EMAIL, email);
     },
+
+    getUserBirthday() {
+        return appSettings.getString(KEY_USER_BIRTHDAY, "");
+    },
+    setUserBirthday(birthday) {
+        appSettings.setString(KEY_USER_BIRTHDAY, birthday);
+    },
+
+    getUserGender() {
+        return appSettings.getString(KEY_USER_GENDER, "");
+    },
+    setUserGender(gender) {
+        appSettings.setString(KEY_USER_GENDER, gender);
+    },
+
+    getUserAddess() {
+        return appSettings.getString(KEY_USER_ADDRESS, "");
+    },
+    setUserAddress(address) {
+        appSettings.setString(KEY_USER_ADDRESS, address);
+    },
+
+    getUserPhone() {
+        return appSettings.getString(KEY_USER_PHONE, "");
+    },
+    setUserPhone(phone) {
+        appSettings.setString(KEY_USER_PHONE, phone);
+    },
+
+    getUserIDCard() {
+        return appSettings.getString(KEY_USER_ID_CARD, "");
+    },
+    setUserIDCard(idCard) {
+        appSettings.setString(KEY_USER_ID_CARD, idCard);
+    },
+
+    getUserGID() {
+        return appSettings.getString(KEY_USER_GID, "");
+    },
+    setUserGID(gid) {
+        appSettings.setString(KEY_USER_GID, gid);
+    },
+
+    getUserCategory() {
+        return appSettings.getString(KEY_USER_CATEGORY, "");
+    },
+    setUserCateogry(category) {
+        appSettings.setString(KEY_USER_CATEGORY, category);
+    },
+
+    getUserChanel() {
+        return appSettings.getString(KEY_USER_CHANNEL, "");
+    },
+    setUserChanel(chanel) {
+        appSettings.setString(KEY_USER_CHANNEL, chanel);
+    },
+
+    getUserClientCode() {
+        return appSettings.getString(KEY_USER_CLIENT_CODE, "");
+    },
+    setUserClientCode(code) {
+        appSettings.setString(KEY_USER_CLIENT_CODE, code);
+    },
+
+    getUserManagerName() {
+        return appSettings.getString(KEY_USER_MANAGER_NAME, "");
+    },
+    setUserManagerName(name) {
+        appSettings.setString(KEY_USER_MANAGER_NAME, name);
+    },
+
+    getUserManagerEmail() {
+        return appSettings.getString(KEY_USER_MANAGER_EMAIL, "");
+    },
+    setUserManagerEmail(email) {
+        appSettings.setString(KEY_USER_MANAGER_EMAIL, email);
+    },
+    getUserManagerPhone() {
+        return appSettings.getString(KEY_USER_MANAGER_PHONE, "");
+    },
+    setUserManagerPhone(phone) {
+        appSettings.setString(KEY_USER_MANAGER_PHONE, phone);
+    },
+
+
     getBearId() {
         return appSettings.getString(KEY_BEAR_ID, "");
     },
@@ -37,6 +149,13 @@ module.exports = {
     setFroceChangePass(isForce) {
         appSettings.setBoolean(KEY_FORCE_CHANGE_PASS, isForce);
     },
+    getLastTimeUpadteProvinces() {
+        return appSettings.getNumber(KEY_LAST_TIME_OF_UPDATED_PROVINCE, "");
+    },
+    setLastTimeUpadteProvinces(time) {
+        appSettings.setNumber(KEY_LAST_TIME_OF_UPDATED_PROVINCE, time);
+    },
+
     clearAll() {
         appSettings.clear();
     }
