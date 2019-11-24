@@ -1,0 +1,1 @@
+tns build android --release --key-store-path pg_keystore.jks --key-store-password 123456 --key-store-alias PGMan --key-store-alias-password 123456

@@ -3,7 +3,6 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="5" width="100%">
         <Label text="CHI TIẾT ĐƠN HÀNG" class="text-center"/>
     </FlexboxLayout>
-    <!-- <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" /> -->
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
     <Label text="Thông Tin Khách Hàng:" class="header" row="2" col="0" colSpan="5" />
@@ -11,7 +10,6 @@
     <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"  row="3" col="0" />
     <Label :text="transaction.customer.name" class="text-center txt-value" textWrap="true" row="3" col="1" colSpan="4"/>
 
-    <!-- <Label :text="'fa-address-card' | fonticon" class="far font-icon font-icon-size-18"  row="3" col="3" />
     <Label :text="transaction.customer.id" class="txt-value text-center" textWrap="true" row="3" col="4" /> -->
 
     <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" />

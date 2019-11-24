@@ -28,10 +28,10 @@ export default {
       customerMetadata: CustomerMeta,
       customer: {
         id: Math.floor(Math.random() * 100) + 100,
-        name: "Nguyễn Thanh Hưng",
-        sex: "Nam",
-        phone: "0931434656",
-        address: "Hồ Chí Minh"
+        name: "",
+        sex: "",
+        phone: "",
+        address: ""
       }
     };
   },
