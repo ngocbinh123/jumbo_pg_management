@@ -27,6 +27,7 @@ module.exports = {
     lbl_ward: "Phường",
     lbl_street: "Số Nhà - Đường",
     lbl_update: "Cập nhật",
+    lbl_trans_created_success: "TẠO ĐƠN HÀNG THÀNH CÔNG",
     msg_sure_logout: "Bạn chắc chắn muốn đăng xuất ứng dụng?",
     msg_sure_delete_product: "Bạn chắc chắn muốn xoá Sản Phẩm này phải không?",
     msg_should_change_pass: "Bạn cần phải thay đổi mật khẩu.",

@@ -184,6 +184,7 @@ export default {
       }
 
       this.transList.unshift(response.transaction);
+      this.$store.dispatch('insertCustomer', response.transaction.customer);
     },
     createCustomer() {
       if (this.isProcessing) {
@@ -200,6 +201,13 @@ export default {
       if(response == undefined || !response.isSuccess) {
         return;
       }
+    },
+    showDlg(dlgTitle, dlgMsg) {
+      return alert({
+        title: dlgTitle,
+        okButtonText: stringConst.lbl_close,
+        message: dlgMsg
+      });
     }
   }
 };
