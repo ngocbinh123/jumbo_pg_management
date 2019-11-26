@@ -58,60 +58,7 @@ const Constant = require("../../data/Constant");
 const now = new Date();
 export default {
   mounted() {
-    var ls = [];
-    // dummy data 
-    for(var i = 9; i < 22; i++) {
-      var currentHour = now.getHours();
-      var itemState = Constant.CHECK_IN_STATE.UNCHECK;
-
-      if (i == currentHour) {
-        // itemState = Constant.CHECK_IN_STATE.READY;
-        itemState = now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN ? Constant.CHECK_IN_STATE.READY : Constant.CHECK_IN_STATE.CHECKED;
-      } else if(i - currentHour == 1 &&  now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
-        itemState = Constant.CHECK_IN_STATE.READY;
-      } else if(i - currentHour < 0) {
-        itemState = Constant.CHECK_IN_STATE.CHECKED;
-      }
-      var item = {
-          id: i*100,
-          store: "Takashimaya Vietnam",
-          address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-          time: i + ":00",
-          date: now.toLocaleDateString(),
-          state: itemState
-        };
-        ls.push(item);
-        this.currCheckInList.push(item);
-    }
-
-    var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-    for(var i=7; i < 23; i=i+4) {
-      var itemState = Constant.CHECK_IN_STATE.CHECKED;
-      var item = {
-          id: i * 100,
-          store: "Takashimaya Vietnam",
-          address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-          time: i + ":00",
-          date: yesterday.toLocaleDateString(),
-          state: itemState
-        };
-        ls.push(item);
-    }
-
-    var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
-    for(var i = 7; i < 23; i= i + 4) {
-      var itemState = Constant.CHECK_IN_STATE.UNCHECK;
-      var item = {
-          id: i*100,
-          store: "Takashimaya Vietnam",
-          address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-          time: i + ":00",
-          date: tomorrow.toLocaleDateString(),
-          state: itemState
-        };
-        ls.push(item);
-    }
-    this.checkInList = ls;
+    this.fetchCheckInSchedules();
   },
   created() {
     var current = new Date();
@@ -220,6 +167,62 @@ export default {
       } else {
         this.isChkInProscess = false;
       }
+    },
+    fetchCheckInSchedules() {
+      var ls = [];
+      // dummy data 
+      for(var i = 9; i < 22; i++) {
+        var currentHour = now.getHours();
+        var itemState = Constant.CHECK_IN_STATE.UNCHECK;
+
+        if (i == currentHour) {
+          // itemState = Constant.CHECK_IN_STATE.READY;
+          itemState = now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN ? Constant.CHECK_IN_STATE.READY : Constant.CHECK_IN_STATE.CHECKED;
+        } else if(i - currentHour == 1 &&  now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
+          itemState = Constant.CHECK_IN_STATE.READY;
+        } else if(i - currentHour < 0) {
+          itemState = Constant.CHECK_IN_STATE.CHECKED;
+        }
+        var item = {
+            id: i*100,
+            store: "Takashimaya Vietnam",
+            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
+            time: i + ":00",
+            date: now.toLocaleDateString(),
+            state: itemState
+          };
+          ls.push(item);
+          this.currCheckInList.push(item);
+      }
+
+      var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      for(var i=7; i < 23; i=i+4) {
+        var itemState = Constant.CHECK_IN_STATE.CHECKED;
+        var item = {
+            id: i * 100,
+            store: "Takashimaya Vietnam",
+            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
+            time: i + ":00",
+            date: yesterday.toLocaleDateString(),
+            state: itemState
+          };
+          ls.push(item);
+      }
+
+      var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+      for(var i = 7; i < 23; i= i + 4) {
+        var itemState = Constant.CHECK_IN_STATE.UNCHECK;
+        var item = {
+            id: i*100,
+            store: "Takashimaya Vietnam",
+            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
+            time: i + ":00",
+            date: tomorrow.toLocaleDateString(),
+            state: itemState
+          };
+          ls.push(item);
+      }
+      this.checkInList = ls;
     },
     openCamera() {
       this.$showModal(TakePicForChkIn, {
