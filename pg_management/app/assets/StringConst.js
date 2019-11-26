@@ -27,6 +27,7 @@ module.exports = {
     lbl_ward: "Phường",
     lbl_street: "Số Nhà - Đường",
     lbl_update: "Cập nhật",
+    lbl_upload_img_success: "TẢI HÌNH LÊN HỆ THỐNG THÀNH CÔNG",
     lbl_trans_created_success: "TẠO ĐƠN HÀNG THÀNH CÔNG",
     msg_sure_logout: "Bạn chắc chắn muốn đăng xuất ứng dụng?",
     msg_sure_delete_product: "Bạn chắc chắn muốn xoá Sản Phẩm này phải không?",
@@ -60,5 +61,7 @@ module.exports = {
     msg_please_fill_phone: "Xin hãy nhập số điện thoại mới.",
     msg_birthday_enough_year_old: "Bạn phải chọn thời gian sao cho đủ 18 tuổi.",
     msg_should_choose_province_before: "Bạn cần chọn Tỉnh/ Thành Phố trước.",
-    msg_should_fill_address: "Bạn cần điền đầy đủ thông tin (Số nhà, đường, phường, quận/huyện, tỉnh/ thành phố)."
+    msg_should_fill_address: "Bạn cần điền đầy đủ thông tin (Số nhà, đường, phường, quận/huyện, tỉnh/ thành phố).",
+    msg_user_reject_camera_permission: "Bạn đã từ chối nên bạn không thể sử dụng chức năng chụp hình được.",
+    msg_system_received_your_img: "Hệ thống đã nhận được hình của bạn. Xin hãy tiếp tục công việc của mình."
 };
