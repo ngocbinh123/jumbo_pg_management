@@ -21,11 +21,21 @@ const TABLE_PROVINCE = "Prodvince";
 const COLS_PROVINCE = "id, name";
 const COLS_PROVINCE_FOR_CREATE_TB = "id TEXT, name TEXT";
 
+const TABLE_TRANSACTION = "Invoice";
+const COLS_TRANSACTION = "id, code, total, store, customerName, cursomterId, createdAt";
+const COLS_TRANSACTION_WITHOUT_ID = "code, total, store, customerName, cursomterId, createdAt";
+const COLS_TRANSACTION_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT, total TEXT, store TEXT, customerName TEXT, cursomterId INTEGER, createdAt TEXT";
+
+const TABLE_TRANSACTION_DETAIL = "InvoiceDetail";
+const COLS_TRANSACTION_DETAIL = "productId, productName, number, price, total, invoiceId";
+const COLS_TRANSACTION_DETAIL_FOR_CREATE_TB = "productId INTEGER, productName TEXT, number INTEGER, price INTEGER, total INTEGER, invoiceId INTEGER";
+
 const store = new Vuex.Store({
     state: {
         database: null,
         customers: [],
-        provinces: []
+        provinces: [],
+        invoices: []
     },
     mutations: {
         init(state, data) {
@@ -52,6 +62,35 @@ const store = new Vuex.Store({
                 });
             }
         },
+        loadTransactions(state, data) {
+            console.log("loadTransactions", data.transactions);
+            state.transactions = [];
+            for (var i = 0; i < data.transactions.length; i++) {
+                var dateArr = data.transactions[i][6].split(" ");
+                var newItems = {
+                    id: data.transactions[i][0],
+                    code: data.transactions[i][1],
+                    store: data.transactions[i][3],
+                    transTotal: data.transactions[i][2],
+                    displayTransTotal: data.transactions[i][2].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " VND",
+                    customer: {
+                        id: data.transactions[i][5],
+                        name: data.transactions[i][4],
+                        phone: data.transactions[i][7],
+                        address: data.transactions[i][8]
+                    },
+                    time: dateArr[0],
+                    date: dateArr[1],
+                    products: []
+                };
+                state.invoices.push(newItems);
+            }
+            console.log("loadTransactions: ", state.transactions.length);
+        },
+        saveTransaction(state, data) {
+            console.log("saveTransaction: ", data.invoice);
+            state.invoices.unshift(data.invoice);
+        },
         save(state, data) {
             state.customers.unshift(data.customer);
         },
@@ -74,7 +113,21 @@ const store = new Vuex.Store({
                                 db.execSQL(createTableSQL)
                                     .then((result) => {
                                         console.log("CREATE TABLE PRODUCT SUCCESS", result);
-                                        context.commit("init", { database: db });
+                                        createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_TRANSACTION, COLS_TRANSACTION_FOR_CREATE_TB);
+                                        db.execSQL(createTableSQL)
+                                            .then((result) => {
+                                                console.log("CREATE TABLE INVOICE SUCCESS", result);
+                                                createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_TRANSACTION_DETAIL, COLS_TRANSACTION_DETAIL_FOR_CREATE_TB);
+                                                db.execSQL(createTableSQL)
+                                                    .then((result) => {
+                                                        console.log("CREATE TABLE INVOICE DETAIL SUCCESS", result);
+                                                        context.commit("init", { database: db });
+                                                    }).catch((err) => {
+                                                        console.log("CREATE TABLE INVOICE DETAIL ERROR", err);
+                                                    });
+                                            }).catch((err) => {
+                                                console.log("CREATE TABLE TRANSACTION ERROR", err);
+                                            });
                                     }).catch((err) => {
                                         console.log("CREATE TABLE PRODUCT ERROR", err);
                                     });
@@ -84,23 +137,6 @@ const store = new Vuex.Store({
                     }).catch((err) => {
                         console.log("CREATE TABLE CUSTOMER ERROR", err);
                     });
-
-                // createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
-                // db.execSQL(createTableSQL)
-                //     .then((result) => {
-                //         console.log("CREATE TABLE PROVINCE SUCCESS", result);
-                //     }).catch((err) => {
-                //         console.log("CREATE TABLE PROVINCE ERROR", err);
-                //     });
-
-                // createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
-                // db.execSQL(createTableSQL)
-                //     .then((result) => {
-                //         console.log("CREATE TABLE PRODUCT SUCCESS", result);
-                //     }).catch((err) => {
-                //         console.log("CREATE TABLE PRODUCT ERROR", err);
-                //     });
-                // this.createTables(context, db, 0);
             }, error => {
                 console.log("OPEN DB ERROR", error);
             });
@@ -262,6 +298,53 @@ const store = new Vuex.Store({
         },
         findProduct(context, data) {
 
+        },
+        insertTransaction(context, data) {
+            var query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
+            context.state.database.execSQL(query, [data.customer.name, data.customer.sex, data.customer.phone, data.customer.address]).then(id => {
+                data.customer.id = id;
+                context.commit("save", { customer: data.customer });
+                // code, total, store, customerName, cursomterId, createdAt
+                query = QueryBuilder.buildQueryInsert(TABLE_TRANSACTION, COLS_TRANSACTION_WITHOUT_ID, "?,?,?,?,?,?");
+                context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, id, data.time + " " + data.date])
+                    .then(id => {
+                        console.log("INSERT INVOICE SUCCESS", id);
+                        data.id = id;
+                        context.commit("saveTransaction", { invoice: data });
+                        // productId, productName, number, price, total, invoiceId
+                        data.products.forEach(product => {
+                            query = QueryBuilder.buildQueryInsert(TABLE_TRANSACTION_DETAIL, COLS_TRANSACTION_DETAIL, "?,?,?,?,?,?");
+                            context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, id])
+                                .then(id => {
+                                    console.log("INSERT INVOICE DETAIL SUCCESS", id);
+                                })
+                                .catch(error => {
+                                    console.log("INSERT INVOICE DETAIL ERROR", error);
+                                });
+                        });
+
+                    })
+                    .catch(error => {
+                        console.log("INSERT INVOICE ERROR", error);
+                    })
+            }, error => {
+                console.log("INSERT ERROR", error);
+            });
+        },
+        getTransactions(context) {
+            const now = new Date();
+            const currentDate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
+
+            var joinQuery = "SELECT a.id, a.code, a.total, a.store, a.customerName, a.cursomterId, a.createdAt, b.phone, b.address "
+            joinQuery += "FROM " + TABLE_TRANSACTION + " as a , " + TABLE_CUSTOMER + " as b ";
+            joinQuery += "WHERE a.cursomterId == b.id and a.createdAt like '%" + currentDate + "'";
+            console.log("getTransactions", joinQuery);
+            context.state.database.all(joinQuery, []).then(result => {
+                console.log("SELECT TRANSACTIONS SUCCESS: ", result.length);
+                context.commit("loadTransactions", { transactions: result });
+            }, error => {
+                console.log("SELECT TRANSACTIONS ERROR", error);
+            });
         }
     }
 })

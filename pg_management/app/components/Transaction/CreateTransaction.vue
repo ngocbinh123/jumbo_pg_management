@@ -57,9 +57,9 @@ export default {
       customerMetadata: CustomerMeta,
       customer: {
         id: Math.floor(Math.random() * 100) + 100,
-        name: "",
+        name: "Thái Quốc Bình An",
         sex: "Nam",
-        phone: "",
+        phone: "0921434567",
         address: "Hồ Chí Minh"
       },
       products:[]
@@ -97,6 +97,8 @@ export default {
       }
 
       const now = new Date();
+      const currentDate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
+
       var time = now.getHours() + ":";
       var min = now.getMinutes();
       if (min < 10) {
@@ -111,7 +113,7 @@ export default {
         customer: this.customer,
         store:"Takashimaya Vietnam",
         time: time,
-        date: "Hôm nay",
+        date: currentDate,
         transTotal: this.transTotal,
         displayTransTotal: this.displayTransTotal,
         products: this.products
