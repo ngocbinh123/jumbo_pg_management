@@ -47,6 +47,7 @@ import CalendarView from "nativescript-ui-calendar/vue";
 Vue.use(CalendarView);
 
 import CheckIn from "../CheckIn/CheckIn";
+import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
@@ -219,6 +220,12 @@ export default {
       } else {
         this.isChkInProscess = false;
       }
+    },
+    openCamera() {
+      this.$showModal(TakePicForChkIn, {
+              fullscreen: true,
+              animated: true
+          });
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({

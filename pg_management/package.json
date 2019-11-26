@@ -21,6 +21,8 @@
         "@vue/devtools": "^5.0.6",
         "fecha": "^3.0.3",
         "font-awesome": "^4.7.0",
+        "nativescript-background-http": "^4.2.1",
+        "nativescript-camera": "^4.5.0",
         "nativescript-drop-down": "^5.0.4",
         "nativescript-fonticon": "^2.0.0",
         "nativescript-materialdropdownlist": "^1.0.15",

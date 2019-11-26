@@ -112,6 +112,7 @@ export default {
         date: "Hôm nay",
         transTotal: 280000,
         displayTransTotal:"280,000 VND",
+        customerId: this.customers[i].id,
         products:[
           {
             id:1010,
