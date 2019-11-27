@@ -11,7 +11,6 @@
       <TabViewItem title="ĐƠN HÀNG">
         <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <!-- <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
@@ -175,7 +174,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('insertTransaction', response.transaction);
+      this.$store.dispatch('insertInvoice', response.transaction);
     },
     createCustomer() {
       if (this.isProcessing) {

@@ -124,6 +124,8 @@ import Remember from "../../share/Remember";
 import Login from "../Login";
 import Validation from "../../share/Validation";
 import ApiService from "../../service/BackEndService";
+import { error } from '@nativescript/core/trace/trace';
+import QueryBuilder from '../../storaged/QueryBuilder'
 ;export default {
   data() {
     return {
@@ -260,7 +262,23 @@ import ApiService from "../../service/BackEndService";
         this.isProcessing = false;
         return;
       }
+      
+      this.isProcessing = true;
       CurrentUser.methods.logout();
+      
+      this.$store.state.tables.forEach(tableName => {
+        var query = QueryBuilder.buildQueryDeleteAll(tableName);
+        this.$store.state.database.execSQL(query, []).then(result => {
+          console.log("LOGOUT: SUCCESS DELETE RECORDS IN " + tableName, result)
+        })
+        .catch((error) => {
+          console.log("LOGOUT: ERROR: DELETE RECORDS IN " + tableName , error);
+        })
+      });
+
+      this.backToLogin();
+    },
+    backToLogin() {
       this.$navigateTo(Login, {
         clearHistory: true,
         animated: true,
