@@ -144,11 +144,11 @@ export default {
     },
     getDataBeforeGotoHome() {
       this.processing = true;
-      var customers = Customer.customers;
+      // var customers = Customer.customers;
       // this.$store.dispatch('insertAllCustomers', customers);
-      for(var index = 0; index < customers.length; index++) {
-        this.$store.dispatch('insertCustomer', customers[index]);
-      }
+      // for(var index = 0; index < customers.length; index++) {
+      //   this.$store.dispatch('insertCustomer', customers[index]);
+      // }
 
       this.gotoHome();
     },
