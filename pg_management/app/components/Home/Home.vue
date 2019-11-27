@@ -38,6 +38,8 @@
         @tap="onClickCheckIn()"
         :isEnabled="!isChkInProscess"
       />
+      <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
+
     </GridLayout>
   </StackLayout>
 </template>
@@ -112,15 +114,7 @@ export default {
         return;
       }
       
-      var currHour = (new Date()).getHours();
-      var newReadyItems = this.currCheckInList.filter(function(item) { 
-        const itemHour = item.time.split(":")[0]
-        return item.state == Constant.CHECK_IN_STATE.UNCHECK &&  currHour < itemHour;
-      });
-
-      if(newReadyItems.length > 0) {
-        newReadyItems[0].state = Constant.CHECK_IN_STATE.READY;
-      }
+      this.fetchCheckInSchedules();
       this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
     },
     showCheckInPage(chkItem) {
@@ -133,43 +127,11 @@ export default {
     },
     onClickCheckIn() {
       this.isChkInProscess = true;
-      var readyItems = this.currCheckInList.filter(function(item) { 
-        return item.state == Constant.CHECK_IN_STATE.READY;
-      });
-
-      if(readyItems.length == 0) {
-        var currHour = (new Date()).getHours();
-        var newReadyItems = this.currCheckInList.filter(function(item) { 
-          const itemHour = item.time.split(":")[0]
-          return item.state == Constant.CHECK_IN_STATE.UNCHECK &&  currHour < itemHour;
-        });
-
-        if(newReadyItems.length > 0) {
-          newReadyItems[0].state = Constant.CHECK_IN_STATE.READY;
-          readyItems.push(newReadyItems[0]);
-        }
-      }
-
-      if(readyItems.length > 0) {
-        var firstReadyItem = readyItems[0];
-        var readyHourMin = firstReadyItem.time.split(":"); 
-        var readyDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), readyHourMin[0], readyHourMin[1], 0);
-        var currDate = new Date();
-        currDate.setMilliseconds(0);
-        var spaceTime = Math.abs(readyDate.getTime() - currDate.getTime());
-        if(Constant.CHECK_IN_TIME - spaceTime >= 1) {
-          this.showCheckInPage(firstReadyItem);
-        }else {
-          this.isChkInProscess = false;
-          this.showDlg(StringConst.lbl_notification, StringConst.msg_dont_allow_check_in);
-          // this.showCheckInPage(firstReadyItem);
-        } 
-      } else {
-        this.isChkInProscess = false;
-      }
+      this.showCheckInPage({});
     },
     fetchCheckInSchedules() {
-      var ls = [];
+      this.isChkInProscess = true;
+      this.currCheckInList = [];
       // dummy data 
       for(var i = 9; i < 22; i++) {
         var currentHour = now.getHours();
@@ -191,38 +153,9 @@ export default {
             date: now.toLocaleDateString(),
             state: itemState
           };
-          ls.push(item);
-          this.currCheckInList.push(item);
+          this.currCheckInList.push(item); 
       }
-
-      var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-      for(var i=7; i < 23; i=i+4) {
-        var itemState = Constant.CHECK_IN_STATE.CHECKED;
-        var item = {
-            id: i * 100,
-            store: "Takashimaya Vietnam",
-            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-            time: i + ":00",
-            date: yesterday.toLocaleDateString(),
-            state: itemState
-          };
-          ls.push(item);
-      }
-
-      var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
-      for(var i = 7; i < 23; i= i + 4) {
-        var itemState = Constant.CHECK_IN_STATE.UNCHECK;
-        var item = {
-            id: i*100,
-            store: "Takashimaya Vietnam",
-            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-            time: i + ":00",
-            date: tomorrow.toLocaleDateString(),
-            state: itemState
-          };
-          ls.push(item);
-      }
-      this.checkInList = ls;
+      this.isChkInProscess = false;
     },
     openCamera() {
       this.$showModal(TakePicForChkIn, {

@@ -19,12 +19,14 @@
 
         <!-- <Image src="res://ic_place_primary" class="icon" row="3" col="0" /> -->
         <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-24"  @tap="closePage()" row="3" col="0" />
-        <Label :text="checkInItem.store" class="lbl-value" row="3" col="1" />
+        <!-- <Label :text="checkInItem.store" class="lbl-value" row="3" col="1" /> -->
+        <Label :text="locationtr" class="lbl-value" row="3" col="1" />
+
         <Button
           id="btn_submit"
           class="btn-primary"
-          text="Gửi"
-          @tap="submitData()"
+          :text="this.location == null ? 'Lấy Vị Trí Của Bạn' : 'Gửi'"
+          @tap="onClickButton()"
           row="5"
           col="0"
           colSpan="2"
@@ -37,9 +39,10 @@
 <script>
 import Constant from "../../data/Constant";
 import CurrentUser from "../../data/CurrentUser";
-
+import * as Geolocation from 'nativescript-geolocation';
 export default {
   created() {
+    this.startGetLocation();
     const now = new Date();
     var hour = now.getHours();
     if(hour < 10) {
@@ -55,24 +58,57 @@ export default {
   props: ["checkInItem"],
   data() {
     return {
+      locationFailure:false,
+      location:null, 
+      locationtr: "",
       userId: CurrentUser.methods.getUserId(),
       userName: CurrentUser.methods.getUserName(),
       checkInTime: "",
-      store: this.$props.checkInItem.store
+      store: ""
     };
   },
   methods: {
+    startGetLocation() {
+      Geolocation.enableLocationRequest(true)
+        .then(() => {
+            Geolocation.isEnabled().then(isLocationEnabled => {
+                console.log('result is '+isLocationEnabled);
+                if(!isLocationEnabled) {
+                    this.locationFailure = true;
+                    return;
+                }
+
+                // MUST pass empty object!!
+                Geolocation.getCurrentLocation({})
+                .then(result => {
+                    console.log('loc result', result);
+                    this.location = result;
+                    this.locationtr = result.latitude + " - " + result.longitude;
+                })
+                .catch(e => {
+                    console.log('loc error', e);
+                });
+            });
+        });
+    },
     closePage(){
       this.$modal.close({
         isSuccess: false,
-        item: this.$props.checkInItem
+        item: {}
       });
     },
+    onClickButton() {
+      if (this.location == null) {
+        this.startGetLocation();
+      }else{
+        this.submitData();  
+      }
+    },
     submitData() {
-      this.$props.checkInItem.state = Constant.CHECK_IN_STATE.CHECKED;
+      // this.$props.checkInItem.state = Constant.CHECK_IN_STATE.CHECKED;
       this.$modal.close({
         isSuccess: true,
-        item: this.$props.checkInItem
+        item: {}
       });
     }
   }
