@@ -47,6 +47,7 @@ export default {
   },
   created() {
     this.$store.dispatch('getAllCustomers');
+    this.$store.dispatch('getInvoices');
   },
   methods: {
   }

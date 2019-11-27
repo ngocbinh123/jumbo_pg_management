@@ -11,14 +11,13 @@
       <TabViewItem title="ĐƠN HÀNG">
         <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <!-- <Image src="res://ic_alarm_primary" row="1" col="0" class="icon" v-show="false"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in transList" @itemTap="onSelectedTransaction">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in $store.state.invoices" @itemTap="onSelectedTransaction">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.time" class="text-center time"  row="0" col="1"/>
@@ -91,44 +90,8 @@ import CustomerModel from "../../data/objects/Customer";
 
 export default {
   created() {
-    // this.$store.dispatch('getAllCustomers');
-    this.customers = CustomerModel.customers;
-
-    for(var i = 0; i < this.customers.length; i++) {
-      const now = new Date();
-      var time = (now.getHours() -1) + ":";
-      if(i==0) {
-        time+="00";
-      }else {
-        time+=9+ i*5 + i%2;
-      }
-
-      var item = {
-        id: (i+1)*100,
-        code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
-        customer: this.customers[i],
-        store:"Takashimaya Vietnam",
-        time: time,
-        date: "Hôm nay",
-        transTotal: 280000,
-        displayTransTotal:"280,000 VND",
-        customerId: this.customers[i].id,
-        products:[
-          {
-            id:1010,
-            model:"MOD-2019-101",
-            name:"Sản Phẩm 101",
-            number:2,
-            price:140000,
-            total:280000            
-          }
-        ]
-      }
-      this.transList.push(item);
-    }
-    
     var currentDate = new Date();
-    this.date = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+    this.date = currentDate.getDate() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
   },
   data() {
     return {
@@ -148,11 +111,38 @@ export default {
       }
 
       this.isProcessing = true;
+      
+      if (event.item.products.length == 0) {
+        let that = this;
+        const query = "SELECT productId, productName, number, price, total, invoiceId FROM InvoiceDetail WHERE invoiceId = ?";
+        this.$store.state.database.all(query, [event.item.id]).then(result => {
+          result.forEach(row => {
+            var product = {
+                id:row[0],
+                model:"",
+                name: row[1],
+                number: row[2],
+                price: row[3],
+                total: row[4]  
+            };
+            event.item.products.push(product);
+          });
+          that.openTransactionDetail(event.item);
+        }, error => {
+            console.log("SELECT INVOICE DETAIL ERROR", error);
+        });
+      }else {
+        this.openTransactionDetail(event.item);
+      }
+    },
+    openTransactionDetail(transaction) {
       this.$showModal(TransactionDetail, { 
         fullscreen: true,
         animated: true,
-        props: { transaction: event.item }
-      }).then(result => {this.isProcessing = false});
+        props: { transaction: transaction }
+      }).then(result => {
+        this.isProcessing = false
+      });
     },
     onCustomerSelected(event) {
       if (this.isProcessing) {
@@ -184,8 +174,7 @@ export default {
         return;
       }
 
-      this.transList.unshift(response.transaction);
-      this.$store.dispatch('insertCustomer', response.transaction.customer);
+      this.$store.dispatch('insertInvoice', response.transaction);
     },
     createCustomer() {
       if (this.isProcessing) {
