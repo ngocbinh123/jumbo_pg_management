@@ -10,6 +10,9 @@ module.exports = {
     getProvincesUrl: API_PREFIX + "masterdata/lookup",
     getDistrictsUrl: API_PREFIX + "masterdata/lookup",
     uploadImageUrl: API_PREFIX + "masterdata/lookup",
+    getSessionsUrl: API_PREFIX + "session/date",
+    checkInOutUrl: API_PREFIX + "session/timeentry",
+
 
     headers: {
         "Content-Type": "application/json"

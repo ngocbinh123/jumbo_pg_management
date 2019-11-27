@@ -6,8 +6,6 @@
       selectionMode="Single"
       :viewMode="viewCalendarMode"
       transitionMode="Stack"
-      :minDate="minDate"
-      :maxDate="maxDate"
       locale="vi-VN"
       @dateSelected="onDateSelected"
       @dateDeselected="onDateDeselected"
@@ -19,11 +17,20 @@
       <ListView row="0" colSpan="3" rowSpan="2" for="item in currCheckInList">
         <v-template>
           <GridLayout flexDirection="row" row="*" columns="50, 50, auto" class="ls-item-check-in">
-            <Image src="res://ic_check_white" row="0" col="0" rowSpan="2" :class="item.state == 1 ? 'cbx-checked' : item.state == 0 ? 'cbx-ready' : 'cbx'"/>
-            <Label :text="item.time" class row="0" col="1" rowSpan="2" />
+            <!-- <Image src="res://ic_check_white" row="0" col="0" rowSpan="2" :class="item.state == 1 ? 'cbx-checked' : item.state == 0 ? 'cbx-ready' : 'cbx'"/> -->
+            <!-- late -->
+            <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" rowSpan="2"/>
+            <!-- miss -->
+            <Label :text="'fa-times-circle' | fonticon" class="fas font-icon-missed" v-if="item.statuscode.value == 100000001" row="0" col="0" rowSpan="2"/>
+            <!-- ontime -->
+            <Label :text="'fa-check-circle' | fonticon" class="fas font-icon-ontime" v-if="item.statuscode.value == 2" row="0" col="0" rowSpan="2"/>
+            <!-- plainning -->
+            <Label :text="'fa-circle' | fonticon" class="far font-icon-plainning" v-if="item.statuscode.value == 1" row="0" col="0" rowSpan="2"/>  
+
+            <Label :text="item.abiz_requestedtime" class row="0" col="1" rowSpan="2" />
             <StackLayout row="0" col="2">
-              <Label :text="item.store" class="item-header" textWrap="true"/>
-              <Label :text="item.address" class="item-header-sub" textWrap="true"/>
+              <Label :text="item.s_abiz_outletid.text" class="item-header" textWrap="true"/>
+              <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"/>
             </StackLayout>
           </GridLayout>
         </v-template>
@@ -39,6 +46,7 @@
         :isEnabled="!isChkInProscess"
       />
       <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
+      <Label v-if="!isChkInProscess && currCheckInList.length == 0" text="Không có dữ liệu Chấm công." class="text-center" color="red" row="0" colSpan="3" rowSpan="2" />
 
     </GridLayout>
   </StackLayout>
@@ -53,6 +61,7 @@ import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
+import ApiService from '../../service/BackEndService';
 
 const ObservableArray = require("tns-core-modules/data/observable-array")
   .ObservableArray;
@@ -78,7 +87,6 @@ export default {
       currentDate: now,
       selectedDate: now,
       isSelectedCurrentDate: true,
-      checkInList: [],
       currCheckInList: []
     };
   },
@@ -92,11 +100,9 @@ export default {
     },
     onDateSelected(args) {
       const selectedDateStr = args.date.toLocaleDateString();
-      this.selectedDate = selectedDateStr;
+      this.selectedDate = args.date.getFullYear() + "-" +  (args.date.getMonth()+1) + "-" +  args.date.getDate();
       this.isSelectedCurrentDate = this.isToday(args.date);
-      this.currCheckInList = this.checkInList.filter(function(item) {
-        return item.date == selectedDateStr;
-      });
+      this.fetchCheckInSchedules();
     },
     onDateDeselected(args) {
     },
@@ -132,30 +138,17 @@ export default {
     fetchCheckInSchedules() {
       this.isChkInProscess = true;
       this.currCheckInList = [];
-      // dummy data 
-      for(var i = 9; i < 22; i++) {
-        var currentHour = now.getHours();
-        var itemState = Constant.CHECK_IN_STATE.UNCHECK;
-
-        if (i == currentHour) {
-          // itemState = Constant.CHECK_IN_STATE.READY;
-          itemState = now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN ? Constant.CHECK_IN_STATE.READY : Constant.CHECK_IN_STATE.CHECKED;
-        } else if(i - currentHour == 1 &&  now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
-          itemState = Constant.CHECK_IN_STATE.READY;
-        } else if(i - currentHour < 0) {
-          itemState = Constant.CHECK_IN_STATE.CHECKED;
-        }
-        var item = {
-            id: i*100,
-            store: "Takashimaya Vietnam",
-            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-            time: i + ":00",
-            date: now.toLocaleDateString(),
-            state: itemState
-          };
-          this.currCheckInList.push(item); 
-      }
+      ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())
+      .then(this.callbackGetSessionSuccess)
+      .catch(this.callbackGetSessionFail);
+    },
+    callbackGetSessionSuccess(obj) {
       this.isChkInProscess = false;
+      this.currCheckInList = obj.records;
+    },
+    callbackGetSessionFail(error) {
+      this.isChkInProscess = false;
+      this.showDlg(StringConst.lbl_error, error.message);
     },
     openCamera() {
       this.$showModal(TakePicForChkIn, {
@@ -175,6 +168,8 @@ export default {
 </script>
 
 <style scroped lang="scss">
+@import "../../app-variables.scss";
+
 #home_parent {
 }
 #btn_check_in {
@@ -189,5 +184,29 @@ export default {
 }
 .item-header-sub {
   font-size: 14;
+}
+
+.font-icon-ontime {
+    color: $color-primary;
+    vertical-align: top;
+    text-align: center;
+}
+
+.font-icon-late {
+    color: orange;
+    vertical-align: top;
+    text-align: center;
+}
+
+.font-icon-missed {
+    color: $color-accent;
+    vertical-align: top;
+    text-align: center;
+}
+
+.font-icon-plainning {
+    // color: $color-primary;
+    vertical-align: top;
+    text-align: center;
 }
 </style>

@@ -24,6 +24,35 @@ module.exports = {
             var task = session.uploadFile(file, request);
             return task;
         },
+        getSessions(dateStr, bearer) {
+            const requestBody = {
+                abiz_sessiondate: dateStr
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getSessionsUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
+        checkInOut(data, bearer) {
+            const requestBody = {
+                "abiz_sessiondate": data.date,
+                "abiz_sessiontime": data.time,
+                "abiz_latitude": data.latitude,
+                "abiz_longitude": data.longitude
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.checkInOutUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
         resetPass(userEmail) {
             return fetchModule
                 .fetch(config.resetPassUrl, {

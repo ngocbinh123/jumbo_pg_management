@@ -9,19 +9,15 @@
         <Label :text="'fa-address-card' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="0" col="0" />
         <Label class="lbl-value" :text="userId" row="0" col="1"/>
         
-        <!-- <Image src="res://ic_person_primary" class="icon" row="1" col="0" /> -->
         <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="1" col="0" />
         <Label class="lbl-value" :text="userName" row="1" col="1"/>
 
-        <!-- <Image src="res://ic_alarm_primary" class="icon" row="2" col="0" /> -->
         <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="2" col="0" />
         <Label :text="checkInTime" class="lbl-value text-bold" row="2" col="1"/>
 
-        <!-- <Image src="res://ic_place_primary" class="icon" row="3" col="0" /> -->
         <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-24"  @tap="closePage()" row="3" col="0" />
-        <!-- <Label :text="checkInItem.store" class="lbl-value" row="3" col="1" /> -->
         <Label :text="locationtr" class="lbl-value" row="3" col="1" />
-
+        <ActivityIndicator v-show="processing" busy="true" row="0" col="0" colSpan="2" rowSpan="5" />
         <Button
           id="btn_submit"
           class="btn-primary"
@@ -38,7 +34,9 @@
 
 <script>
 import Constant from "../../data/Constant";
+import StringConst from "../../assets/StringConst";
 import CurrentUser from "../../data/CurrentUser";
+import ApiService from "../../service/BackEndService";
 import * as Geolocation from 'nativescript-geolocation';
 export default {
   created() {
@@ -64,11 +62,13 @@ export default {
       userId: CurrentUser.methods.getUserId(),
       userName: CurrentUser.methods.getUserName(),
       checkInTime: "",
-      store: ""
+      store: "",
+      processing: false
     };
   },
   methods: {
     startGetLocation() {
+      this.processing = true;
       Geolocation.enableLocationRequest(true)
         .then(() => {
             Geolocation.isEnabled().then(isLocationEnabled => {
@@ -81,12 +81,13 @@ export default {
                 // MUST pass empty object!!
                 Geolocation.getCurrentLocation({})
                 .then(result => {
-                    console.log('loc result', result);
                     this.location = result;
                     this.locationtr = result.latitude + " - " + result.longitude;
+                    this.processing = false;
                 })
                 .catch(e => {
                     console.log('loc error', e);
+                    this.processing = false;
                 });
             });
         });
@@ -105,10 +106,35 @@ export default {
       }
     },
     submitData() {
-      // this.$props.checkInItem.state = Constant.CHECK_IN_STATE.CHECKED;
+      this.processing = true;
+      const now = new Date();
+      const checkInDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+      const data = {
+        date: checkInDate,
+        time: this.checkInTime,
+        latitude: this.location.latitude,
+        longitude: this.location.longitude
+      };
+      ApiService.methods.checkInOut(data, CurrentUser.methods.getBearId())
+      .then(this.submitDataSuccess)
+      .catch(this.submitDataFail);
+    },
+    submitDataSuccess(json) {
+      this.processing = false;
       this.$modal.close({
         isSuccess: true,
         item: {}
+      });
+    }, 
+    submitDataFail(error) {
+      this.processing = false;
+      this.showDlg(StringConst.lbl_error, error.message);
+    },
+    showDlg(dlgTitle, dlgMsg) {
+      return alert({
+        title: dlgTitle,
+        okButtonText: StringConst.lbl_close,
+        message: dlgMsg
       });
     }
   }
