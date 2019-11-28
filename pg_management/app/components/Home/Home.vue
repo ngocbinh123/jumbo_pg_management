@@ -17,7 +17,6 @@
       <ListView row="0" colSpan="3" rowSpan="2" for="item in currCheckInList">
         <v-template>
           <GridLayout flexDirection="row" row="*" columns="50, 50, auto" class="ls-item-check-in">
-            <!-- <Image src="res://ic_check_white" row="0" col="0" rowSpan="2" :class="item.state == 1 ? 'cbx-checked' : item.state == 0 ? 'cbx-ready' : 'cbx'"/> -->
             <!-- late -->
             <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" rowSpan="2"/>
             <!-- miss -->
@@ -63,9 +62,9 @@ import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 import ApiService from '../../service/BackEndService';
 
-const ObservableArray = require("tns-core-modules/data/observable-array")
-  .ObservableArray;
-const Constant = require("../../data/Constant");
+// const ObservableArray = require("tns-core-modules/data/observable-array")
+//   .ObservableArray;
+// const Constant = require("../../data/Constant");
 const now = new Date();
 export default {
   mounted() {
@@ -139,7 +138,7 @@ export default {
       this.showCheckInPage({});
     },
     fetchCheckInSchedules() {
-      console.log("BEARER", CurrentUser.methods.getBearId());
+      // console.log("BEARER", CurrentUser.methods.getBearId());
       this.isChkInProscess = true;
       this.currCheckInList = [];
       ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())

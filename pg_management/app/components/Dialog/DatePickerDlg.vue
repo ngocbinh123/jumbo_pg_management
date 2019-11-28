@@ -18,10 +18,6 @@
   </GridLayout>
 </template>
 <script>
-import StringConst from "../../assets/StringConst";
-import SelectProductMeta from "../../data/formMeta/SelectProductMeta";
-import ProductList from "../../data/objects/Product";
-
 export default {
     props: ["title","defaultDate"],
     created() {

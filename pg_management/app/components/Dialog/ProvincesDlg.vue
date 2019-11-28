@@ -18,7 +18,6 @@
 import CurrentUser from '../../data/CurrentUser';
 import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
-// import Constant from "../../data/Constant";
 
 export default {
     created() {
@@ -43,6 +42,9 @@ export default {
                 .then(this.getProvincesSuccess);
         },
         getProvincesSuccess(obj) {
+            if (obj == undefined) {
+                return;
+            }
             if (obj.records.length > 0) {
                 // const now = (new Date()).getTime();
                 // Remember.setLastTimeUpadteProvinces(now);
@@ -50,7 +52,7 @@ export default {
             }
         },
         callBackFail(error) {
-            console.log("PROVINCE", error.message);
+            console.log("GET_PROVINCE_ERROR", error.message);
         }
     }
 }

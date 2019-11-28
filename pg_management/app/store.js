@@ -60,7 +60,7 @@ const store = new Vuex.Store({
         loadProvinces(state, data) {
             state.provinces = [];
             for (var i = 0; i < data.provinces.length; i++) {
-                state.customers.push({
+                state.provinces.push({
                     id: data.provinces[i][0],
                     name: data.provinces[i][1]
                 });
