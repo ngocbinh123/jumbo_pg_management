@@ -199,20 +199,21 @@ export default {
         return;
       }
 
-      ApiService.methods.getCustomers(Helper.getCurrentDateStrForRequest(),CurrentUser.methods.getBearId())
+      ApiService.methods.getCustomers(currentDate,CurrentUser.methods.getBearId())
       .then(this.callbackGetRemoteCustomerSuccess)
       .catch(this.callbackGetRemoteCustomerFail);
     },
     callbackGetRemoteCustomerSuccess(json) {
       json.records.forEach(remote => {
-        var isExist = this.$store.state.customers.find(el => el.phone == remote.mobilephone && el.address == remote.abiz_provinceid.text) != undefined;
+        var isExist = this.$store.state.customers.find(el => el.contactid == remote.abiz_contactid) != undefined;
         if (!isExist) {
           var customer = {
             id: Math.floor(Math.random() * 100) + 100,
             name: remote.fullname,
             sex: remote.gendercode.value == 1 ? "Nam" : "Nữ",
             phone: remote.mobilephone,
-            address: remote.abiz_provinceid.text
+            address: remote.abiz_provinceid.text,
+            contactId: remote.contactid
           }
           this.$store.dispatch('insertCustomer', customer);
         }
@@ -223,6 +224,7 @@ export default {
       this.isProcessing = false;
     },
     callbackGetRemoteCustomerFail(error) {
+      console.log("GET_REMOTE_CUSTOMER_ERROR", error.message);
       this.isProcessing = false;
     },
     showDlg(dlgTitle, dlgMsg) {

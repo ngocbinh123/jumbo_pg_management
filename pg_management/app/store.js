@@ -9,9 +9,9 @@ const Sqlite = require("nativescript-sqlite");
 const DB_NAME = "pg-man.db";
 
 const TABLE_CUSTOMER = "Customer";
-const COLS_CUSTOMER = "id, name, sex, phone, address";
-const COLS_CUSTOMER_WITHOUT_ID = "name, sex, phone, address, createdAt";
-const COLS_CUSTOMER_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, sex TEXT, phone TEXT, address TEXT, createdAt TEXT";
+const COLS_CUSTOMER = "id, name, sex, phone, address, contactId";
+const COLS_CUSTOMER_WITHOUT_ID = "name, sex, phone, address, createdAt, contactId";
+const COLS_CUSTOMER_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, sex TEXT, phone TEXT, address TEXT, createdAt TEXT, contactId TEXT";
 
 const TABLE_PRODUCT = "Product";
 const COLS_PRODUCT = "id, name, model, type, number, price";
@@ -51,7 +51,9 @@ const store = new Vuex.Store({
                     name: data.customers[i][1],
                     sex: data.customers[i][2],
                     phone: data.customers[i][3],
-                    address: data.customers[i][4]
+                    address: data.customers[i][4],
+                    contactId: data.customers[i][5],
+
                 });
             }
         },
@@ -249,8 +251,8 @@ const store = new Vuex.Store({
             });
         },
         insertCustomer(context, data) {
-            const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?,?");
-            context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address, Helper.getCurrentDateStr()]).then(id => {
+            const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?,?,?");
+            context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address, Helper.getCurrentDateStr(), data.contactId]).then(id => {
                 data.id = id;
                 context.commit("save", { customer: data });
             }, error => {

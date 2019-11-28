@@ -72,7 +72,8 @@ export default {
         sex: this.customer.sex,
         phone: this.customer.phone,
         address: this.customer.address,
-        provinceId: provinceId
+        provinceId: provinceId,
+        contactId: ""
       } 
 
       this.senDataToServer(newCustomer);     
@@ -84,10 +85,11 @@ export default {
       .catch(this.callBackSendDataFail);
     },
     callBackSendDataSuccess(json, newCustomer) {
+      newCustomer.contactId = json.abiz_contactid;
       this.$store.dispatch('insertCustomer', newCustomer);
       this.$modal.close({
         isSuccess: true,
-        customer: this.customer
+        customer: newCustomer
       });
       this.processing = false;
     },

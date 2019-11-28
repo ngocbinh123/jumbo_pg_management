@@ -161,7 +161,7 @@ module.exports = {
     },
 
     setLastDateGetRemoteCustomers(time) {
-        appSettings.SetString(KEY_LAST_DATE_GET_REMOTE_CUSTOMERS, time);
+        appSettings.setString(KEY_LAST_DATE_GET_REMOTE_CUSTOMERS, time);
     },
     clearAll() {
         appSettings.clear();
