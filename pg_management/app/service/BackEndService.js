@@ -24,6 +24,36 @@ module.exports = {
             var task = session.uploadFile(file, request);
             return task;
         },
+        createNewCustomer(customer, bearer) {
+            const requestBody = {
+                "abiz_fullname": customer.name,
+                "abiz_gender": customer.sex = "Nam" ? "False" : "True",
+                "abiz_mobilephone": customer.phone,
+                "abiz_provinceid": customer.provinceId
+            };
+
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.createCustomerUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
+        getCustomers(dateStr, bearer) {
+            const requestBody = {
+                abiz_sessiondate: dateStr
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getCustomersUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
         getSessions(dateStr, bearer) {
             const requestBody = {
                 abiz_sessiondate: dateStr

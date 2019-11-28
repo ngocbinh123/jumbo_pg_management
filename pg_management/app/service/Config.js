@@ -12,7 +12,9 @@ module.exports = {
     uploadImageUrl: API_PREFIX + "masterdata/lookup",
     getSessionsUrl: API_PREFIX + "session/date",
     checkInOutUrl: API_PREFIX + "session/timeentry",
-
+    createCustomerUrl: API_PREFIX + "order/contact",
+    getCustomersUrl: API_PREFIX + "order/listcontact",
+    getOrdersUrl: API_PREFIX + "order/date",
 
     headers: {
         "Content-Type": "application/json"

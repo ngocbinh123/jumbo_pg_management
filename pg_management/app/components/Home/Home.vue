@@ -41,12 +41,12 @@
         class="btn-fill-bg"
         row="2"
         col="1"
-        v-show="isSelectedCurrentDate"
+        v-show="isSelectedCurrentDate && currCheckInList.length > 0"
         @tap="onClickCheckIn()"
         :isEnabled="!isChkInProscess"
       />
       <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
-      <Label v-if="!isChkInProscess && currCheckInList.length == 0" text="Không có dữ liệu Chấm công." class="text-center" color="red" row="0" colSpan="3" rowSpan="2" />
+      <Label v-if="!isChkInProscess && currCheckInList.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="0" colSpan="3" rowSpan="2" />
 
     </GridLayout>
   </StackLayout>
@@ -99,10 +99,14 @@ export default {
       );
     },
     onDateSelected(args) {
-      const selectedDateStr = args.date.toLocaleDateString();
-      this.selectedDate = args.date.getFullYear() + "-" +  (args.date.getMonth()+1) + "-" +  args.date.getDate();
+      const selectedDateStr =args.date.getFullYear() + "-" +  (args.date.getMonth()+1) + "-" +  args.date.getDate();
+      if (selectedDateStr == this.selectedDate) {
+        return;  
+      }
+
+      this.selectedDate = selectedDateStr;
       this.isSelectedCurrentDate = this.isToday(args.date);
-      this.fetchCheckInSchedules();
+      this.fetchCheckInSchedules(); 
     },
     onDateDeselected(args) {
     },
@@ -111,7 +115,6 @@ export default {
     onNavigatingToDateStarted(args) {
     },
     onViewModeChanged(args) {
-      console.log("onViewModeChanged: " + args.newValue);
       args.object.viewMode = "Week";
     },
     callBackCheckIn(data) {
@@ -136,6 +139,7 @@ export default {
       this.showCheckInPage({});
     },
     fetchCheckInSchedules() {
+      console.log("BEARER", CurrentUser.methods.getBearId());
       this.isChkInProscess = true;
       this.currCheckInList = [];
       ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())

@@ -26,6 +26,7 @@ const KEY_BEAR_ID = "KEY_BEAR_ID";
 
 const KEY_LAST_TIME_OF_UPDATED_PROVINCE = "KEY_LAST_TIME_OF_UPDATED_PROVINCE";
 
+const KEY_LAST_DATE_GET_REMOTE_CUSTOMERS = "KEY_LAST_DATE_GET_REMOTE_CUSTOMERS";
 
 module.exports = {
     getUserId() {
@@ -153,9 +154,15 @@ module.exports = {
         return appSettings.getNumber(KEY_LAST_TIME_OF_UPDATED_PROVINCE, "");
     },
     setLastTimeUpadteProvinces(time) {
-        appSettings.setNumber(KEY_LAST_TIME_OF_UPDATED_PROVINCE, time);
+        appSettings.setNumber(KEY_LAST_TIME_OF_UPDATED_, time);
+    },
+    getLastDateGetRemoteCustomers() {
+        return appSettings.getString(KEY_LAST_DATE_GET_REMOTE_CUSTOMERS, "");
     },
 
+    setLastDateGetRemoteCustomers(time) {
+        appSettings.SetString(KEY_LAST_DATE_GET_REMOTE_CUSTOMERS, time);
+    },
     clearAll() {
         appSettings.clear();
     }
