@@ -39,6 +39,9 @@ import ProvincesDlg from './ProvincesDlg';
 import DisctrictsDlg from './DisctrictsDlg';
 import StringConst from '../../assets/StringConst';
 export default {
+    created() {
+        this.$store.dispatch('getAllProvinces');
+    },
     props: ["title"],
     data() {
         return {

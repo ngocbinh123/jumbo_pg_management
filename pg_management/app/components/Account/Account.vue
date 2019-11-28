@@ -172,6 +172,7 @@ import QueryBuilder from '../../storaged/QueryBuilder'
     callBackUpdateBirthday(obj, newBirthdayStr) {
       this.isProcessing = false;        
       this.user.birthday = newBirthdayStr;
+      CurrentUser.methods.updateBirthday(newBirthdayStr);
     },
     onClickUpdatePhoneNumber() {
       if (this.isProcessing) {

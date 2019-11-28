@@ -45,14 +45,14 @@
       </TabViewItem>
       <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 60, *" columns="10, *, 50">
-          <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
+          <!-- <Label text="Thêm Khách Hàng" class="page_title_small text-center" row="1" col="0"  colSpan="3"/> -->
           <TextField id="txt_search_transaction" 
             row="1" col="1"
             v-model="searchTransValue"
             v-show="false"
             hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="customer in $store.state.customers"  @itemTap="onCustomerSelected">
+          <ListView row="0" col="0" colSpan="3" rowSpan="3" for="customer in $store.state.customers"  @itemTap="onCustomerSelected">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
                 <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
@@ -84,12 +84,12 @@ import TransactionDetail from "./TransactionDetail";
 // other
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
-
-// models
-import CustomerModel from "../../data/objects/Customer";
-
+import ApiService from "../../service/BackEndService";
+import Helper from '../../helper/PopularHelper';
+import Remember from '../../share/Remember';
 export default {
   created() {
+    this.getRemoteCustomers();
     var currentDate = new Date();
     this.date = currentDate.getDate() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
   },
@@ -173,8 +173,6 @@ export default {
       if (response == undefined || !response.isSuccess) {
         return;
       }
-
-      this.$store.dispatch('insertInvoice', response.transaction);
     },
     createCustomer() {
       if (this.isProcessing) {
@@ -191,6 +189,41 @@ export default {
       if(response == undefined || !response.isSuccess) {
         return;
       }
+    },
+    getRemoteCustomers() {
+      const currentDate= Helper.getCurrentDateStrForRequest();
+      const lastDate = Remember.getLastDateGetRemoteCustomers();
+      if (lastDate == currentDate) {
+        return;
+      }
+
+      ApiService.methods.getCustomers(currentDate,CurrentUser.methods.getBearId())
+      .then(this.callbackGetRemoteCustomerSuccess)
+      .catch(this.callbackGetRemoteCustomerFail);
+    },
+    callbackGetRemoteCustomerSuccess(json) {
+      json.records.forEach(remote => {
+        var isExist = this.$store.state.customers.find(el => el.contactid == remote.abiz_contactid) != undefined;
+        if (!isExist) {
+          var customer = {
+            id: Math.floor(Math.random() * 100) + 100,
+            name: remote.fullname,
+            sex: remote.gendercode.value == 1 ? "Nam" : "Nữ",
+            phone: remote.mobilephone,
+            address: remote.abiz_provinceid.text,
+            contactId: remote.contactid
+          }
+          this.$store.dispatch('insertCustomer', customer);
+        }
+        
+      });
+      const currentDate= Helper.getCurrentDateStrForRequest();
+      Remember.setLastDateGetRemoteCustomers(currentDate);
+      this.isProcessing = false;
+    },
+    callbackGetRemoteCustomerFail(error) {
+      console.log("GET_REMOTE_CUSTOMER_ERROR", error.message);
+      this.isProcessing = false;
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({

@@ -6,8 +6,6 @@
       selectionMode="Single"
       :viewMode="viewCalendarMode"
       transitionMode="Stack"
-      :minDate="minDate"
-      :maxDate="maxDate"
       locale="vi-VN"
       @dateSelected="onDateSelected"
       @dateDeselected="onDateDeselected"
@@ -19,11 +17,19 @@
       <ListView row="0" colSpan="3" rowSpan="2" for="item in currCheckInList">
         <v-template>
           <GridLayout flexDirection="row" row="*" columns="50, 50, auto" class="ls-item-check-in">
-            <Image src="res://ic_check_white" row="0" col="0" rowSpan="2" :class="item.state == 1 ? 'cbx-checked' : item.state == 0 ? 'cbx-ready' : 'cbx'"/>
-            <Label :text="item.time" class row="0" col="1" rowSpan="2" />
+            <!-- late -->
+            <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" rowSpan="2"/>
+            <!-- miss -->
+            <Label :text="'fa-times-circle' | fonticon" class="fas font-icon-missed" v-if="item.statuscode.value == 100000001" row="0" col="0" rowSpan="2"/>
+            <!-- ontime -->
+            <Label :text="'fa-check-circle' | fonticon" class="fas font-icon-ontime" v-if="item.statuscode.value == 2" row="0" col="0" rowSpan="2"/>
+            <!-- plainning -->
+            <Label :text="'fa-circle' | fonticon" class="far font-icon-plainning" v-if="item.statuscode.value == 1" row="0" col="0" rowSpan="2"/>  
+
+            <Label :text="item.abiz_requestedtime" class row="0" col="1" rowSpan="2" />
             <StackLayout row="0" col="2">
-              <Label :text="item.store" class="item-header" textWrap="true"/>
-              <Label :text="item.address" class="item-header-sub" textWrap="true"/>
+              <Label :text="item.s_abiz_outletid.text" class="item-header" textWrap="true"/>
+              <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"/>
             </StackLayout>
           </GridLayout>
         </v-template>
@@ -34,10 +40,13 @@
         class="btn-fill-bg"
         row="2"
         col="1"
-        v-show="isSelectedCurrentDate"
+        v-show="isSelectedCurrentDate && currCheckInList.length > 0"
         @tap="onClickCheckIn()"
         :isEnabled="!isChkInProscess"
       />
+      <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
+      <Label v-if="!isChkInProscess && currCheckInList.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="0" colSpan="3" rowSpan="2" />
+
     </GridLayout>
   </StackLayout>
 </template>
@@ -51,10 +60,11 @@ import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
+import ApiService from '../../service/BackEndService';
 
-const ObservableArray = require("tns-core-modules/data/observable-array")
-  .ObservableArray;
-const Constant = require("../../data/Constant");
+// const ObservableArray = require("tns-core-modules/data/observable-array")
+//   .ObservableArray;
+// const Constant = require("../../data/Constant");
 const now = new Date();
 export default {
   mounted() {
@@ -76,7 +86,6 @@ export default {
       currentDate: now,
       selectedDate: now,
       isSelectedCurrentDate: true,
-      checkInList: [],
       currCheckInList: []
     };
   },
@@ -89,12 +98,14 @@ export default {
       );
     },
     onDateSelected(args) {
-      const selectedDateStr = args.date.toLocaleDateString();
+      const selectedDateStr =args.date.getFullYear() + "-" +  (args.date.getMonth()+1) + "-" +  args.date.getDate();
+      if (selectedDateStr == this.selectedDate) {
+        return;  
+      }
+
       this.selectedDate = selectedDateStr;
       this.isSelectedCurrentDate = this.isToday(args.date);
-      this.currCheckInList = this.checkInList.filter(function(item) {
-        return item.date == selectedDateStr;
-      });
+      this.fetchCheckInSchedules(); 
     },
     onDateDeselected(args) {
     },
@@ -103,7 +114,6 @@ export default {
     onNavigatingToDateStarted(args) {
     },
     onViewModeChanged(args) {
-      console.log("onViewModeChanged: " + args.newValue);
       args.object.viewMode = "Week";
     },
     callBackCheckIn(data) {
@@ -112,15 +122,7 @@ export default {
         return;
       }
       
-      var currHour = (new Date()).getHours();
-      var newReadyItems = this.currCheckInList.filter(function(item) { 
-        const itemHour = item.time.split(":")[0]
-        return item.state == Constant.CHECK_IN_STATE.UNCHECK &&  currHour < itemHour;
-      });
-
-      if(newReadyItems.length > 0) {
-        newReadyItems[0].state = Constant.CHECK_IN_STATE.READY;
-      }
+      this.fetchCheckInSchedules();
       this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
     },
     showCheckInPage(chkItem) {
@@ -133,96 +135,23 @@ export default {
     },
     onClickCheckIn() {
       this.isChkInProscess = true;
-      var readyItems = this.currCheckInList.filter(function(item) { 
-        return item.state == Constant.CHECK_IN_STATE.READY;
-      });
-
-      if(readyItems.length == 0) {
-        var currHour = (new Date()).getHours();
-        var newReadyItems = this.currCheckInList.filter(function(item) { 
-          const itemHour = item.time.split(":")[0]
-          return item.state == Constant.CHECK_IN_STATE.UNCHECK &&  currHour < itemHour;
-        });
-
-        if(newReadyItems.length > 0) {
-          newReadyItems[0].state = Constant.CHECK_IN_STATE.READY;
-          readyItems.push(newReadyItems[0]);
-        }
-      }
-
-      if(readyItems.length > 0) {
-        var firstReadyItem = readyItems[0];
-        var readyHourMin = firstReadyItem.time.split(":"); 
-        var readyDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), readyHourMin[0], readyHourMin[1], 0);
-        var currDate = new Date();
-        currDate.setMilliseconds(0);
-        var spaceTime = Math.abs(readyDate.getTime() - currDate.getTime());
-        if(Constant.CHECK_IN_TIME - spaceTime >= 1) {
-          this.showCheckInPage(firstReadyItem);
-        }else {
-          this.isChkInProscess = false;
-          this.showDlg(StringConst.lbl_notification, StringConst.msg_dont_allow_check_in);
-          // this.showCheckInPage(firstReadyItem);
-        } 
-      } else {
-        this.isChkInProscess = false;
-      }
+      this.showCheckInPage({});
     },
     fetchCheckInSchedules() {
-      var ls = [];
-      // dummy data 
-      for(var i = 9; i < 22; i++) {
-        var currentHour = now.getHours();
-        var itemState = Constant.CHECK_IN_STATE.UNCHECK;
-
-        if (i == currentHour) {
-          // itemState = Constant.CHECK_IN_STATE.READY;
-          itemState = now.getMinutes() <= Constant.CHECK_IN_TIME_BY_MIN ? Constant.CHECK_IN_STATE.READY : Constant.CHECK_IN_STATE.CHECKED;
-        } else if(i - currentHour == 1 &&  now.getMinutes() > Constant.CHECK_IN_TIME_BY_MIN) {
-          itemState = Constant.CHECK_IN_STATE.READY;
-        } else if(i - currentHour < 0) {
-          itemState = Constant.CHECK_IN_STATE.CHECKED;
-        }
-        var item = {
-            id: i*100,
-            store: "Takashimaya Vietnam",
-            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-            time: i + ":00",
-            date: now.toLocaleDateString(),
-            state: itemState
-          };
-          ls.push(item);
-          this.currCheckInList.push(item);
-      }
-
-      var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-      for(var i=7; i < 23; i=i+4) {
-        var itemState = Constant.CHECK_IN_STATE.CHECKED;
-        var item = {
-            id: i * 100,
-            store: "Takashimaya Vietnam",
-            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-            time: i + ":00",
-            date: yesterday.toLocaleDateString(),
-            state: itemState
-          };
-          ls.push(item);
-      }
-
-      var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
-      for(var i = 7; i < 23; i= i + 4) {
-        var itemState = Constant.CHECK_IN_STATE.UNCHECK;
-        var item = {
-            id: i*100,
-            store: "Takashimaya Vietnam",
-            address: "92-94 Nam Kỳ Khởi Nghĩa, Bến Nghé, Q.1",
-            time: i + ":00",
-            date: tomorrow.toLocaleDateString(),
-            state: itemState
-          };
-          ls.push(item);
-      }
-      this.checkInList = ls;
+      // console.log("BEARER", CurrentUser.methods.getBearId());
+      this.isChkInProscess = true;
+      this.currCheckInList = [];
+      ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())
+      .then(this.callbackGetSessionSuccess)
+      .catch(this.callbackGetSessionFail);
+    },
+    callbackGetSessionSuccess(obj) {
+      this.isChkInProscess = false;
+      this.currCheckInList = obj.records;
+    },
+    callbackGetSessionFail(error) {
+      this.isChkInProscess = false;
+      this.showDlg(StringConst.lbl_error, error.message);
     },
     openCamera() {
       this.$showModal(TakePicForChkIn, {
@@ -242,6 +171,8 @@ export default {
 </script>
 
 <style scroped lang="scss">
+@import "../../app-variables.scss";
+
 #home_parent {
 }
 #btn_check_in {
@@ -256,5 +187,29 @@ export default {
 }
 .item-header-sub {
   font-size: 14;
+}
+
+.font-icon-ontime {
+    color: $color-primary;
+    vertical-align: top;
+    text-align: center;
+}
+
+.font-icon-late {
+    color: orange;
+    vertical-align: top;
+    text-align: center;
+}
+
+.font-icon-missed {
+    color: $color-accent;
+    vertical-align: top;
+    text-align: center;
+}
+
+.font-icon-plainning {
+    // color: $color-primary;
+    vertical-align: top;
+    text-align: center;
 }
 </style>

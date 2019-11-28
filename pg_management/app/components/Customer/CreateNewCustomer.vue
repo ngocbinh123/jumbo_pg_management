@@ -12,6 +12,7 @@
       text="Hoàn Thành"
       class="btn btn-fill-bg"
       @tap="submiData()"
+      :isEnabled="!processing"
       row="3"
       col="0"
       colSpan="2"
@@ -21,18 +22,19 @@
 <script>
 import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
-
+import ApiService from "../../service/BackEndService";
+import CurrentUser from '../../data/CurrentUser';
 export default {
   data() {
     return {
       customerMetadata: CustomerMeta,
       customer: {
-        id: Math.floor(Math.random() * 100) + 100,
         name: "",
-        sex: "",
+        sex: "Nam",
         phone: "",
-        address: ""
-      }
+        address: "Hồ Chí Minh"
+      },
+      processing: false,
     };
   },
   methods: {
@@ -62,12 +64,39 @@ export default {
         );
         return;
       }
-      this.$store.dispatch('insertCustomer', this.customer);
 
+      const provinceId = CustomerMeta.provinces.find(el => el.abiz_name == this.customer.address).abiz_locationid;
+      const newCustomer = {
+        id: 191,
+        name: this.customer.name,
+        sex: this.customer.sex,
+        phone: this.customer.phone,
+        address: this.customer.address,
+        provinceId: provinceId,
+        contactId: ""
+      } 
+
+      this.senDataToServer(newCustomer);     
+    },
+    senDataToServer(customer) {
+      this.processing = true;
+      ApiService.methods.createNewCustomer(customer, CurrentUser.methods.getBearId())
+      .then(json => this.callBackSendDataSuccess(json, customer))
+      .catch(this.callBackSendDataFail);
+    },
+    callBackSendDataSuccess(json, newCustomer) {
+      newCustomer.contactId = json.abiz_contactid;
+
+      this.$store.dispatch('insertCustomer', newCustomer);
       this.$modal.close({
         isSuccess: true,
-        customer: this.customer
+        customer: newCustomer
       });
+      this.processing = false;
+    },
+    callBackSendDataFail(error) {
+      this.showDlg(StringConst.lbl_error, error.message);
+      this.processing = false;
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
