@@ -1,32 +1,66 @@
 <template>
-  <GridLayout rows="50,50,*,60,60,*,10" columns="40,*,50" class="page-parent">
+  <GridLayout rows="50,60,auto,60,auto,*,10" columns="40,*,50" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
       <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
     <!-- <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" /> -->
-    <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="submiData()" row="0" col="2" />
+    <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="submiData()" :isEnabled="!isProcessing" row="0" col="2" />
 
-    <!-- <Button class="btn btn-right" text="O" @tap="submiData()" row="0" col="2" /> -->
+    <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
+    <Button class="btn btn-add" text="+" @tap="addCustomer()" :isEnabled="!isProcessing" row="1" col="2" />     
+    <!-- <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="3" /> -->
 
+    <StackLayout row="2" col="0" colSpan="2">
+      <StackLayout orientation="horizontal" class="lout-info">
+        <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"/>
+        <Label :text="customer.name" class="text-center txt-value" textWrap="true"/>
 
-    <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="3" />
-    <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="3" />
+        <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" margin="0 0 0 20" v-show="!!customer.sex" />
+        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
+
+      <!-- <StackLayout orientation="horizontal" class="lout-info">
+        <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" />
+        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
+      </StackLayout> -->
+
+      <StackLayout orientation="horizontal" class="lout-info">
+        <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
+        <Label :text="customer.phone" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
+
+      <StackLayout orientation="horizontal" class="lout-info">
+        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" />
+        <Label :text="customer.address" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
+    </StackLayout>
 
     <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
-    <!-- <Image id="btn_add_procuct" src="res://ic_add_primary" @tap="addProduct()" row="3" col="2" /> -->
-    <Button class="btn btn-add" text="+" @tap="addProduct()" row="3" col="2" />
+    <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="3" col="2" />
+    
+    <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
+      
+      <StackLayout row="0" col="0" colSpan="4" orientation="horizontal" class="edt-box" @tap="onClickDate()">
+          <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0" />
+          <Label :text="transDate" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
 
-    <GridLayout class="lout-columns" rows="*,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
-      <label text="Tổng Cộng:" class="lbl-sum text-right" row="0" col="1" colSpan="2" />
-      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="0" col="3" colSpan="2"/>
+       
+      <StackLayout row="1" col="0" colSpan="4" orientation="horizontal" class="edt-box" @tap="onClickTime()">
+          <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0"/>
+          <Label :text="transTime" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
+    
+      <label text="Tổng Cộng:" class="lbl-sum text-right" row="2" col="1" colSpan="2" />
+      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/>
 
-      <Label text="ID" class="column-name text-center" row="1" col="0" />
-      <Label text="Tên SP" class="column-name text-center" row="1" col="1" />
-      <Label text="SL" class="column-name text-center" row="1" col="2" />
-      <Label text="Đơn Giá" class="column-name text-center" row="1" col="3" />
-      <Label text="Tổng" class="column-name text-center" row="1" col="4" />
+      <Label text="ID" class="column-name text-center" row="3" col="0" />
+      <Label text="Tên SP" class="column-name text-center" row="3" col="1" />
+      <Label text="SL" class="column-name text-center" row="3" col="2" />
+      <Label text="Đơn Giá" class="column-name text-center" row="3" col="3" />
+      <Label text="Tổng" class="column-name text-center" row="3" col="4" />
     </GridLayout>
 
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
@@ -47,48 +81,107 @@ import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
 import SelectProduct from "./SelectProduct";
 import ChangeProductNumber from "./ChangeProductNumber";
+import Helper from '../../helper/PopularHelper';
+import ApiService from '../../service/BackEndService';
+import CreateNewCustomer from "../Customer/CreateNewCustomer";
+import DatePickerDlg from '../Dialog/DatePickerDlg';
+import TimePickerDlg from '../Dialog/TimePickerDlg';
 
 export default {
   data() {
     return {
       isProcessing: false,
+      transDate: Helper.getCurrentDateStr(),
+      transTime: Helper.getCurrentTimeStr(),
       transTotal:0,
       displayTransTotal:"0 VND",
       customerMetadata: CustomerMeta,
       customer: {
-        id: Math.floor(Math.random() * 100) + 100,
-        name: "Thái Quốc Bình An",
-        sex: "Nam",
-        phone: "0921434567",
-        address: "Hồ Chí Minh"
+        id: 111,
+        name: "",
+        sex: "",
+        phone: "",
+        address: "",
+        provinceId: "",
+        contactId: ""
       },
       products:[]
     };
   },
   methods: {
+    onClickDate() {
+       if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+
+      this.$showModal(DatePickerDlg, { 
+        fullscreen: false,
+        animated: true,
+        props: { 
+          title: StringConst.lbl_create_trans_date,
+          defaultDate: this.transDate
+        }
+      }).then(this.callbackSelectDate);
+    },
+    callbackSelectDate(result) {
+      this.isProcessing = false;
+      if (result == undefined || !result.isSuccess) {
+        return;
+      }
+      this.transDate = result.selectedDateStr;
+    },
+    onClickTime() {
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+
+      this.$showModal(TimePickerDlg, { 
+        fullscreen: false,
+        animated: true,
+        props: { 
+          title: StringConst.lbl_create_trans_time,
+          selectedTime: this.selectedTimeStr
+        }
+      }).then(this.callbackSelectTime);
+    },
+    callbackSelectTime(result) {
+      this.isProcessing = false;
+      if (result == undefined || !result.isSuccess) {
+        return;
+      }
+      this.transTime = result.selectedTimeStr;
+    },
     closePage() {
       this.$modal.close();
     },
+    addCustomer() {
+      this.isProcessing = true;
+      this.$showModal(CreateNewCustomer, { 
+        fullscreen: true,
+         animated: true,
+      }).then(this.callbackCreateCustomer);
+    },
+    callbackCreateCustomer(response) {
+      this.isProcessing = false;
+      if(response == undefined || !response.isSuccess) {
+        return;
+      }
+      this.customer = response.customer;
+    },
     submiData() {
+      if (this.isProcessing) {
+        return;
+      }
+      
       if (!this.customer.name) {
         this.showDlg(
           StringConst.lbl_notification,
-          StringConst.msg_pls_fill_name
+          StringConst.msg_pls_add_customer
         );
         return;
-      } else if (!this.customer.phone) {
-        this.showDlg(
-          StringConst.lbl_notification,
-          StringConst.msg_pls_fill_phone
-        );
-        return;
-      } else if (this.customer.phone.length != 10 || !this.customer.phone.startsWith("0")) {
-        this.showDlg(
-          StringConst.lbl_notification,
-          StringConst.msg_phone_no_math
-        );
-        return;
-      }else if(this.transTotal == 0) {
+      } else if(this.transTotal == 0) {
         this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_trans_have_no_product
@@ -97,27 +190,50 @@ export default {
       }
 
       const now = new Date();
-      const currentDate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
-
-      var time = now.getHours() + ":";
-      var min = now.getMinutes();
-      if (min < 10) {
-        time+= "0"+min;
-      }else {
-        time+=min;
+      if (Helper.getCurrentDateStr() == this.transDate) {
+        const timeArr = this.transTime.split(":");
+        if (timeArr[0] > now.getHours() ||(timeArr[0] == now.getHours() && timeArr[1] > now.getMinutes() )) {
+          this.showDlg(
+            StringConst.lbl_notification,
+            StringConst.msg_trans_date_is_in_future
+          );
+          return;
+        }
+      } 
+      
+      const transDate = this.transDate.split("/");
+      if (transDate[2] != now.getFullYear()) {
+          this.showDlg(
+            StringConst.lbl_notification,
+            StringConst.msg_trans_date_is_in_prev_year
+          );
+        return;
       }
 
+      // const currentDate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
+
+      // var time = now.getHours() + ":";
+      // var min = now.getMinutes();
+      // if (min < 10) {
+      //   time+= "0"+min;
+      // }else {
+      //   time+=min;
+      // }
+
+    
       var newTransaction = {
         id: Math.floor(Math.random() * 100) + 100,
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
         customer: this.customer,
         store:"Takashimaya Vietnam",
-        time: time,
-        date: currentDate,
+        time: this.transTime,
+        date: this.transDate,
         transTotal: this.transTotal,
         displayTransTotal: this.displayTransTotal,
         products: this.products
       }
+
+      this.$store.dispatch('insertInvoice', newTransaction);
 
       this.$modal.close({
         isSuccess: true,
@@ -125,15 +241,33 @@ export default {
         transaction: newTransaction
       });
     },
+    uploadTransaction(newTransaction) {
+
+    },
+    callbackUploadTransactionSuccess(json, transaction) {
+
+      this.$store.dispatch('insertInvoice', transaction);
+
+      this.$modal.close({
+        isSuccess: true,
+        customer: this.customer,
+        transaction: transaction
+      });
+      this.isProcessing = false;
+    },
+    callbackUploadTransactionFail(error) {
+      this.showDlg(StringConst.lbl_error, error.message);
+      this.isProcessing = false;
+    },
     addProduct() {
       if (this.isProcessing) {
         return;
       }
       this.isProcessing = true;
-       this.$showModal(SelectProduct, { 
+      this.$showModal(SelectProduct, { 
         fullscreen: false,
         animated: true,
-        }).then(this.callbackAddProduct);
+      }).then(this.callbackAddProduct);
     },
     callbackAddProduct(response) {
       this.isProcessing = false;
@@ -297,5 +431,12 @@ export default {
 
 .lout-padding-ver {
   padding: 4 0;
+}
+
+.lout-info {
+  margin: 4 12 12;
+  Label.font-icon {
+    width: 10%;
+  }
 }
 </style>

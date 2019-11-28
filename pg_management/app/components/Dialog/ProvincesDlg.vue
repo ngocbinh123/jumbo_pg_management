@@ -44,13 +44,13 @@ export default {
         },
         getProvincesSuccess(obj) {
             if (obj.records.length > 0) {
-                const now = (new Date()).getTime();
-                Remember.setLastTimeUpadteProvinces(now);
+                // const now = (new Date()).getTime();
+                // Remember.setLastTimeUpadteProvinces(now);
                 this.$store.dispatch('insertProvinces', obj);
             }
         },
         callBackFail(error) {
-
+            console.log("PROVINCE", error.message);
         }
     }
 }

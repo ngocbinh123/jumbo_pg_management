@@ -5,7 +5,7 @@
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-    <DatePicker v-model="selectedDate" :maxDate="maxDate" row="2" col="0" colSpan="2" />
+    <TimePicker v-model="selectedTime" row="2" col="0" colSpan="2" />
     <Button
       id="btn_complete"
       text="XONG"
@@ -18,24 +18,16 @@
   </GridLayout>
 </template>
 <script>
-import StringConst from "../../assets/StringConst";
-import SelectProductMeta from "../../data/formMeta/SelectProductMeta";
-import ProductList from "../../data/objects/Product";
-
 export default {
-    props: ["title","defaultDate"],
+    props: ["title","selectedTime"],
     created() {
-        if (!!this.$props.defaultDate) {
-          var dateArr = this.$props.defaultDate.split("/");
-          if (dateArr.length == 3) {
-            this.selectedDate = new Date(dateArr[2], dateArr[1]-1,dateArr[0]);
-          }
+        if (!!this.$props.selectedTime) {
+            this.selectedTime = this.$props.selectedTime;          
         }
     },
     data() {
         return {
-            selectedDate: new Date(),
-            maxDate: new Date()
+            selectedTime: "12:00"
         };
     },
     methods: {
@@ -43,10 +35,17 @@ export default {
           this.$modal.close();
         },
         submiData() {
+            var time = this.selectedTime.getHours() + ":";
+            const min = this.selectedTime.getMinutes();
+            if (min > 9) {
+                time+=min;
+            }else {
+                time+="0"+min;
+            }
             this.$modal.close({
                 isSuccess: true,
-                selectedDate: this.selectedDate,
-                selectedDateStr: this.selectedDate.getDate() + "/" + (this.selectedDate.getMonth() + 1)+ "/" + this.selectedDate.getFullYear()
+                selectedTime: this.selectedTime,
+                selectedTimeStr: time
             });
         }
     }

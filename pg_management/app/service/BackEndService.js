@@ -27,7 +27,7 @@ module.exports = {
         createNewCustomer(customer, bearer) {
             const requestBody = {
                 "abiz_fullname": customer.name,
-                "abiz_gender": customer.sex = "Nam" ? "False" : "True",
+                "abiz_gender": customer.sex == "Nam" ? "False" : "True",
                 "abiz_mobilephone": customer.phone,
                 "abiz_provinceid": customer.provinceId
             };

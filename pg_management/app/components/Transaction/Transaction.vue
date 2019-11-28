@@ -173,8 +173,6 @@ export default {
       if (response == undefined || !response.isSuccess) {
         return;
       }
-
-      this.$store.dispatch('insertInvoice', response.transaction);
     },
     createCustomer() {
       if (this.isProcessing) {

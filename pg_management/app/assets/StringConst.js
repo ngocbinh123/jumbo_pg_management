@@ -27,6 +27,8 @@ module.exports = {
     lbl_ward: "Phường",
     lbl_street: "Số Nhà - Đường",
     lbl_update: "Cập nhật",
+    lbl_create_trans_date: "NGÀY TẠO ĐƠN HÀNG",
+    lbl_create_trans_time: "THỜI GIAN TẠO ĐƠN HÀNG",
     lbl_upload_img_success: "TẢI HÌNH LÊN HỆ THỐNG THÀNH CÔNG",
     lbl_trans_created_success: "TẠO ĐƠN HÀNG THÀNH CÔNG",
     msg_sure_logout: "Bạn chắc chắn muốn đăng xuất ứng dụng?",
@@ -43,6 +45,7 @@ module.exports = {
     msg_check_in_success: "Hệ thống đã ghi nhận thời gian chấm công của bạn.",
     msg_dont_allow_check_in: "Bạn được check-in trước hoặc sau thời gian yêu cầu 15 phút.",
     msg_pls_fill_name: "Hãy nhập họ tên khách hàng.",
+    msg_pls_add_customer: "Hãy bấm nút + để thêm khác khác mới.",
     msg_pls_fill_phone: "Hãy nhập số điện thoại của khách hàng.",
     msg_phone_no_math: "Số điện thoại không đúng.",
     msg_product_number_out_of_scope_max: "Số lượng sản phẩm tối đa là 10.",
@@ -63,5 +66,8 @@ module.exports = {
     msg_should_choose_province_before: "Bạn cần chọn Tỉnh/ Thành Phố trước.",
     msg_should_fill_address: "Bạn cần điền đầy đủ thông tin (Số nhà, đường, phường, quận/huyện, tỉnh/ thành phố).",
     msg_user_reject_camera_permission: "Bạn đã từ chối nên bạn không thể sử dụng chức năng chụp hình được.",
-    msg_system_received_your_img: "Hệ thống đã nhận được hình của bạn. Xin hãy tiếp tục công việc của mình."
+    msg_system_received_your_img: "Hệ thống đã nhận được hình của bạn. Xin hãy tiếp tục công việc của mình.",
+    msg_trans_date_is_in_future: "Bạn không thể tạo đơn hàng với thời gian lớn hơn thời gian hiện tại được.",
+    msg_trans_date_is_in_prev_year: "Bạn không thể tạo đơn hàng cho năm ngoái được."
+
 };

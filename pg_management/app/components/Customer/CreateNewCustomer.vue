@@ -30,7 +30,7 @@ export default {
       customerMetadata: CustomerMeta,
       customer: {
         name: "",
-        sex: "",
+        sex: "Nam",
         phone: "",
         address: "Hồ Chí Minh"
       },
@@ -86,6 +86,7 @@ export default {
     },
     callBackSendDataSuccess(json, newCustomer) {
       newCustomer.contactId = json.abiz_contactid;
+
       this.$store.dispatch('insertCustomer', newCustomer);
       this.$modal.close({
         isSuccess: true,
