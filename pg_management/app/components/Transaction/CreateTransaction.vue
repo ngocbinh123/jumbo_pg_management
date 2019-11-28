@@ -5,12 +5,10 @@
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-    <!-- <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" /> -->
     <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="submiData()" :isEnabled="!isProcessing" row="0" col="2" />
 
     <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addCustomer()" :isEnabled="!isProcessing" row="1" col="2" />     
-    <!-- <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="3" /> -->
 
     <StackLayout row="2" col="0" colSpan="2">
       <StackLayout orientation="horizontal" class="lout-info">
@@ -20,11 +18,6 @@
         <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" margin="0 0 0 20" v-show="!!customer.sex" />
         <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
       </StackLayout>
-
-      <!-- <StackLayout orientation="horizontal" class="lout-info">
-        <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" />
-        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
-      </StackLayout> -->
 
       <StackLayout orientation="horizontal" class="lout-info">
         <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
@@ -210,17 +203,6 @@ export default {
         return;
       }
 
-      // const currentDate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
-
-      // var time = now.getHours() + ":";
-      // var min = now.getMinutes();
-      // if (min < 10) {
-      //   time+= "0"+min;
-      // }else {
-      //   time+=min;
-      // }
-
-    
       var newTransaction = {
         id: Math.floor(Math.random() * 100) + 100,
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
