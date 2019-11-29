@@ -14,7 +14,8 @@
             </GridLayout>            
         </v-template>
     </ListView>    
-    <ActivityIndicator v-show="products.length == 0" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>
+    <ActivityIndicator v-show="processing" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>
+    <Label v-show="products.length == 0 && !processing" text="Không có sản phẩm." class="text-center text-ver-middle" margin="24" color="red" row="0" col="0" colSpan ="2" rowSpan="3"></Label>
   </GridLayout>
 </template>
 
@@ -30,6 +31,7 @@ export default {
     },
     data() {
         return {
+            processing: false,
             products:[]
         };
     },
@@ -44,6 +46,7 @@ export default {
             });
         },
         getProducts() {
+            this.processing = true;
             ApiService.methods
                 .getProducts(this.$props.dateStr, this.$props.timeStr,CurrentUser.methods.getBearId())
                 .catch(this.callBackFail)
@@ -54,9 +57,11 @@ export default {
                 return;
             }
             this.products = obj.records;
+            this.processing = false;
         },
         callBackFail(error) {
             console.log("GET_PRODUCTS_ERROR", error.message);
+            this.processing = false;
         }
     }
 }

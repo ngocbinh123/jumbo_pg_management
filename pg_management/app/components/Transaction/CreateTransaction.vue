@@ -15,8 +15,8 @@
         <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"/>
         <Label :text="customer.name" class="text-center txt-value" textWrap="true"/>
 
-        <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" margin="0 0 0 20" v-show="!!customer.sex" />
-        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
+        <!-- <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" margin="0 0 0 20" v-show="!!customer.sex" />
+        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" /> -->
       </StackLayout>
 
       <StackLayout orientation="horizontal" class="lout-info" >

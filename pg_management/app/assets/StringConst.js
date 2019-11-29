@@ -45,7 +45,7 @@ module.exports = {
     msg_check_in_success: "Hệ thống đã ghi nhận thời gian chấm công của bạn.",
     msg_dont_allow_check_in: "Bạn được check-in trước hoặc sau thời gian yêu cầu 15 phút.",
     msg_pls_fill_name: "Hãy nhập họ tên khách hàng.",
-    msg_pls_add_customer: "Hãy bấm nút + để thêm khác khác mới.",
+    msg_pls_add_customer: "Hãy thêm khách hàng.",
     msg_pls_fill_phone: "Hãy nhập số điện thoại của khách hàng.",
     msg_phone_no_math: "Số điện thoại không đúng.",
     msg_product_number_out_of_scope_max: "Số lượng sản phẩm tối đa là 10.",
