@@ -14,9 +14,6 @@
       <StackLayout orientation="horizontal" class="lout-info">
         <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"/>
         <Label :text="customer.name" class="text-center txt-value" textWrap="true"/>
-
-        <!-- <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" margin="0 0 0 20" v-show="!!customer.sex" />
-        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" /> -->
       </StackLayout>
 
       <StackLayout orientation="horizontal" class="lout-info" >
@@ -35,18 +32,19 @@
     
     <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
       
-      <StackLayout row="0" col="0" colSpan="4" orientation="horizontal" class="edt-box" @tap="onClickDate()">
+      <StackLayout row="0" col="2" colSpan="3" orientation="horizontal" class="edt-box" @tap="onClickDate()">
           <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0" />
           <Label :text="transDate" class="text-center txt-value" textWrap="true" />
       </StackLayout>
 
-       
-      <StackLayout row="1" col="0" colSpan="4" orientation="horizontal" class="edt-box" @tap="onClickTime()">
+      <StackLayout row="0" col="0" colSpan="2" orientation="horizontal" class="edt-box" @tap="onClickTime()">
           <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0"/>
           <Label :text="transTime" class="text-center txt-value" textWrap="true" />
       </StackLayout>
 
-      <GridLayout row="2" col="0" colSpan="4" rows="auto, auto" columns="30, *" class="edt-box">
+      <!-- <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="1" col="4" /> -->
+
+      <GridLayout row="1" col="0" colSpan="4" rows="auto, auto" columns="30, *" class="edt-box">
           <Label :text="'fa-money-bill-alt' | fonticon" row="0" col="0" class="far font-icon font-icon-size-18"/>
           <Label :text="displayTransTotal" class="text-center txt-value lbl-sum-value" textWrap="true" row="0" col="1" />
           <Label text="(Chưa bao gồm VAT)" class="text-caption" textWrap="true" row="1" col="0" colSpan="2" />
