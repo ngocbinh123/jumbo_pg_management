@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import QueryBuilder from './storaged/QueryBuilder';
-import Customers from './data/objects/Customer';
 import Helper from './helper/PopularHelper';
 Vue.use(Vuex);
 
@@ -14,9 +13,8 @@ const COLS_CUSTOMER_WITHOUT_ID = "name, sex, phone, address, createdAt, contactI
 const COLS_CUSTOMER_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, sex TEXT, phone TEXT, address TEXT, createdAt TEXT, contactId TEXT";
 
 const TABLE_PRODUCT = "Product";
-const COLS_PRODUCT = "id, name, model, type, number, price";
-const COLS_PRODUCT_WITHOUT_ID = "name, model, type, number, price";
-const COLS_PRODUCT_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, model TEXT, type TEXT, number INTEGER, price INTEGER";
+const COLS_PRODUCT = "id, name, price, currencyUnit";
+const COLS_PRODUCT_FOR_CREATE_TB = "id TEXT PRIMARY KEY, name TEXT, price INTEGER, currencyUnit TEXT";
 
 const TABLE_PROVINCE = "Prodvince";
 const COLS_PROVINCE = "id, name";
@@ -25,11 +23,11 @@ const COLS_PROVINCE_FOR_CREATE_TB = "id TEXT, name TEXT";
 const TABLE_INVOICE = "Invoice";
 const COLS_INVOICE = "id, code, total, store, customerName, cursomterId, createdAt";
 const COLS_INVOICE_WITHOUT_ID = "code, total, store, customerName, cursomterId, createdAt";
-const COLS_INVOICE_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT, total TEXT, store TEXT, customerName TEXT, cursomterId INTEGER, createdAt TEXT";
+const COLS_INVOICE_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT, total TEXT, store TEXT, customerName TEXT, cursomterId TEXT, createdAt TEXT";
 
 const TABLE_INVOICE_DETAIL = "InvoiceDetail";
 const COLS_INVOICE_DETAIL = "productId, productName, number, price, total, invoiceId";
-const COLS_INVOICE_DETAIL_FOR_CREATE_TB = "productId INTEGER, productName TEXT, number INTEGER, price INTEGER, total INTEGER, invoiceId INTEGER";
+const COLS_INVOICE_DETAIL_FOR_CREATE_TB = "productId TEXT, productName TEXT, number INTEGER, price INTEGER, total INTEGER, invoiceId INTEGER";
 
 const store = new Vuex.Store({
     state: {
@@ -304,7 +302,7 @@ const store = new Vuex.Store({
         },
         insertInvoice(context, data) {
             var query = QueryBuilder.buildQueryInsert(TABLE_INVOICE, COLS_INVOICE_WITHOUT_ID, "?,?,?,?,?,?");
-            context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, data.customer.id, data.time + " " + data.date])
+            context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, data.customer.contactId, data.time + " " + data.date])
                 .then(id => {
                     console.log("INSERT INVOICE SUCCESS", id);
                     data.id = id;
@@ -325,43 +323,14 @@ const store = new Vuex.Store({
                 .catch(error => {
                     console.log("INSERT INVOICE ERROR", error);
                 })
-
-            // var query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?,?");
-            // context.state.database.execSQL(query, [data.customer.name, data.customer.sex, data.customer.phone, data.customer.address, Helper.getCurrentDateStr()]).then(id => {
-            //     data.customer.id = id;
-            //     context.commit("save", { customer: data.customer });
-            //     // code, total, store, customerName, cursomterId, createdAt
-            //     query = QueryBuilder.buildQueryInsert(TABLE_INVOICE, COLS_INVOICE_WITHOUT_ID, "?,?,?,?,?,?");
-            //     context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, id, data.time + " " + data.date])
-            //         .then(id => {
-            //             console.log("INSERT INVOICE SUCCESS", id);
-            //             data.id = id;
-            //             context.commit("saveInvoice", { invoice: data });
-            //             // productId, productName, number, price, total, invoiceId
-            //             data.products.forEach(product => {
-            //                 query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
-            //                 context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, id])
-            //                     .then(id => {
-            //                         console.log("INSERT INVOICE DETAIL SUCCESS", id);
-            //                     })
-            //                     .catch(error => {
-            //                         console.log("INSERT INVOICE DETAIL ERROR", error);
-            //                     });
-            //             });
-
-            //         })
-            //         .catch(error => {
-            //             console.log("INSERT INVOICE ERROR", error);
-            //         })
-            // }, error => {
-            //     console.log("INSERT ERROR", error);
-            // });
         },
         getInvoices(context) {
             const currentDate = Helper.getCurrentDateStr();
             var joinQuery = "SELECT a.id, a.code, a.total, a.store, a.customerName, a.cursomterId, a.createdAt, b.phone, b.address "
             joinQuery += "FROM " + TABLE_INVOICE + " as a , " + TABLE_CUSTOMER + " as b ";
-            joinQuery += "WHERE a.cursomterId == b.id and a.createdAt like '%" + currentDate + "'";
+            joinQuery += "WHERE a.cursomterId == b.contactId and a.createdAt like '%" + currentDate + "'";
+
+
             context.state.database.all(joinQuery, []).then(result => {
                 console.log("SELECT INVOICES SUCCESS: ", result.length);
                 context.commit("loadInvoices", { invoices: result });

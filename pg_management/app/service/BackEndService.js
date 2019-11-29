@@ -24,6 +24,47 @@ module.exports = {
             var task = session.uploadFile(file, request);
             return task;
         },
+        getProducts(dateStr, timeStr, bearer) {
+            const requestBody = {
+                "abiz_sessiondate": dateStr,
+                "abiz_sessiontime": timeStr
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getProductsUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
+        submitOrder(order, bearer) {
+            var products = [];
+
+            order.products.forEach(item => {
+                const productJson = {
+                    "abiz_productid": item.id,
+                    "abiz_quantity": item.number
+                };
+                products.push(productJson);
+            });
+
+            const requestBody = {
+                "abiz_sessiondate": order.requestDate,
+                "abiz_sessiontime": order.time,
+                "abiz_contactid": order.customer.contactId,
+                "abiz_products": products
+            };
+
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.submitOrdersUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
         createNewCustomer(customer, bearer) {
             const requestBody = {
                 "abiz_fullname": customer.name,
@@ -48,6 +89,19 @@ module.exports = {
             const headers = config.authHeaders(bearer);
             return fetchModule
                 .fetch(config.getCustomersUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
+        getOrders(dateStr, bearer) {
+            const requestBody = {
+                abiz_sessiondate: dateStr
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getOrdersUrl, {
                     method: "POST",
                     headers: headers,
                     body: JSON.stringify(requestBody)

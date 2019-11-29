@@ -15,6 +15,9 @@ module.exports = {
     createCustomerUrl: API_PREFIX + "order/contact",
     getCustomersUrl: API_PREFIX + "order/listcontact",
     getOrdersUrl: API_PREFIX + "order/date",
+    getProductsUrl: API_PREFIX + "masterdata/product",
+    submitOrdersUrl: API_PREFIX + "order/submit",
+
 
     headers: {
         "Content-Type": "application/json"

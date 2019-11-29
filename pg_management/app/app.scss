@@ -217,6 +217,11 @@ ActivityIndicator {
     font-family: "f_arima_madurai_thin";
 }
 
+.text-caption {
+    font-family: "f_arima_madurai_thin";
+    font-size: 12;
+}
+
 ListView {
     separator-color: white;
 }
@@ -309,6 +314,10 @@ ListView {
 
 .text-ver-middle {
     vertical-align: middle;
+}
+
+.text-ver-top {
+    vertical-align: top;
 }
 
 .text-color-white {

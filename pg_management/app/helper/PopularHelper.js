@@ -15,6 +15,14 @@ module.exports = {
         }
         return time;
     },
+    convertLocalDateToRequestDate(localDate) {
+        const arr = localDate.split("/");
+        return arr[2] + "-" + arr[1] + "-" + arr[0];
+    },
+    convertRequestDateToLocalDate(requestDate) {
+        const arr = requestDate.split("-");
+        return arr[2] + "/" + arr[1] + "/" + arr[0];
+    },
     getCurrentDateStrForRequest() {
         const now = new Date();
         const currentDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();

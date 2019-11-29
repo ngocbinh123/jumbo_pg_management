@@ -19,7 +19,7 @@
         <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
       </StackLayout>
 
-      <StackLayout orientation="horizontal" class="lout-info">
+      <StackLayout orientation="horizontal" class="lout-info" >
         <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
         <Label :text="customer.phone" class="text-center txt-value" textWrap="true" />
       </StackLayout>
@@ -45,12 +45,18 @@
           <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0"/>
           <Label :text="transTime" class="text-center txt-value" textWrap="true" />
       </StackLayout>
-    
-      <label text="Tổng Cộng:" class="lbl-sum text-right" row="2" col="1" colSpan="2" />
-      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/>
 
-      <Label text="ID" class="column-name text-center" row="3" col="0" />
-      <Label text="Tên SP" class="column-name text-center" row="3" col="1" />
+      <GridLayout row="2" col="0" colSpan="4" rows="auto, auto" columns="30, *" class="edt-box">
+          <Label :text="'fa-money-bill-alt' | fonticon" row="0" col="0" class="far font-icon font-icon-size-18"/>
+          <Label :text="displayTransTotal" class="text-center txt-value lbl-sum-value" textWrap="true" row="0" col="1" />
+          <Label text="(Chưa bao gồm VAT)" class="text-caption" textWrap="true" row="1" col="0" colSpan="2" />
+      </GridLayout>
+    
+      <!-- <label text="Tổng Cộng (Chưa VAT):" class="lbl-sum text-right" row="2" col="0" colSpan="3" />
+      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/> -->
+
+      <!-- <Label text="ID" class="column-name text-center" row="3" col="0" /> -->
+      <Label text="Tên SP" class="column-name text-center" row="3" col="0" colSpan="2" />
       <Label text="SL" class="column-name text-center" row="3" col="2" />
       <Label text="Đơn Giá" class="column-name text-center" row="3" col="3" />
       <Label text="Tổng" class="column-name text-center" row="3" col="4" />
@@ -59,8 +65,8 @@
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
         <GridLayout rows="*" columns="40,*, 40,70, 100" class="lout-padding-ver">
-          <Label :text="item.id" class="lbl-id text-center" row="0" col="0" />
-          <Label :text="item.name" class="lbl-name text-center" row="0" col="1" />
+          <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
+          <Label :text="item.name" class="lbl-name text-center" row="0" col="0"  colSpan="2" />
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
           <Label :text="item.price" class="lbl-pricce text-center" row="0" col="3" />
           <Label :text="item.total" class="lbl-total text-center" row="0" col="4" />
@@ -79,6 +85,7 @@ import ApiService from '../../service/BackEndService';
 import CreateNewCustomer from "../Customer/CreateNewCustomer";
 import DatePickerDlg from '../Dialog/DatePickerDlg';
 import TimePickerDlg from '../Dialog/TimePickerDlg';
+import CurrentUser from '../../data/CurrentUser';
 
 export default {
   data() {
@@ -88,7 +95,6 @@ export default {
       transTime: Helper.getCurrentTimeStr(),
       transTotal:0,
       displayTransTotal:"0 VND",
-      customerMetadata: CustomerMeta,
       customer: {
         id: 111,
         name: "",
@@ -207,29 +213,53 @@ export default {
         id: Math.floor(Math.random() * 100) + 100,
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
         customer: this.customer,
-        store:"Takashimaya Vietnam",
+        store:"",
         time: this.transTime,
         date: this.transDate,
+        requestDate: Helper.convertLocalDateToRequestDate(this.transDate),
         transTotal: this.transTotal,
         displayTransTotal: this.displayTransTotal,
         products: this.products
       }
 
-      this.$store.dispatch('insertInvoice', newTransaction);
+      this.uploadTransaction(newTransaction);
+    },
+    uploadTransaction(newTransaction) {
+      ApiService.methods.submitOrder(newTransaction, CurrentUser.methods.getBearId())
+      .then(json => this.callbackUploadTransactionSuccess(json, newTransaction))
+      .catch(this.callbackUploadTransactionFail);
+    },
+    callbackUploadTransactionSuccess(json, transaction) {
+      ApiService.methods.getOrders(transaction.requestDate, CurrentUser.methods.getBearId())
+        .then(json => this.callbackGetOrdersSuccess(json, transaction))
+        .catch(error => this.callbackUploadGetOrderFail(error, transaction));
+    },
+    callbackGetOrdersSuccess(json, transaction) {
+      if (json == undefined) {
+        return;
+      }
+      var order = json.records.find(el => json.records[0].abiz_contactid.value.toLowerCase() == transaction.customer.contactId.toLowerCase());
+      if (order != undefined) {
+        transaction.code = order.abiz_ordercode;
+        // transaction.time = order.abiz_ordertime;
+        transaction.store = order.abiz_outletid.text;
+        transaction.total = order.abiz_totalamountrollup;
+        transaction.displayTransTotal = Helper.formatCurrencystr(order.abiz_totalamountrollup);
+      }
 
+      this.$store.dispatch('insertInvoice', transaction);
       this.$modal.close({
         isSuccess: true,
         customer: this.customer,
-        transaction: newTransaction
+        transaction: transaction
       });
-    },
-    uploadTransaction(newTransaction) {
+      this.isProcessing = false;
 
     },
-    callbackUploadTransactionSuccess(json, transaction) {
+    callbackUploadGetOrderFail(error, transaction) {
+      console.log("GET ORDERS LIST ERROR", error.message);
 
       this.$store.dispatch('insertInvoice', transaction);
-
       this.$modal.close({
         isSuccess: true,
         customer: this.customer,
@@ -246,9 +276,14 @@ export default {
         return;
       }
       this.isProcessing = true;
+      
       this.$showModal(SelectProduct, { 
         fullscreen: false,
         animated: true,
+        props: {
+          dateStr: Helper.convertLocalDateToRequestDate(this.transDate),
+          timeStr: this.transTime
+        }
       }).then(this.callbackAddProduct);
     },
     callbackAddProduct(response) {
