@@ -10,10 +10,10 @@
     <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"  row="3" col="0" />
     <Label :text="transaction.customer.name" class="text-center txt-value" textWrap="true" row="3" col="1" colSpan="4"/>
 
-    <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" />
+    <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" v-show="!!transaction.customer.phone" />
     <Label :text="transaction.customer.phone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
-    <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="4" col="3" />
+    <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="4" col="3" v-show="!!transaction.customer.address" />
     <Label :text="transaction.customer.address" class="text-center txt-value" textWrap="true" row="4" col="4" />
 
     <Label text="Chi tiết đơn hàng:" class="header" row="6" col="0" colSpan="5" />
@@ -30,8 +30,8 @@
     <Label text="Danh sách sản phẩm:" class="header" row="11" col="0" colSpan="5" />
 
     <GridLayout class="lout-columns" rows="*" columns="30,*, 40,70, 100" row="12" col="0" colSpan="5">
-      <Label text="ID" class="column-name text-center" row="0" col="0" />
-      <Label text="Tên SP" class="column-name text-center" row="0" col="1" />
+      <!-- <Label text="ID" class="column-name text-center" row="0" col="0" /> -->
+      <Label text="Tên SP" class="column-name text-center" row="0" col="0" colSpan="2" />
       <Label text="SL" class="column-name text-center" row="0" col="2" />
       <Label text="Đơn Giá" class="column-name text-center" row="0" col="3" />
       <Label text="Tổng" class="column-name text-center" row="0" col="4" />
@@ -40,8 +40,8 @@
     <ListView for="item in transaction.products" row="13" col="0" colSpan="5">
       <v-template>
         <GridLayout rows="*" columns="40,*, 40,70, 100" class="lout-padding-ver">
-          <Label :text="item.id" class="lbl-id text-center" row="0" col="0" />
-          <Label :text="item.name" class="lbl-name text-center" row="0" col="1" />
+          <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
+          <Label :text="item.name" class="lbl-name text-center" row="0" col="0" colSpan="2"/>
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
           <Label :text="item.price" class="lbl-pricce text-center" row="0" col="3" />
           <Label :text="item.total" class="lbl-total text-center" row="0" col="4" />

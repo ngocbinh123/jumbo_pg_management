@@ -90,6 +90,7 @@ import Remember from '../../share/Remember';
 export default {
   created() {
     this.getRemoteCustomers();
+    this.getRemoteOrders();
     var currentDate = new Date();
     this.date = currentDate.getDate() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
   },
@@ -189,6 +190,42 @@ export default {
       if(response == undefined || !response.isSuccess) {
         return;
       }
+    },
+    getRemoteOrders() {
+      ApiService.methods.getOrders(Helper.getCurrentDateStrForRequest(), CurrentUser.methods.getBearId())
+        .then(this.callbackGetOrdersSuccess)
+        .catch(this.callbackGetOrderFail);
+    },
+    callbackGetOrdersSuccess(json) {
+      if (json.records.length == 0) {
+        return
+      }
+      json.records.forEach(order => {
+        const isNotExisted = this.$store.state.invoices.find(el => el.code == order.abiz_ordercode) == undefined;
+        if (isNotExisted) {
+          var newTransaction = {
+            id: Math.floor(Math.random() * 100) + 100,
+            code:order.abiz_ordercode,
+            customer: {
+              id: Math.floor(Math.random() * 100) + 100,
+              name: order.abiz_contactid.text,
+              phone: "",
+              address: "", 
+              contactId: order.abiz_contactid.value
+            },
+            store: order.abiz_outletid.text,
+            time: order.abiz_ordertime,
+            date: Helper.convertRequestDateToLocalDate(order.abiz_orderdate),
+            transTotal: order.abiz_totalamountrollup,
+            displayTransTotal: Helper.formatCurrencystr(order.abiz_totalamountrollup),
+            products: []
+          }
+          this.$store.dispatch('insertInvoice', newTransaction);;
+        }
+      });
+    },
+    callbackGetOrderFail(error) {
+
     },
     getRemoteCustomers() {
       const currentDate= Helper.getCurrentDateStrForRequest();

@@ -1,16 +1,20 @@
 <template>
   <GridLayout rows="50, *" columns="50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-      <Label text="CHỌN TỈNH/ THÀNH PHỐ" class="text-center" />
+      <Label text="DANH SÁCH SẢN PHẨM" class="text-center" />
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-    <ListView row="1" col="0" colSpan="2" for="item in $store.state.provinces" class="ls-group" @itemTap="onSelectedProvince">
+    <ListView row="1" col="0" colSpan="2" for="item in products" class="ls-group" @itemTap="onSelectedProvince">
         <v-template>
-            <Label :text="item.name" class="ls-group-item"/>
+            <GridLayout class="ls-group-item" rows="*" columns="*, auto, auto">
+                <Label :text="item.abiz_name" row="0" col="0" />
+                <Label :text="item.abiz_salesprice" row="0" col="1" />
+                <Label :text="' '+ item.transactioncurrencyid.text" row="0" col="2" />
+            </GridLayout>            
         </v-template>
     </ListView>    
-    <ActivityIndicator v-show="$store.state.provinces.length == 0" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>
+    <ActivityIndicator v-show="products.length == 0" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>
   </GridLayout>
 </template>
 
@@ -20,10 +24,14 @@ import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
 
 export default {
+    props: ["dateStr","timeStr"],
     created() {
-        if ( this.$store.state.provinces.length == 0) {
-            this.getProvinces();
-        }
+        this.getProducts();        
+    },
+    data() {
+        return {
+            products:[]
+        };
     },
     methods: {
         closePage() {
@@ -35,24 +43,20 @@ export default {
                 selected: event.item
             });
         },
-        getProvinces() {
+        getProducts() {
             ApiService.methods
-                .getProvinces(CurrentUser.methods.getBearId())
+                .getProducts(this.$props.dateStr, this.$props.timeStr,CurrentUser.methods.getBearId())
                 .catch(this.callBackFail)
-                .then(this.getProvincesSuccess);
+                .then(this.getProductsSuccess);
         },
-        getProvincesSuccess(obj) {
+        getProductsSuccess(obj) {
             if (obj == undefined) {
                 return;
             }
-            if (obj.records.length > 0) {
-                // const now = (new Date()).getTime();
-                // Remember.setLastTimeUpadteProvinces(now);
-                this.$store.dispatch('insertProvinces', obj);
-            }
+            this.products = obj.records;
         },
         callBackFail(error) {
-            console.log("GET_PROVINCE_ERROR", error.message);
+            console.log("GET_PRODUCTS_ERROR", error.message);
         }
     }
 }

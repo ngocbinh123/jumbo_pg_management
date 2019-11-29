@@ -28,6 +28,9 @@ const KEY_LAST_TIME_OF_UPDATED_PROVINCE = "KEY_LAST_TIME_OF_UPDATED_PROVINCE";
 
 const KEY_LAST_DATE_GET_REMOTE_CUSTOMERS = "KEY_LAST_DATE_GET_REMOTE_CUSTOMERS";
 
+const KEY_PRODUCT_LIST = "KEY_PRODUCT_LIST";
+
+
 module.exports = {
     getUserId() {
         return appSettings.getString(KEY_USER_ID, "");
