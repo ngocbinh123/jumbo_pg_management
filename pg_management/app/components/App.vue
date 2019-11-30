@@ -27,6 +27,9 @@
 </template>
 
 <script >
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../data/Constant";
+
 import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";
@@ -46,10 +49,20 @@ export default {
     };
   },
   created() {
+    firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+        {
+          key: Constant.KEY_PAGE_ID, 
+          value: "APP"
+        }
+      ]
+    });
     this.$store.dispatch('getAllCustomers');
     this.$store.dispatch('getInvoices');
   },
   methods: {
+
   }
 };
 </script>

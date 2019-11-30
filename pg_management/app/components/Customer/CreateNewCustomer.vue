@@ -26,7 +26,12 @@ import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
 import ApiService from "../../service/BackEndService";
 import CurrentUser from '../../data/CurrentUser';
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
 export default {
+  created() {
+    this.trackintPage();
+  },
   data() {
     return {
       customerMetadata: CustomerMeta,
@@ -40,6 +45,17 @@ export default {
     };
   },
   methods: {
+    trackintPage() {
+      firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+          {
+            key: Constant.KEY_PAGE_ID, 
+            value: "CREATE_NEW_CUSTOMER"
+          }
+        ]
+      });
+    },
     closePage() {
       this.$modal.close();
     },

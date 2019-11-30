@@ -45,7 +45,8 @@ import Home from "./App";
 import ChangePass from "./ChangePassword";
 import Customer from "../data/objects/Customer";
 
-import Vue from "nativescript-vue";
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../data/Constant";
 
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
@@ -54,6 +55,16 @@ const transition = require("../share/Transition");
 
 export default {
   created() {
+    firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+        {
+          key: Constant.KEY_PAGE_ID, 
+          value: "LOGIN"
+        }
+      ]
+    });
+
     if (TNS_ENV !== 'production') {
       this.user.email = "nguyengocbinh@gmail.com";
       this.user.password = "binh@2019";
