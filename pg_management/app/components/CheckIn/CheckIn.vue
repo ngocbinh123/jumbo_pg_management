@@ -5,7 +5,6 @@
     <Label text="THÔNG TIN CHẤM CÔNG" class="title-white text-center"  row="0" col="0" colSpan="2"/>
     <FlexboxLayout row="0" col="0" rowSpan="2" colSpan="2">
       <GridLayout class="page-content" rows="40,40,40,40,40,50" columns="50, *" >
-        <!-- <Image src="res://ic_id_card_primary" class="icon" row="0" col="0" /> -->
         <Label :text="'fa-address-card' | fonticon" class="far font-icon font-icon-size-24"  @tap="closePage()" row="0" col="0" />
         <Label class="lbl-value" :text="userId" row="0" col="1"/>
         
@@ -37,12 +36,12 @@ import StringConst from "../../assets/StringConst";
 import CurrentUser from "../../data/CurrentUser";
 import ApiService from "../../service/BackEndService";
 import * as Geolocation from 'nativescript-geolocation';
-// import * as firebase from"nativescript-plugin-firebase";
+import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
   created() {
-    // this.trackintPage();
+    this.trackintPage();
     this.startGetLocation();
     const now = new Date();
     var hour = now.getHours();
@@ -71,15 +70,15 @@ export default {
   },
   methods: {
     trackintPage() {
-      // firebase.analytics.logEvent({
-      // key: Constant.KEY_PAGE_VIEW,
-      // parameters: [
-      //     {
-      //       key: Constant.KEY_PAGE_ID, 
-      //       value: "CHECK_IN"
-      //     }
-      //   ]
-      // });
+      firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+          {
+            key: Constant.KEY_PAGE_ID, 
+            value: "CHECK_IN"
+          }
+        ]
+      });
     },
     startGetLocation() {
       this.processing = true;

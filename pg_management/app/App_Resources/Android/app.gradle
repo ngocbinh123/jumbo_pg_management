@@ -22,7 +22,7 @@ android {
     javaMaxHeapSize "4g"
   }
 
-  project.ext {
-    googlePlayServicesVersion = "+"
-  }
+  // project.ext {
+  //    googlePlayServicesVersion = "16.+"
+  // }
 }
