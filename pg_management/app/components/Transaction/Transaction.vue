@@ -210,6 +210,13 @@ export default {
         .catch(this.callbackGetOrderFail);
     },
     callbackGetOrdersSuccess(json) {
+      if (json == undefined) {
+        return;
+      }
+
+      const currentDate= Helper.getCurrentDateStrForRequest();
+      Remember.setLastDateGetRemoteOrders(currentDate);
+      
       if (json.records.length == 0) {
         return
       }
@@ -217,6 +224,7 @@ export default {
         if (order.abiz_contactid.value == null) {
           return;    
         }
+      
         const isNotExisted = this.$store.state.invoices.find(el => el.code == order.abiz_ordercode) == undefined;
         if (isNotExisted) {
           var newTransaction = {
@@ -239,9 +247,6 @@ export default {
           this.$store.dispatch('insertInvoice', newTransaction);;
         }
       });
-
-      const currentDate= Helper.getCurrentDateStrForRequest();
-      Remember.setLastDateGetRemoteOrders(currentDate);
     },
     callbackGetOrderFail(error) {
 

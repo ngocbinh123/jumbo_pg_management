@@ -478,7 +478,6 @@ export default {
   font-weight: bold;
   font-size: 18px;
   text-align: right;
-  padding: 8 0;
 }
 
 .lbl-sum-value {
