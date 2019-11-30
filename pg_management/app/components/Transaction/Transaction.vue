@@ -174,6 +174,8 @@ export default {
       if (response == undefined || !response.isSuccess) {
         return;
       }
+
+      this.openTransactionDetail(response.transaction);
     },
     createCustomer() {
       if (this.isProcessing) {
@@ -190,9 +192,20 @@ export default {
       if(response == undefined || !response.isSuccess) {
         return;
       }
+
+      const event = {
+        item: response.customer
+      };
+      this.onCustomerSelected(event);
     },
     getRemoteOrders() {
-      ApiService.methods.getOrders(Helper.getCurrentDateStrForRequest(), CurrentUser.methods.getBearId())
+      const currentDate= Helper.getCurrentDateStrForRequest();
+      const lastDate = Remember.getLastDateGetRemoteOrders();
+      if (lastDate == currentDate) {
+        return;
+      }
+
+      ApiService.methods.getOrders(currentDate, CurrentUser.methods.getBearId())
         .then(this.callbackGetOrdersSuccess)
         .catch(this.callbackGetOrderFail);
     },
@@ -201,6 +214,9 @@ export default {
         return
       }
       json.records.forEach(order => {
+        if (order.abiz_contactid.value == null) {
+          return;    
+        }
         const isNotExisted = this.$store.state.invoices.find(el => el.code == order.abiz_ordercode) == undefined;
         if (isNotExisted) {
           var newTransaction = {
@@ -223,6 +239,9 @@ export default {
           this.$store.dispatch('insertInvoice', newTransaction);;
         }
       });
+
+      const currentDate= Helper.getCurrentDateStrForRequest();
+      Remember.setLastDateGetRemoteOrders(currentDate);
     },
     callbackGetOrderFail(error) {
 

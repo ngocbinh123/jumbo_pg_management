@@ -1,5 +1,6 @@
 <template>
   <GridLayout rows="50,60,auto,60,auto,*,10" columns="40,*,50" class="page-parent">
+    <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" colSpan="3" rowSpan="6" />
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
       <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
@@ -10,50 +11,49 @@
     <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addCustomer()" :isEnabled="!isProcessing" row="1" col="2" />     
 
-    <StackLayout row="2" col="0" colSpan="2">
+    <StackLayout row="2" col="0" colSpan="3" v-show="!!customer.name">
       <StackLayout orientation="horizontal" class="lout-info">
         <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"/>
         <Label :text="customer.name" class="text-center txt-value" textWrap="true"/>
-
-        <Label :text="'fa-venus-mars' | fonticon" class="fas font-icon font-icon-size-18" margin="0 0 0 20" v-show="!!customer.sex" />
-        <Label :text="customer.sex" class="text-center txt-value" textWrap="true" />
       </StackLayout>
 
       <StackLayout orientation="horizontal" class="lout-info" >
         <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
         <Label :text="customer.phone" class="text-center txt-value" textWrap="true" />
-      </StackLayout>
 
-      <StackLayout orientation="horizontal" class="lout-info">
-        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" />
-        <Label :text="customer.address" class="text-center txt-value" textWrap="true" />
+        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" margin="0 4 0 24" v-show="!!customer.address" />
+        <Label :text="customer.address" class="text-center txt-value" textWrap="true" v-show="!!customer.address" />
       </StackLayout>
     </StackLayout>
+    <Label text="Hãy bấm nút + góc trên bên phải để thêm khách hàng." class="text-center" textWrap="true" color="red" margin="24" row="2" col="0" colSpan="3" v-show="!customer.name"/>
 
     <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="3" col="2" />
     
-    <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
+    <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="40,*, 40,100, 100" row="4" col="0" colSpan="3">
       
-      <StackLayout row="0" col="0" colSpan="4" orientation="horizontal" class="edt-box" @tap="onClickDate()">
+      <StackLayout row="0" col="2" colSpan="3" orientation="horizontal" class="edt-box" @tap="onClickDate()">
           <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0" />
           <Label :text="transDate" class="text-center txt-value" textWrap="true" />
       </StackLayout>
 
-       
-      <StackLayout row="1" col="0" colSpan="4" orientation="horizontal" class="edt-box" @tap="onClickTime()">
+      <StackLayout row="0" col="0" colSpan="2" orientation="horizontal" class="edt-box" @tap="onClickTime()">
           <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0"/>
           <Label :text="transTime" class="text-center txt-value" textWrap="true" />
       </StackLayout>
 
-      <GridLayout row="2" col="0" colSpan="4" rows="auto, auto" columns="30, *" class="edt-box">
-          <Label :text="'fa-money-bill-alt' | fonticon" row="0" col="0" class="far font-icon font-icon-size-18"/>
-          <Label :text="displayTransTotal" class="text-center txt-value lbl-sum-value" textWrap="true" row="0" col="1" />
-          <Label text="(Chưa bao gồm VAT)" class="text-caption" textWrap="true" row="1" col="0" colSpan="2" />
+      <GridLayout row="1" col="0" colSpan="5" rows="auto, auto, auto" columns="100, *" class="edt-box" v-show="this.transTotal != 0">
+          <!-- <Label :text="'fa-money-bill-alt' | fonticon" row="0" col="0" class="far font-icon font-icon-size-18"/> -->
+          <Label text="Tổng tiền SP:" class="text-right" textWrap="true" row="0" col="0" />          
+          <Label :text="displayTransTotal" class="text-right" textWrap="true" row="0" col="1" />
+          <Label text="VAT (10%):" class="text-right" textWrap="true" row="1" col="0" />
+          <Label :text="calculateVAT()" class="text-right" textWrap="true" row="1" col="1" />
+          <Label text="Tổng cộng:" class="text-right border-top lbl-sum" textWrap="true" row="2" col="0" />
+          <Label :text="calculateTotal()" class="text-right lbl-sum-value border-top"  padding ="0" textWrap="true" row="2" col="1" />
+          <!-- <Label text="(Chưa bao gồm VAT)" class="text-caption" textWrap="true" row="1" col="0" colSpan="2" /> -->
       </GridLayout>
     
-      <!-- <label text="Tổng Cộng (Chưa VAT):" class="lbl-sum text-right" row="2" col="0" colSpan="3" />
-      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/> -->
+      <!-- <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/> -->
 
       <!-- <Label text="ID" class="column-name text-center" row="3" col="0" /> -->
       <Label text="Tên SP" class="column-name text-center" row="3" col="0" colSpan="2" />
@@ -64,12 +64,12 @@
 
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
-        <GridLayout rows="*" columns="40,*, 40,70, 100" class="lout-padding-ver">
+        <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
           <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
           <Label :text="item.name" class="lbl-name text-center" row="0" col="0"  colSpan="2" />
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
-          <Label :text="item.price" class="lbl-pricce text-center" row="0" col="3" />
-          <Label :text="item.total" class="lbl-total text-center" row="0" col="4" />
+          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />
+          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-center" row="0" col="4" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -173,7 +173,7 @@ export default {
       if (this.isProcessing) {
         return;
       }
-      
+
       if (!this.customer.name) {
         this.showDlg(
           StringConst.lbl_notification,
@@ -209,6 +209,25 @@ export default {
         return;
       }
 
+      const total = this.calculateTotal();
+      const message = "- Khách hàng: " + this.customer.name + "\n- Ngày lập: " + this.transTime + "  " + this.transDate + "\n- Tổng tiền: " + total + " (Đã bao gồm VAT)";
+
+      confirm({
+        title: StringConst.lbl_pls_check_order,
+        message: message,
+        okButtonText: StringConst.lbl_create_order,
+        cancelButtonText: StringConst.lbl_cancel,
+      }).then(result => {
+        if (result) {
+          this.startCreateOrder();
+        }
+      });    
+    },
+    startCreateOrder() {
+      const now = new Date();
+      const vat = Math.ceil(this.transTotal * 0.1);
+      const total = this.transTotal + vat;
+
       var newTransaction = {
         id: Math.floor(Math.random() * 100) + 100,
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
@@ -217,14 +236,16 @@ export default {
         time: this.transTime,
         date: this.transDate,
         requestDate: Helper.convertLocalDateToRequestDate(this.transDate),
-        transTotal: this.transTotal,
-        displayTransTotal: this.displayTransTotal,
+        transTotal: total,
+        displayTransTotal: Helper.formatCurrencystr(total),
         products: this.products
       }
 
       this.uploadTransaction(newTransaction);
     },
     uploadTransaction(newTransaction) {
+      this.isProcessing = true;
+
       ApiService.methods.submitOrder(newTransaction, CurrentUser.methods.getBearId())
       .then(json => this.callbackUploadTransactionSuccess(json, newTransaction))
       .catch(this.callbackUploadTransactionFail);
@@ -304,7 +325,7 @@ export default {
       }
 
       this.transTotal += response.product.total;
-      this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+      this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
     },
     selectedProduct(event) {
       const item = event.item;
@@ -336,7 +357,7 @@ export default {
             this.products.splice(itemIndex, 1);
             
             this.transTotal = this.transTotal - item.total; 
-            this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+            this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
           }
         });
       }
@@ -351,7 +372,7 @@ export default {
       item.total = item.number * item.price;
 
       this.transTotal = this.transTotal - oldTotal + item.total; 
-      this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+      this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
     },
     callBackDeleteSelectedProduct(result, item) {
       if (result == undefined || !result.result) {
@@ -363,8 +384,20 @@ export default {
         this.products.splice(itemIndex, 1);
         
         this.transTotal = this.transTotal - item.total; 
-        this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+        this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
       }
+    },
+    formatCurrentcy(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    },
+    calculateVAT() {
+      const vat = Math.ceil(this.transTotal *0.1);
+      return this.formatCurrentcy(vat) + " VND";
+    },
+    calculateTotal() {
+      // const vat = Math.ceil(this.transTotal *1.1);
+      const vat = Math.ceil(this.transTotal *0.1);
+      return this.formatCurrentcy(this.transTotal + vat) + " VND";
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
@@ -372,9 +405,6 @@ export default {
         okButtonText: StringConst.lbl_close,
         message: dlgMsg
       });
-    },
-    formatCurrentcy(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " VND";
     }
   }
 };
@@ -430,6 +460,15 @@ export default {
   font-size: 16;
 }
 
+.text-right {
+  text-align: right;
+}
+
+.border-top {
+  border-top-color: $color-border;
+  border-top-width: 0.5;
+}
+
 .lout-columns {
   border-bottom-color: $color-border;
   border-bottom-width: 0.5;
@@ -437,13 +476,14 @@ export default {
 .lbl-sum, .lbl-sum-value {
   font-family: "f_arima_madurai_extra_bold";
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   text-align: right;
+  padding: 8 0;
 }
 
 .lbl-sum-value {
   color: $color-accent;
-  padding-right: 10;
+  // padding-right: 10;
 }
 
 .lout-padding-ver {

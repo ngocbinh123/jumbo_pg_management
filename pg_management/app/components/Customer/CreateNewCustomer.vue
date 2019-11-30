@@ -17,6 +17,8 @@
       col="0"
       colSpan="2"
     />
+    <ActivityIndicator v-show="processing" busy="true" row="0" col="0" colSpan="2" rowSpan="4" />
+
   </GridLayout>
 </template>
 <script>

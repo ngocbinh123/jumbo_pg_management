@@ -10,7 +10,7 @@
     
     <GridLayout orientation="horizontal" class="edt-box" row="3" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProducts()">
         <Label v-model="product.name" class="text-value" row="0" col="1" margin="0 0 0 0" />
-        <Label :text="'fa-sort-down' | fonticon" class="fas font-icon-size-24 text-center text-ver-top" row="0" col="2" margin="0 0 0 0" padding="0"/>
+        <Label :text="'fa-caret-down' | fonticon" class="fas text-center font-icon-size-24" row="0" col="2" />
     </GridLayout>
 
     <Label text="Số Lượng" row="4" col="0" colSpan="2" margin="24 0 0 12" />
@@ -141,6 +141,7 @@ export default {
   text-align: center;
   align-content: center;
 }
+
 #btn_add_product {
   margin-left: 10;
   margin-right: 10;
