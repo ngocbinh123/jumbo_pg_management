@@ -27,6 +27,8 @@ module.exports = {
     lbl_ward: "Phường",
     lbl_street: "Số Nhà - Đường",
     lbl_update: "Cập nhật",
+    lbl_create_order: "Tạo đơn hàng",
+    lbl_pls_check_order: "HÃY KIỂM TRA LẠI ĐƠN HÀNG",
     lbl_create_trans_date: "NGÀY TẠO ĐƠN HÀNG",
     lbl_create_trans_time: "THỜI GIAN TẠO ĐƠN HÀNG",
     lbl_upload_img_success: "TẢI HÌNH LÊN HỆ THỐNG THÀNH CÔNG",

@@ -29,7 +29,7 @@
 
     <Label text="Danh sách sản phẩm:" class="header" row="11" col="0" colSpan="5" />
 
-    <GridLayout class="lout-columns" rows="*" columns="30,*, 40,70, 100" row="12" col="0" colSpan="5">
+    <GridLayout class="lout-columns" rows="*" columns="40,*, 40,100, 100" row="12" col="0" colSpan="5">
       <!-- <Label text="ID" class="column-name text-center" row="0" col="0" /> -->
       <Label text="Tên SP" class="column-name text-center" row="0" col="0" colSpan="2" />
       <Label text="SL" class="column-name text-center" row="0" col="2" />
@@ -39,12 +39,12 @@
 
     <ListView for="item in transaction.products" row="13" col="0" colSpan="5">
       <v-template>
-        <GridLayout rows="*" columns="40,*, 40,70, 100" class="lout-padding-ver">
+        <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
           <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
-          <Label :text="item.name" class="lbl-name text-center" row="0" col="0" colSpan="2"/>
+          <Label :text="item.name" class="lbl-name text-center"  row="0" col="0" colSpan="2"/>
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
-          <Label :text="item.price" class="lbl-pricce text-center" row="0" col="3" />
-          <Label :text="item.total" class="lbl-total text-center" row="0" col="4" />
+          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />
+          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-center" row="0" col="4" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -59,7 +59,10 @@ export default {
   methods: {
     closePage() {
       this.$modal.close();
-    }
+    },
+    formatCurrentcy(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    },
   }
 };
 </script>
