@@ -3,35 +3,40 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
       <Label text="KHÁC HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
     <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
     <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="2" />
     <Button
       id="btn_submit_customer"
       text="Hoàn Thành"
-      class="btn btn-primary"
+      class="btn btn-fill-bg"
       @tap="submiData()"
+      :isEnabled="!processing"
       row="3"
       col="0"
       colSpan="2"
     />
+    <ActivityIndicator v-show="processing" busy="true" row="0" col="0" colSpan="2" rowSpan="4" />
+
   </GridLayout>
 </template>
 <script>
 import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
+import ApiService from "../../service/BackEndService";
+import CurrentUser from '../../data/CurrentUser';
 export default {
   data() {
     return {
       customerMetadata: CustomerMeta,
       customer: {
-        id: Math.floor(Math.random() * 100) + 100,
         name: "",
         sex: "Nam",
         phone: "",
         address: "Hồ Chí Minh"
-      }
+      },
+      processing: false,
     };
   },
   methods: {
@@ -61,10 +66,39 @@ export default {
         );
         return;
       }
+
+      const provinceId = CustomerMeta.provinces.find(el => el.abiz_name == this.customer.address).abiz_locationid;
+      const newCustomer = {
+        id: 191,
+        name: this.customer.name,
+        sex: this.customer.sex,
+        phone: this.customer.phone,
+        address: this.customer.address,
+        provinceId: provinceId,
+        contactId: ""
+      } 
+
+      this.senDataToServer(newCustomer);     
+    },
+    senDataToServer(customer) {
+      this.processing = true;
+      ApiService.methods.createNewCustomer(customer, CurrentUser.methods.getBearId())
+      .then(json => this.callBackSendDataSuccess(json, customer))
+      .catch(this.callBackSendDataFail);
+    },
+    callBackSendDataSuccess(json, newCustomer) {
+      newCustomer.contactId = json.abiz_contactid;
+
+      this.$store.dispatch('insertCustomer', newCustomer);
       this.$modal.close({
         isSuccess: true,
-        customer: this.customer
+        customer: newCustomer
       });
+      this.processing = false;
+    },
+    callBackSendDataFail(error) {
+      this.showDlg(StringConst.lbl_error, error.message);
+      this.processing = false;
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({

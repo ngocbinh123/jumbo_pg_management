@@ -5,5 +5,6 @@ module.exports = {
         CHECKED: 1
     },
     CHECK_IN_TIME_BY_MIN: 15,
-    CHECK_IN_TIME: 15 * 60 * 1000
+    CHECK_IN_TIME: 15 * 60 * 1000, // 15m
+    TIME_CACHE_PROVINCES: 1 * 24 * 60 * 1000,
 }

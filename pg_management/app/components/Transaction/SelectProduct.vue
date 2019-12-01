@@ -1,16 +1,26 @@
 <template>
-  <GridLayout rows="50,*,70" columns="50,*" class="page-parent">
+  <GridLayout rows="50,20, auto, auto, auto, auto 30, 70" columns="50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
       <Label text="THÊM SẢN PHẨM" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
-    <RadDataForm :source="product" :metadata="selectProductMeta" row="1" col="0" colSpan="2" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
+
+    <!-- <RadDataForm :source="product" :metadata="selectProductMeta" row="2" col="0" colSpan="2" /> -->
+    <Label text="Sản Phẩm" row="2" col="0" colSpan="2" margin="0 0 0 12" />
+    
+    <GridLayout orientation="horizontal" class="edt-box" row="3" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProducts()">
+        <Label v-model="product.name" class="text-value" row="0" col="1" margin="0 0 0 0" />
+        <Label :text="'fa-caret-down' | fonticon" class="fas text-center font-icon-size-24" row="0" col="2" />
+    </GridLayout>
+
+    <Label text="Số Lượng" row="4" col="0" colSpan="2" margin="24 0 0 12" />
+    <TextView v-model="product.number"  keyboardType="number" autocorrect="false" class="edt-box" row="5" col="0" colSpan="2" />
     <Button
       id="btn_add_product"
       text="Thêm"
-      class="btn btn-primary"
+      class="btn btn-fill-bg"
       @tap="submiData()"
-      row="3"
+      row="7"
       col="0"
       colSpan="2"
     />
@@ -20,21 +30,47 @@
 import StringConst from "../../assets/StringConst";
 import SelectProductMeta from "../../data/formMeta/SelectProductMeta";
 import ProductList from "../../data/objects/Product";
-
+import ProductListDlg from "../Product/ProductList"
 export default {
+  props: ["dateStr","timeStr"],
   data() {
     return {
       selectProductMeta: SelectProductMeta,
       products: ProductList.getProductList(),
       product: {
-        name: "",
-        number: 1
+        id: "",
+        name: "Chọn sản phẩm",
+        number: 1,
+        price: "",
+        currencyUnit:""
       }
     };
   },
   methods: {
     closePage() {
       this.$modal.close();
+    },
+    showProducts() {
+      this.$showModal(ProductListDlg, {
+        fullscreen: true,
+        animated: true,
+        props: {
+          dateStr: this.$props.dateStr,
+          timeStr: this.$props.timeStr
+        }
+      }).then(this.callBackSelectProduct);
+    },
+    callBackSelectProduct(result) {
+      if (result == undefined || !result.isSuccess) {
+        return;
+
+      }
+
+      this.product.id = result.selected.abiz_productid;
+      this.product.name = result.selected.abiz_name;
+      this.product.price = result.selected.abiz_salesprice;
+      this.producr.currencyUnit = result.selected.transactioncurrencyid.text;
+
     },
     submiData() {
       if (this.product.number > 10) {
@@ -49,7 +85,7 @@ export default {
           StringConst.msg_product_number_out_of_scope_min
         );
         return;
-      }else if (!this.product.name || this.product.name == "Chọn Sản Phẩm") {
+      }else if (!this.product.id || !this.product.name || this.product.name == "Chọn sản phẩm") {
            this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_please_choos_product
@@ -58,21 +94,13 @@ export default {
       }
 
       var selectedProduct = {
-          id:-1
-      };
-      this.products.forEach(element => {
-          if(element.name == this.product.name) {
-            selectedProduct = {
-                id: element.id,
-                model: element.model,
-                name: element.name,
+                id: this.product.id,
+                model: this.product.name,
+                name: this.product.name,
                 number: this.product.number,
-                price: element.price,
-                total: element.price * this.product.number
+                price: this.product.price,
+                total: this.product.price * this.product.number
             };
-            return;
-          }
-      });
 
       this.$modal.close({
         isSuccess: selectedProduct.id != -1,
@@ -113,6 +141,7 @@ export default {
   text-align: center;
   align-content: center;
 }
+
 #btn_add_product {
   margin-left: 10;
   margin-right: 10;

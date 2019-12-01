@@ -4,14 +4,21 @@
 @import '~nativescript-theme-core/scss/dark';
 // Override variables here
 @import '~nativescript-theme-core/scss/index';
+// @import '~/../assets/css/fontawesome.css';
 // Global SCSS styling
-// @see https://docs.nativescript.org/ui/styling
-.fa {
-    font-family: "Font Awesome 5 Free", "fa-regular-400", "fa-solid-900";
+// @see https://docs.nativescript.org/ui/styling.fa {
+.fa-brands {
+    font-family: "Font Awesome 5 Brands", "fa-brands-400";
+}
+
+.far {
+    font-family: "Font Awesome 5 Free", "fa-regular-400";
+    font-weight: 400;
 }
 
 .fas {
     font-family: "Font Awesome 5 Free", "fa-solid-900";
+    font-weight: 900;
 }
 
 .tool-bar {
@@ -27,6 +34,41 @@
         vertical-align: middle;
         align-self: center;
     }
+    .btn-right {
+        font-family: "f_arima_madurai_bold";
+        font-size: 14;
+        border-radius: 100%;
+        border-width: 0.5;
+        background-color: transparent;
+        border-color: transparent;
+        margin-left: 0;
+        color: white;
+        padding: 0;
+    }
+    .btn-right:active {
+        background-color: $color-white-trans;
+    }
+}
+
+.btn-back,
+.btn-done {
+    color: white;
+    font-size: 24;
+    vertical-align: middle;
+    text-align: left;
+    margin-left: 10;
+}
+
+.btn-done {
+    text-align: right;
+    margin-right: 10;
+}
+
+.btn-back:active,
+ :hover,
+ :target {
+    color: $color-accent;
+    background: red;
 }
 
 .page_title,
@@ -89,6 +131,24 @@
     color: $color-accent;
     margin-left: 0;
     margin-right: 0;
+}
+
+.btn-add {
+    font-family: "f_arima_madurai_bold";
+    font-size: 30;
+    border-radius: 100%;
+    border-width: 0.5;
+    background-color: white;
+    border-color: $color-primary-dark;
+    margin-left: 0;
+    color: $color-primary-dark;
+    margin-right: 8;
+    padding: 0;
+}
+
+.btn-add:active {
+    background-color: $color-primary-dark;
+    color: white;
 }
 
 .btn-secondary {
@@ -157,6 +217,11 @@ ActivityIndicator {
     font-family: "f_arima_madurai_thin";
 }
 
+.text-caption {
+    font-family: "f_arima_madurai_thin";
+    font-size: 12;
+}
+
 ListView {
     separator-color: white;
 }
@@ -219,4 +284,103 @@ ListView {
     color: $color-primary-dark;
     font-size: 20;
     padding: 8;
+    vertical-align: middle;
+}
+
+.edt-border {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 2 10;
+    margin-right: 30%;
+}
+
+.edt-box {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 8 12;
+    margin: 4 12;
+    font-family: "f_arima_madurai_extra_regular";
+}
+
+.dropbox {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 2 12;
+    margin: 4 12;
+}
+
+.text-ver-middle {
+    vertical-align: middle;
+}
+
+.text-ver-top {
+    vertical-align: top;
+}
+
+.text-color-white {
+    color: white;
+}
+
+.text-color-primary {
+    color: $color-primary;
+}
+
+.text-color-primary-dark {
+    color: $color-primary-dark;
+}
+
+.text-color-accent {
+    color: $color-accent;
+}
+
+.font-icon {
+    color: $color-primary;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.font-icon-default {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.font-avatar {
+    color: white;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.font-icon-size-avatar {
+    font-size: 46;
+}
+
+.font-icon-size-46 {
+    font-size: 46;
+}
+
+.font-icon-size-28 {
+    font-size: 28;
+}
+
+.font-icon-size-24 {
+    font-size: 24;
+}
+
+.font-icon-size-18 {
+    font-size: 18;
+}
+
+.font-icon-size-16 {
+    font-size: 16;
+}
+
+.font-icon-size-14 {
+    font-size: 14;
+}
+
+.margin-left {
+    margin-left: 12;
 }

@@ -1,36 +1,75 @@
 <template>
-  <GridLayout rows="50,50,*,50,60,*,10" columns="40,*,40" class="page-parent">
+  <GridLayout rows="50,60,auto,60,auto,*,10" columns="40,*,50" class="page-parent">
+    <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" colSpan="3" rowSpan="6" />
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
       <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
     </FlexboxLayout>
-    <Image id="btn_back" src="res://ic_left_arrow_white" @tap="closePage()" row="0" col="0" />
-    <Image id="btn_done" src="res://ic_check_white" @tap="submiData()" row="0" col="2" />
+    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-    <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="3" />
-    <RadDataForm :source="customer" :metadata="customerMetadata" row="2" col="0" colSpan="3" />
+    <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="submiData()" :isEnabled="!isProcessing" row="0" col="2" />
 
-    <Label text="Chi Tiết Đơn Hàng:" class="header" row="3" col="0" colSpan="2" />
-    <Image id="btn_add_procuct" src="res://ic_add_primary" @tap="addProduct()" row="3" col="2" />
-   
-    <GridLayout class="lout-columns" rows="*,*" columns="30,*, 40,70, 100" row="4" col="0" colSpan="3">
-      <label text="Tổng Cộng:" class="lbl-sum text-right" row="0" col="1" colSpan="2" />
-      <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="0" col="3" colSpan="2"/>
+    <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
+    <Button class="btn btn-add" text="+" @tap="addCustomer()" :isEnabled="!isProcessing" row="1" col="2" />     
 
-      <Label text="ID" class="column-name text-center" row="1" col="0" />
-      <Label text="Tên SP" class="column-name text-center" row="1" col="1" />
-      <Label text="SL" class="column-name text-center" row="1" col="2" />
-      <Label text="Đơn Giá" class="column-name text-center" row="1" col="3" />
-      <Label text="Tổng" class="column-name text-center" row="1" col="4" />
+    <StackLayout row="2" col="0" colSpan="3" v-show="!!customer.name">
+      <StackLayout orientation="horizontal" class="lout-info">
+        <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"/>
+        <Label :text="customer.name" class="text-center txt-value" textWrap="true"/>
+      </StackLayout>
+
+      <StackLayout orientation="horizontal" class="lout-info" >
+        <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
+        <Label :text="customer.phone" class="text-center txt-value" textWrap="true" />
+
+        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" margin="0 4 0 24" v-show="!!customer.address" />
+        <Label :text="customer.address" class="text-center txt-value" textWrap="true" v-show="!!customer.address" />
+      </StackLayout>
+    </StackLayout>
+    <Label text="Hãy bấm nút + góc trên bên phải để thêm khách hàng." class="text-center" textWrap="true" color="red" margin="24" row="2" col="0" colSpan="3" v-show="!customer.name"/>
+
+    <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
+    <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="3" col="2" />
+    
+    <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="40,*, 40,100, 100" row="4" col="0" colSpan="3">
+      
+      <StackLayout row="0" col="2" colSpan="3" orientation="horizontal" class="edt-box" @tap="onClickDate()">
+          <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0" />
+          <Label :text="transDate" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
+
+      <StackLayout row="0" col="0" colSpan="2" orientation="horizontal" class="edt-box" @tap="onClickTime()">
+          <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0"/>
+          <Label :text="transTime" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
+
+      <GridLayout row="1" col="0" colSpan="5" rows="auto, auto, auto" columns="100, *" class="edt-box" v-show="this.transTotal != 0">
+          <!-- <Label :text="'fa-money-bill-alt' | fonticon" row="0" col="0" class="far font-icon font-icon-size-18"/> -->
+          <Label text="Tổng tiền SP:" class="text-right" textWrap="true" row="0" col="0" />          
+          <Label :text="displayTransTotal" class="text-right" textWrap="true" row="0" col="1" />
+          <Label text="VAT (10%):" class="text-right" textWrap="true" row="1" col="0" />
+          <Label :text="calculateVAT()" class="text-right" textWrap="true" row="1" col="1" />
+          <Label text="Tổng cộng:" class="text-right border-top lbl-sum" textWrap="true" row="2" col="0" />
+          <Label :text="calculateTotal()" class="text-right lbl-sum-value border-top"  padding ="0" textWrap="true" row="2" col="1" />
+          <!-- <Label text="(Chưa bao gồm VAT)" class="text-caption" textWrap="true" row="1" col="0" colSpan="2" /> -->
+      </GridLayout>
+    
+      <!-- <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/> -->
+
+      <!-- <Label text="ID" class="column-name text-center" row="3" col="0" /> -->
+      <Label text="Tên SP" class="column-name text-center" row="3" col="0" colSpan="2" />
+      <Label text="SL" class="column-name text-center" row="3" col="2" />
+      <Label text="Đơn Giá" class="column-name text-center" row="3" col="3" />
+      <Label text="Tổng" class="column-name text-center" row="3" col="4" />
     </GridLayout>
 
-    <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2">
+    <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
-        <GridLayout rows="*" columns="30,*, 40,70, 100">
-          <Label :text="item.id" class="lbl-id text-center" row="0" col="0" />
-          <Label :text="item.name" class="lbl-name text-center" row="0" col="1" />
+        <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
+          <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
+          <Label :text="item.name" class="lbl-name text-center" row="0" col="0"  colSpan="2" />
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
-          <Label :text="item.price" class="lbl-pricce text-center" row="0" col="3" />
-          <Label :text="item.total" class="lbl-total text-center" row="0" col="4" />
+          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />
+          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-center" row="0" col="4" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -40,46 +79,108 @@
 import StringConst from "../../assets/StringConst";
 import CustomerMeta from "../../data/formMeta/CustomerMeta";
 import SelectProduct from "./SelectProduct";
+import ChangeProductNumber from "./ChangeProductNumber";
+import Helper from '../../helper/PopularHelper';
+import ApiService from '../../service/BackEndService';
+import CreateNewCustomer from "../Customer/CreateNewCustomer";
+import DatePickerDlg from '../Dialog/DatePickerDlg';
+import TimePickerDlg from '../Dialog/TimePickerDlg';
+import CurrentUser from '../../data/CurrentUser';
+
 export default {
   data() {
     return {
+      isProcessing: false,
+      transDate: Helper.getCurrentDateStr(),
+      transTime: Helper.getCurrentTimeStr(),
       transTotal:0,
       displayTransTotal:"0 VND",
-      customerMetadata: CustomerMeta,
       customer: {
-        id: Math.floor(Math.random() * 100) + 100,
+        id: 111,
         name: "",
-        sex: "Nam",
+        sex: "",
         phone: "",
-        address: "Hồ Chí Minh"
+        address: "",
+        provinceId: "",
+        contactId: ""
       },
       products:[]
     };
   },
   methods: {
+    onClickDate() {
+       if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+
+      this.$showModal(DatePickerDlg, { 
+        fullscreen: false,
+        animated: true,
+        props: { 
+          title: StringConst.lbl_create_trans_date,
+          defaultDate: this.transDate
+        }
+      }).then(this.callbackSelectDate);
+    },
+    callbackSelectDate(result) {
+      this.isProcessing = false;
+      if (result == undefined || !result.isSuccess) {
+        return;
+      }
+      this.transDate = result.selectedDateStr;
+    },
+    onClickTime() {
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+
+      this.$showModal(TimePickerDlg, { 
+        fullscreen: false,
+        animated: true,
+        props: { 
+          title: StringConst.lbl_create_trans_time,
+          selectedTime: this.selectedTimeStr
+        }
+      }).then(this.callbackSelectTime);
+    },
+    callbackSelectTime(result) {
+      this.isProcessing = false;
+      if (result == undefined || !result.isSuccess) {
+        return;
+      }
+      this.transTime = result.selectedTimeStr;
+    },
     closePage() {
       this.$modal.close();
     },
+    addCustomer() {
+      this.isProcessing = true;
+      this.$showModal(CreateNewCustomer, { 
+        fullscreen: true,
+         animated: true,
+      }).then(this.callbackCreateCustomer);
+    },
+    callbackCreateCustomer(response) {
+      this.isProcessing = false;
+      if(response == undefined || !response.isSuccess) {
+        return;
+      }
+      this.customer = response.customer;
+    },
     submiData() {
+      if (this.isProcessing) {
+        return;
+      }
+
       if (!this.customer.name) {
         this.showDlg(
           StringConst.lbl_notification,
-          StringConst.msg_pls_fill_name
+          StringConst.msg_pls_add_customer
         );
         return;
-      } else if (!this.customer.phone) {
-        this.showDlg(
-          StringConst.lbl_notification,
-          StringConst.msg_pls_fill_phone
-        );
-        return;
-      } else if (this.customer.phone.length != 10 || !this.customer.phone.startsWith("0")) {
-        this.showDlg(
-          StringConst.lbl_notification,
-          StringConst.msg_phone_no_math
-        );
-        return;
-      }else if(this.transTotal == 0) {
+      } else if(this.transTotal == 0) {
         this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_trans_have_no_product
@@ -88,38 +189,126 @@ export default {
       }
 
       const now = new Date();
-      var time = now.getHours() + ":";
-      var min = now.getMinutes();
-      if (min < 10) {
-        time+= "0"+min;
-      }else {
-        time+=min;
+      if (Helper.getCurrentDateStr() == this.transDate) {
+        const timeArr = this.transTime.split(":");
+        if (timeArr[0] > now.getHours() ||(timeArr[0] == now.getHours() && timeArr[1] > now.getMinutes() )) {
+          this.showDlg(
+            StringConst.lbl_notification,
+            StringConst.msg_trans_date_is_in_future
+          );
+          return;
+        }
+      } 
+      
+      const transDate = this.transDate.split("/");
+      if (transDate[2] != now.getFullYear()) {
+          this.showDlg(
+            StringConst.lbl_notification,
+            StringConst.msg_trans_date_is_in_prev_year
+          );
+        return;
       }
+
+      const total = this.calculateTotal();
+      const message = "- Khách hàng: " + this.customer.name + "\n- Ngày lập: " + this.transTime + "  " + this.transDate + "\n- Tổng tiền: " + total + " (Đã bao gồm VAT)";
+
+      confirm({
+        title: StringConst.lbl_pls_check_order,
+        message: message,
+        okButtonText: StringConst.lbl_create_order,
+        cancelButtonText: StringConst.lbl_cancel,
+      }).then(result => {
+        if (result) {
+          this.startCreateOrder();
+        }
+      });    
+    },
+    startCreateOrder() {
+      const now = new Date();
+      const vat = Math.ceil(this.transTotal * 0.1);
+      const total = this.transTotal + vat;
 
       var newTransaction = {
         id: Math.floor(Math.random() * 100) + 100,
         code:"COD-" + now.getFullYear()+ "-"+ now.getTime() + 1,
         customer: this.customer,
-        store:"Takashimaya Vietnam",
-        time: time,
-        date: "Hôm nay",
-        transTotal: this.transTotal,
-        displayTransTotal: this.displayTransTotal,
+        store:"",
+        time: this.transTime,
+        date: this.transDate,
+        requestDate: Helper.convertLocalDateToRequestDate(this.transDate),
+        transTotal: total,
+        displayTransTotal: Helper.formatCurrencystr(total),
         products: this.products
       }
 
+      this.uploadTransaction(newTransaction);
+    },
+    uploadTransaction(newTransaction) {
+      this.isProcessing = true;
+
+      ApiService.methods.submitOrder(newTransaction, CurrentUser.methods.getBearId())
+      .then(json => this.callbackUploadTransactionSuccess(json, newTransaction))
+      .catch(this.callbackUploadTransactionFail);
+    },
+    callbackUploadTransactionSuccess(json, transaction) {
+      ApiService.methods.getOrders(transaction.requestDate, CurrentUser.methods.getBearId())
+        .then(json => this.callbackGetOrdersSuccess(json, transaction))
+        .catch(error => this.callbackUploadGetOrderFail(error, transaction));
+    },
+    callbackGetOrdersSuccess(json, transaction) {
+      if (json == undefined) {
+        return;
+      }
+      var order = json.records.find(el => json.records[0].abiz_contactid.value.toLowerCase() == transaction.customer.contactId.toLowerCase());
+      if (order != undefined) {
+        transaction.code = order.abiz_ordercode;
+        // transaction.time = order.abiz_ordertime;
+        transaction.store = order.abiz_outletid.text;
+        transaction.total = order.abiz_totalamountrollup;
+        transaction.displayTransTotal = Helper.formatCurrencystr(order.abiz_totalamountrollup);
+      }
+
+      this.$store.dispatch('insertInvoice', transaction);
       this.$modal.close({
         isSuccess: true,
         customer: this.customer,
-        transaction: newTransaction
+        transaction: transaction
       });
+      this.isProcessing = false;
+
+    },
+    callbackUploadGetOrderFail(error, transaction) {
+      console.log("GET ORDERS LIST ERROR", error.message);
+
+      this.$store.dispatch('insertInvoice', transaction);
+      this.$modal.close({
+        isSuccess: true,
+        customer: this.customer,
+        transaction: transaction
+      });
+      this.isProcessing = false;
+    },
+    callbackUploadTransactionFail(error) {
+      this.showDlg(StringConst.lbl_error, error.message);
+      this.isProcessing = false;
     },
     addProduct() {
-       this.$showModal(SelectProduct, { 
-        fullscreen: false
-        }).then(this.callbackAddProduct);
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+      
+      this.$showModal(SelectProduct, { 
+        fullscreen: false,
+        animated: true,
+        props: {
+          dateStr: Helper.convertLocalDateToRequestDate(this.transDate),
+          timeStr: this.transTime
+        }
+      }).then(this.callbackAddProduct);
     },
     callbackAddProduct(response) {
+      this.isProcessing = false;
       if(response == undefined || !response.isSuccess) {
         return;
       }
@@ -136,7 +325,79 @@ export default {
       }
 
       this.transTotal += response.product.total;
-      this.displayTransTotal = this.formatCurrentcy(this.transTotal);
+      this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
+    },
+    selectedProduct(event) {
+      const item = event.item;
+      action("Bạn chọn " + item.name + " là để:", 
+      StringConst.lbl_close, 
+      [StringConst.lbl_update_number, StringConst.lbl_delete])
+        .then(result => this.callBackSelectedProduct(result, item));
+    },
+    callBackSelectedProduct(result, item) {
+      if (result == StringConst.lbl_update_number) {
+        this.$showModal(ChangeProductNumber, {
+          fullscreen: false, 
+          animated: true,
+          props: { product: item }
+        }).then(res => this.callBackChangeSelectedProductNumber(res, item));
+      }else if (result == StringConst.lbl_delete) {
+        confirm({
+          title: StringConst.lbl_delete + " " + item.name,
+          message: StringConst.msg_sure_delete_product,
+          okButtonText: StringConst.lbl_accept,
+          cancelButtonText: StringConst.lbl_cancel
+        }).then(isAccept => {
+          if (isAccept == undefined || !isAccept) {
+            return
+          }
+
+          const itemIndex = this.products.indexOf(item);
+          if (itemIndex > -1 && itemIndex < this.products.length) {
+            this.products.splice(itemIndex, 1);
+            
+            this.transTotal = this.transTotal - item.total; 
+            this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
+          }
+        });
+      }
+    },
+    callBackChangeSelectedProductNumber(response, item) {
+      if (response == undefined || !response.isSuccess) {
+        return
+      }
+
+      const oldTotal = item.total;
+      item.number = response.newNumber;
+      item.total = item.number * item.price;
+
+      this.transTotal = this.transTotal - oldTotal + item.total; 
+      this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
+    },
+    callBackDeleteSelectedProduct(result, item) {
+      if (result == undefined || !result.result) {
+        return
+      }
+
+      const itemIndex = this.products.indexOf(item);
+      if (itemIndex > -1 && itemIndex < this.products.length) {
+        this.products.splice(itemIndex, 1);
+        
+        this.transTotal = this.transTotal - item.total; 
+        this.displayTransTotal = Helper.formatCurrencystr(this.transTotal);
+      }
+    },
+    formatCurrentcy(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    },
+    calculateVAT() {
+      const vat = Math.ceil(this.transTotal *0.1);
+      return this.formatCurrentcy(vat) + " VND";
+    },
+    calculateTotal() {
+      // const vat = Math.ceil(this.transTotal *1.1);
+      const vat = Math.ceil(this.transTotal *0.1);
+      return this.formatCurrentcy(this.transTotal + vat) + " VND";
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
@@ -144,9 +405,6 @@ export default {
         okButtonText: StringConst.lbl_close,
         message: dlgMsg
       });
-    },
-    formatCurrentcy(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " VND";
     }
   }
 };
@@ -202,6 +460,15 @@ export default {
   font-size: 16;
 }
 
+.text-right {
+  text-align: right;
+}
+
+.border-top {
+  border-top-color: $color-border;
+  border-top-width: 0.5;
+}
+
 .lout-columns {
   border-bottom-color: $color-border;
   border-bottom-width: 0.5;
@@ -209,12 +476,23 @@ export default {
 .lbl-sum, .lbl-sum-value {
   font-family: "f_arima_madurai_extra_bold";
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   text-align: right;
 }
 
 .lbl-sum-value {
   color: $color-accent;
-  padding-right: 10;
+  // padding-right: 10;
+}
+
+.lout-padding-ver {
+  padding: 4 0;
+}
+
+.lout-info {
+  margin: 4 12 12;
+  Label.font-icon {
+    width: 10%;
+  }
 }
 </style>

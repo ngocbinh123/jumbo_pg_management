@@ -1,0 +1,5 @@
+tns build android --release --key-store-path pg_keystore.jks --key-store-password 123456 --key-store-alias PGMan --key-store-alias-password 123456
+
+
+ADB command 
+Uninstall app:  adb shell pm uninstall -k com.nnbinh.jumbo
