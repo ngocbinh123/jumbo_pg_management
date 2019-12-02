@@ -87,6 +87,7 @@ import StringConst from "../../assets/StringConst";
 import ApiService from "../../service/BackEndService";
 import Helper from '../../helper/PopularHelper';
 import Remember from '../../share/Remember';
+import Constant from '../../data/Constant';
 export default {
   created() {
     this.getRemoteCustomers();
@@ -266,10 +267,11 @@ export default {
       json.records.forEach(remote => {
         var isExist = this.$store.state.customers.find(el => el.contactid == remote.abiz_contactid) != undefined;
         if (!isExist) {
+
           var customer = {
             id: Math.floor(Math.random() * 100) + 100,
             name: remote.fullname,
-            sex: remote.gendercode.value == 1 ? "Nam" : "Nữ",
+            sex: remote.gendercode.value == Constant.GENDER.Male.value ? Constant.GENDER.Male.text : Constant.GENDER.Female.text,
             phone: remote.mobilephone,
             address: remote.abiz_provinceid.text,
             contactId: remote.contactid

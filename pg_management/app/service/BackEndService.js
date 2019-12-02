@@ -3,6 +3,8 @@ const ErrorParser = require("./ErrorParser");
 
 const fetchModule = require("tns-core-modules/fetch");
 const config = require("./Config");
+const Constant = require("../data/Constant");
+
 module.exports = {
     methods: {
         upLoadImage(bearer, file) {
@@ -66,9 +68,10 @@ module.exports = {
                 .then(this.checkResponse);
         },
         createNewCustomer(customer, bearer) {
+            const gender = customer.sex == Constant.GENDER.Male.text ? Constant.GENDER.Male.value : Constant.GENDER.Female.value;
             const requestBody = {
                 "abiz_fullname": customer.name,
-                "abiz_gender": customer.sex == "Nam" ? "False" : "True",
+                "abiz_gendercode": gender,
                 "abiz_mobilephone": customer.phone,
                 "abiz_provinceid": customer.provinceId
             };

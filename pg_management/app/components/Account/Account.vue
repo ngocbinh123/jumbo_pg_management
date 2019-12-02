@@ -65,7 +65,7 @@
               <Label :text="'fa-venus-mars' | fonticon" class="fas icon-field-user" row="9" col="0" />
               <StackLayout class="lout-info" row="9" col="1" colSpan="2">
                 <Label text="Giới Tính" class="text-label"/>              
-                <Label :text="user.gender == 'Male' ? 'Nam' : 'Nữ'" class="text-value" textWrap="true"/>              
+                <Label :text="user.gender" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-th' | fonticon" class="fas icon-field-user" row="10" col="0" />
