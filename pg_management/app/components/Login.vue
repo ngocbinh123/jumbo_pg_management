@@ -124,13 +124,13 @@ export default {
       remember.setUserManagerPhone(json.manager_abiz_mobilephone);
 
 
-      var userGender = json.abiz_categorycode.text;
-      if (userGender.toLowerCase() == Constant.GENDER.Male.text.toLowerCase()) {
-        userGender = Constant.GENDER.Male.text;
-      }else if (userGender.toLowerCase() == Constant.GENDER.Female.text.toLowerCase()) {
-        userGender = Constant.GENDER.Female.text;
+      var userGenderValue = json.abiz_categorycode.value;
+      
+      if (userGenderValue == Constant.GENDER.Male.value) {
+        remember.setUserGender(Constant.GENDER.Male.text);
+      }else if (userGenderValue == Constant.GENDER.Female.value) {
+        remember.setUserGender(Constant.GENDER.Female.text);
       }
-      remember.setUserGender(userGender);
      
       // birthday field in response have comple format.
       var birthday = json.abiz_birthday;
