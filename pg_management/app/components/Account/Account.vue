@@ -277,6 +277,10 @@ import QueryBuilder from '../../storaged/QueryBuilder'
         })
       });
 
+      this.$store.customers = [];
+      this.$store.provinces = [];
+      this.$store.invoices = [];
+
       this.backToLogin();
     },
     backToLogin() {
@@ -335,12 +339,7 @@ import QueryBuilder from '../../storaged/QueryBuilder'
   font-family: "f_arima_madurai_extra_bold";
 }
 .account-body {
-  // justify-content: center;
-  // align-items: center;
   margin: 0 12;
-  // border-top-left-radius: 20%;
-  // border-top-right-radius: 20%;
-
 }
 
 .icon-field-user {
