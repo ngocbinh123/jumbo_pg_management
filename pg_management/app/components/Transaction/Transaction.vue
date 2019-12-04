@@ -266,24 +266,23 @@ export default {
 
     },
     getRemoteCustomers() {
-      const currentDate= Helper.getCurrentDateStrForRequest();
       const lastDate = Remember.getLastDateGetRemoteCustomers();
-      if (lastDate == currentDate) {
+      if (!!lastDate) {
         return;
       }
-
+      const currentDate= Helper.getCurrentDateStrForRequest();
       ApiService.methods.getCustomers(currentDate,CurrentUser.methods.getBearId())
       .then(this.callbackGetRemoteCustomerSuccess)
       .catch(this.callbackGetRemoteCustomerFail);
     },
     callbackGetRemoteCustomerSuccess(json) {
       json.records.forEach(remote => {
-        var isExist = this.$store.state.customers.find(el => el.contactid == remote.abiz_contactid) != undefined;
-        if (!isExist) {
+        var isExist = this.$store.state.customers.find(el => el.contactid == remote.abiz_contactid || el.name == remote.fullname) != undefined;
+        if (!isExist && !!remote.abiz_provinceid.text && !!remote.gendercode.value) {
           var customer = {
             id: Math.floor(Math.random() * 100) + 100,
             name: remote.fullname,
-            sex: remote.gendercode.value == 1 ? "Nam" : "Nữ",
+            sex: remote.gendercode.value == Constant.GENDER.Male.value ? Constant.GENDER.Male.text : Constant.GENDER.Female.text,
             phone: remote.mobilephone,
             address: remote.abiz_provinceid.text,
             contactId: remote.contactid

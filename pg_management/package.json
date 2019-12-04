@@ -1,6 +1,6 @@
 {
     "name": "pg_management",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A native application built with NativeScript-Vue",
     "author": "Binh Ngoc Nguyen <nnbinh0301@gmail.com>",
     "license": "personal",

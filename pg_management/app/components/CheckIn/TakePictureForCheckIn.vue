@@ -3,19 +3,9 @@
         <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
         <Label text="CHỤP HÌNH CHẤM CÔNG" class="text-center" />
         </FlexboxLayout>
-        <!-- <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" /> -->
-        <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2" v-show="!!cameraImage"/>
+        <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2" />
         <Image :src="cameraImage" id="image" loadMode="sync" stretch="aspectFit" margin="10" row="2" col="0" colSpan="3" />
 
-        <!-- <StackLayout row="2" col="0" colSpan="3" margin="12" class="lout-rule">
-            <Label textWrap="true" text="CHÚ Ý" class="text-rule-header" />       
-            <Label textWrap="true" text="Bạn cần phải chụp hình gửi về hệ thống. Hình bạn chụp cần phải đáp ứng những tiêu chí như sau:"/>
-            <Label textWrap="true" text="- Hình lấy toàn thân, rõ mặt."/>
-            <Label textWrap="true" text="- Tóc tai gọn gàng."/>
-            <Label textWrap="true" text="- Trang phục tươm tất, đúng quy định."/>
-            <Label textWrap="true" text="- Hình nền là cửa hàng bạn đang làm việc."/>
-
-        </StackLayout> -->
         <Button class="btn-take-pic" text="CHỤP HÌNH" @tap="onTakePictureTap" row="4" col="0" colSpan="3" :isEnabled="!processing" v-show="!processing"/>
         <ActivityIndicator v-show="processing" busy="true" row="4" col="0" colSpan="3" />
     </GridLayout>
@@ -29,54 +19,91 @@
     import StringConst from '../../assets/StringConst';
     import ApiService from '../../service/BackEndService';
     import CurrentUser from '../../data/CurrentUser';
-    
+    import Config from '../../service/Config';
+    const imageSourceModule = require("tns-core-modules/image-source");
     const bgHttp = require("nativescript-background-http");
     const fs = require("file-system");
     const platform = require("platform");
+    import { error } from '@nativescript/core/trace/trace';
+    import * as firebase from"nativescript-plugin-firebase";
+    import Constant from "../../data/Constant";
+
     export default {
+        created() {
+            this.trackingPage();
+        },
         data() {
             return {
-                saveToGallery: false,
-                allowsEditing: false,
-                keepAspectRatio: true,
-                width: 320,
-                height: 240,
                 cameraImage: null,
-                labelText: "",
                 processing: false,
             }
         },
         methods: {
+            trackingPage() {
+                firebase.analytics.logEvent({
+                key: Constant.KEY_PAGE_VIEW,
+                parameters: [
+                    {
+                        key: Constant.KEY_PAGE_ID, 
+                        value: "CHECK_IN_TAKE_PICTURE"
+                    }
+                    ]
+                });
+            },
             onClickSendButton() {
                 if(this.processing || this.cameraImage == null) {
                     return;
                 }
                 this.getImageFilePath(this.cameraImage)
                     .then(path => {
-                        console.log(`path: ${path}`);
                         this.uploadImage(path);
-                    });
+                    });    
+            },
+            uploadImageSuccess() {
+                this.processing = false;
+                this.$modal.close({
+                    isSuccess: true
+                });
+            },
+            uploadImageSuccessFail(error) {
+                this.showDlg(StringConst.lbl_fail, error.message);
+                this.processing = false;
             },
             uploadImage(path) {
                 this.processing = true;
 
                 let file = fs.File.fromPath(path);
+           
                 const fileName = file.path.substr(file.path.lastIndexOf("/") + 1);
+                var bearer = "Bearer " + CurrentUser.methods.getBearId();
 
                 let request = {
-                    url: "http://www.csm-testcenter.org/test",
+                    url: Config.uploadImageUrl,
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/octet-stream",
-                        "File-Name": fileName
+                        "Authorization": bearer,
+                        "Content-Type": "application/octet-stream"
                     },
-                    description: "uploading image " + file.path,
-                    androidAutoDeleteAfterUpload: false,
-                    androidNotificationTitle: "NativeScript HTTP background"
+                    description: "Đang tải hình...",
+                    androidAutoDeleteAfterUpload: true,
+                    androidNotificationTitle: "Tải Hình Chấm Công"
                 };
 
+                request.description = "uploading image " + file.path;
+                request.headers["File-Name"] = fileName;
+
                 const session = bgHttp.session("image-upload");
-                let task = session.uploadFile(file.path, request);
+
+                var params = [
+                            {
+                                name: fileName,
+                                filename: file.path,
+                                mimeType: "image/jpeg"
+                            }
+                        ];
+
+                var task = session.multipartUpload(params, request);
+
                 // task.on("progress", this.onEvent.bind(this));
                 task.on("error", this.onEvent.bind(this));
                 task.on("responded", this.onEvent.bind(this));
@@ -84,17 +111,34 @@
 
             },
             onEvent(e) {
-                console.log("UPLOADING IMAGE", e.eventName + " " + e.object.description);
-                console.log("UPLOADING IMAGE",  e.error ? e.error.toString() : e.error);
                 switch(e.eventName) {
                     case "complete": 
-                        this.showDlg(StringConst.lbl_success, StringConst.msg_system_received_your_img)
-                        .then(this.$modal.close());
                         this.processing = false;
+                        this.$modal.close({
+                            isSuccess: true
+                        });
                         break;
                     case "error": 
-                        this.showDlg(StringConst.lbl_fail, e.error ? e.error.toString() : e.error);
                         this.processing = false;
+                        var message = StringConst.please_try_again;
+                    
+                        switch(e.responseCode) {
+                            case 400: 
+                                message = "Đã có lỗi xảy ra trong quá trình tải hình lên hệ thống. Xin hãy thử lại một lần nữa."
+                                break;
+                            case 500: 
+                                message = "Đã có sự cố xảy trên hệ thống. Xin hãy thử lại."
+                                break;
+                            case 401: 
+                                message = "Đã xảy ra lỗi 401 (Unauthorized). \nBạn cần phải đăng xuất ứng dụng rồi đăng nhập lại."
+                                break;
+                            default: 
+                                message = "Tải hình lên hệ thống thất bại với lỗi " + e.responseCode + ". Xin hãy thử lại."
+                        }
+                        this.uploadImageSuccessFail(Error(message))
+                        break;
+                    case "progress":
+                        console.log("UPLOADING_IMAGE", JSON.stringify(e));
                         break;
                 }
             },
@@ -106,10 +150,11 @@
                 requestPermissions().then(this.starTakePicture,this.callBackUserRejectPermission);
             },
             starTakePicture() {
-                takePicture({ width: this.width, height: this.height, 
-                        keepAspectRatio: this.keepAspectRatio, saveToGallery: this.saveToGallery, 
-                        allowsEditing: this.allowsEditing }).
-                            then(this.callBackTakePictureSuccessful,
+                this.processing = true;
+                takePicture({ width: 240, height: 320, 
+                        keepAspectRatio: true, saveToGallery: false, 
+                        allowsEditing: false })
+                        .then(this.callBackTakePictureSuccessful,
                             this.callBackError);
             },
             callBackUserRejectPermission() {
@@ -118,7 +163,7 @@
             },
             callBackTakePictureSuccessful(imageAsset) {
                 this.cameraImage = imageAsset;
-                this.processing = false;
+                this.processing = false;            
             },
             callBackError(err) {
                 this.processing = false;

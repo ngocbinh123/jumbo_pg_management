@@ -65,7 +65,7 @@
               <Label :text="'fa-venus-mars' | fonticon" class="fas icon-field-user" row="9" col="0" />
               <StackLayout class="lout-info" row="9" col="1" colSpan="2">
                 <Label text="Giới Tính" class="text-label"/>              
-                <Label :text="user.gender == 'Male' ? 'Nam' : 'Nữ'" class="text-value" textWrap="true"/>              
+                <Label :text="user.gender" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-th' | fonticon" class="fas icon-field-user" row="10" col="0" />
@@ -292,6 +292,10 @@ export default {
         })
       });
 
+      this.$store.customers = [];
+      this.$store.provinces = [];
+      this.$store.invoices = [];
+
       this.backToLogin();
     },
     backToLogin() {
@@ -350,12 +354,7 @@ export default {
   font-family: "f_arima_madurai_extra_bold";
 }
 .account-body {
-  // justify-content: center;
-  // align-items: center;
   margin: 0 12;
-  // border-top-left-radius: 20%;
-  // border-top-right-radius: 20%;
-
 }
 
 .icon-field-user {

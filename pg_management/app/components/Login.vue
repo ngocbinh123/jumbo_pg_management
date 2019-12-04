@@ -44,8 +44,8 @@
 import Home from "./App";
 import ChangePass from "./ChangePassword";
 import Customer from "../data/objects/Customer";
-
 import * as firebase from"nativescript-plugin-firebase";
+import Vue from "nativescript-vue";
 import Constant from "../data/Constant";
 
 const stringConst = require("../assets/StringConst");
@@ -123,7 +123,6 @@ export default {
       remember.setUserCode(json.abiz_usercode);
       remember.setUserAddress(json.abiz_addresscalculated);
     
-      remember.setUserGender(json.abiz_gender.text);
       remember.setUserIDCard(json.abiz_identitycard);
       remember.setUserPhone(json.abiz_mobilephone);
       remember.setUserGID(json.abiz_usergid);
@@ -136,6 +135,15 @@ export default {
       remember.setUserManagerEmail(json.manager_emailaddress);
       remember.setUserManagerPhone(json.manager_abiz_mobilephone);
 
+
+      var userGenderValue = json.abiz_categorycode.value;
+      
+      if (userGenderValue == Constant.GENDER.Male.value) {
+        remember.setUserGender(Constant.GENDER.Male.text);
+      }else if (userGenderValue == Constant.GENDER.Female.value) {
+        remember.setUserGender(Constant.GENDER.Female.text);
+      }
+     
       // birthday field in response have comple format.
       var birthday = json.abiz_birthday;
       if (birthday.includes("T")) {
@@ -154,13 +162,7 @@ export default {
       this.getDataBeforeGotoHome();
     },
     getDataBeforeGotoHome() {
-      this.processing = true;
-      // var customers = Customer.customers;
-      // this.$store.dispatch('insertAllCustomers', customers);
-      // for(var index = 0; index < customers.length; index++) {
-      //   this.$store.dispatch('insertCustomer', customers[index]);
-      // }
-
+      // this.processing = true;
       this.gotoHome();
     },
     loginSuccess(json) {
