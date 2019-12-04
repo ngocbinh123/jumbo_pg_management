@@ -18,14 +18,28 @@
 import CurrentUser from '../../data/CurrentUser';
 import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
 
 export default {
     created() {
         if ( this.$store.state.provinces.length == 0) {
             this.getProvinces();
         }
+        this.trackingPage();
     },
     methods: {
+        trackingPage() {
+            firebase.analytics.logEvent({
+            key: Constant.KEY_PAGE_VIEW,
+            parameters: [
+                {
+                    key: Constant.KEY_PAGE_ID, 
+                    value: "DLG_ADDRESS_PROVINCE"
+                }
+                ]
+            });
+        },
         closePage() {
             this.$modal.close();
         },

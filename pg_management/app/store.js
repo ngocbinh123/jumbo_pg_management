@@ -65,7 +65,6 @@ const store = new Vuex.Store({
             }
         },
         loadInvoices(state, data) {
-            console.log("loadInvoices", data.invoices);
             state.invoices = [];
             for (var i = 0; i < data.invoices.length; i++) {
                 var dateArr = data.invoices[i][6].split(" ");
@@ -89,7 +88,6 @@ const store = new Vuex.Store({
             }
         },
         saveInvoice(state, data) {
-            console.log("saveInvoice: ", data.invoice);
             state.invoices.unshift(data.invoice);
         },
         save(state, data) {
@@ -105,23 +103,18 @@ const store = new Vuex.Store({
                 var createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_CUSTOMER, COLS_CUSTOMER_FOR_CREATE_TB);
                 db.execSQL(createTableSQL)
                     .then((result) => {
-                        console.log("CREATE TABLE CUSTOMER SUCCESS", result);
                         createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
                         db.execSQL(createTableSQL)
                             .then((result) => {
-                                console.log("CREATE TABLE PROVINCE SUCCESS", result);
                                 createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
                                 db.execSQL(createTableSQL)
                                     .then((result) => {
-                                        console.log("CREATE TABLE PRODUCT SUCCESS", result);
                                         createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_INVOICE, COLS_INVOICE_FOR_CREATE_TB);
                                         db.execSQL(createTableSQL)
                                             .then((result) => {
-                                                console.log("CREATE TABLE INVOICE SUCCESS", result);
                                                 createTableSQL = QueryBuilder.buildQueryCreateTB(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL_FOR_CREATE_TB);
                                                 db.execSQL(createTableSQL)
                                                     .then((result) => {
-                                                        console.log("CREATE TABLE INVOICE DETAIL SUCCESS", result);
                                                         context.commit("init", { database: db });
                                                     }).catch((err) => {
                                                         console.log("CREATE TABLE INVOICE DETAIL ERROR", err);
@@ -161,7 +154,6 @@ const store = new Vuex.Store({
         createTableCustomer(context, db, step) {
             const query = QueryBuilder.buildQueryCreateTB(TABLE_CUSTOMER, COLS_CUSTOMER_FOR_CREATE_TB);
             db.execSQL(query).then(result => {
-                console.log("CREATE TABLE CUSTOMER RESULT", result);
                 this.createTables(context, db, step + 1);
             }, error => {
                 console.log("CREATE TABLE CUSTOMER ERROR", error);
@@ -170,7 +162,6 @@ const store = new Vuex.Store({
         createTableProduct(context, db, step) {
             const query = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
             db.execSQL(query).then(result => {
-                console.log("CREATE TABLE PRODUCT RESULT", result);
                 this.createTables(context, db, step + 1);
             }, error => {
                 console.log("CREATE TABLE PRODUCT ERROR", error);
@@ -179,7 +170,6 @@ const store = new Vuex.Store({
         createTableProvince(context, db) {
             const query = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
             db.execSQL(query).then(result => {
-                console.log("CREATE TABLE PROVINCE RESULT", result);
                 this.createTables(context, db, step + 1);
             }, error => {
                 console.log("CREATE TABLE PROVINCE ERROR", error);
@@ -304,7 +294,6 @@ const store = new Vuex.Store({
             var query = QueryBuilder.buildQueryInsert(TABLE_INVOICE, COLS_INVOICE_WITHOUT_ID, "?,?,?,?,?,?");
             context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, data.customer.contactId, data.time + " " + data.date])
                 .then(id => {
-                    console.log("INSERT INVOICE SUCCESS", id);
                     data.id = id;
                     context.commit("saveInvoice", { invoice: data });
                     // productId, productName, number, price, total, invoiceId
@@ -312,7 +301,7 @@ const store = new Vuex.Store({
                         query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
                         context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, id])
                             .then(id => {
-                                console.log("INSERT INVOICE DETAIL SUCCESS", id);
+                                // console.log("INSERT INVOICE DETAIL SUCCESS", id);
                             })
                             .catch(error => {
                                 console.log("INSERT INVOICE DETAIL ERROR", error);

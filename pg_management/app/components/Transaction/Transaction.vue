@@ -87,7 +87,9 @@ import StringConst from "../../assets/StringConst";
 import ApiService from "../../service/BackEndService";
 import Helper from '../../helper/PopularHelper';
 import Remember from '../../share/Remember';
-import Constant from '../../data/Constant';
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
+
 export default {
   created() {
     this.getRemoteCustomers();
@@ -107,6 +109,17 @@ export default {
     };
   },
   methods: {
+    trackintPage() {
+      firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+          {
+            key: Constant.KEY_PAGE_ID, 
+            value: "TAB_ORDER"
+          }
+        ]
+      });
+    },
     onSelectedTransaction(event) {
       if (this.isProcessing) {
         return

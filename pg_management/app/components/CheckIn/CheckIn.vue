@@ -34,12 +34,14 @@
 </template>
 
 <script>
-import Constant from "../../data/Constant";
 import StringConst from "../../assets/StringConst";
 import CurrentUser from "../../data/CurrentUser";
 import ApiService from "../../service/BackEndService";
 import Helper from "../../helper/PopularHelper";
 import * as Geolocation from 'nativescript-geolocation';
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
+
 export default {
   created() {
     const now = new Date();
@@ -53,6 +55,7 @@ export default {
       min =  "0" + min;
     }
     this.checkInTime = hour + ":" + min;
+    this.trackintPage();
     this.startGetLocation();
   },
   data() {
@@ -69,6 +72,17 @@ export default {
     };
   },
   methods: {
+    trackintPage() {
+      firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+          {
+            key: Constant.KEY_PAGE_ID, 
+            value: "CHECK_IN_SUBMIT_DATA"
+          }
+        ]
+      });
+    },
     startGetLocation() {
       this.processing = true;
       Geolocation.enableLocationRequest(true)

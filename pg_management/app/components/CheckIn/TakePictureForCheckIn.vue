@@ -25,8 +25,13 @@
     const fs = require("file-system");
     const platform = require("platform");
     import { error } from '@nativescript/core/trace/trace';
+    import * as firebase from"nativescript-plugin-firebase";
+    import Constant from "../../data/Constant";
 
     export default {
+        created() {
+            this.trackingPage();
+        },
         data() {
             return {
                 cameraImage: null,
@@ -34,6 +39,17 @@
             }
         },
         methods: {
+            trackingPage() {
+                firebase.analytics.logEvent({
+                key: Constant.KEY_PAGE_VIEW,
+                parameters: [
+                    {
+                        key: Constant.KEY_PAGE_ID, 
+                        value: "CHECK_IN_TAKE_PICTURE"
+                    }
+                    ]
+                });
+            },
             onClickSendButton() {
                 if(this.processing || this.cameraImage == null) {
                     return;

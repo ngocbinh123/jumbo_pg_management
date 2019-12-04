@@ -61,6 +61,8 @@ import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 import ApiService from '../../service/BackEndService';
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
 
 const now = new Date();
 export default {
@@ -68,6 +70,7 @@ export default {
     this.fetchCheckInSchedules();
   },
   created() {
+    this.trackintPage();
     var current = new Date();
     var firstDate = new Date(current.getFullYear(), current.getMonth(), 1);
     var lastDate = new Date(current.getFullYear(), current.getMonth() + 1, 0);
@@ -87,6 +90,17 @@ export default {
     };
   },
   methods: {
+    trackintPage() {
+      firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+          {
+            key: Constant.KEY_PAGE_ID, 
+            value: "TAB_HOME"
+          }
+        ]
+      });
+    },
     isToday(date) {
       return (
         date.getDate() == now.getDate() &&
