@@ -23,11 +23,14 @@
 import CurrentUser from '../../data/CurrentUser';
 import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
 
 export default {
     props: ["dateStr","timeStr"],
     created() {
-        this.getProducts();        
+        this.getProducts();
+        this.trackingPage();       
     },
     data() {
         return {
@@ -36,6 +39,17 @@ export default {
         };
     },
     methods: {
+        trackingPage() {
+            firebase.analytics.logEvent({
+            key: Constant.KEY_PAGE_VIEW,
+            parameters: [
+                {
+                    key: Constant.KEY_PAGE_ID, 
+                    value: "PRODUCT_SHOW_ALL"
+                }
+                ]
+            });
+        },
         closePage() {
             this.$modal.close();
         },
