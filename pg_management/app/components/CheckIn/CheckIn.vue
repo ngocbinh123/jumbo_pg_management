@@ -1,6 +1,6 @@
 <template>
   <GridLayout class="page-parent" rows="50,*" columns="30,*">
-    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
+    <!-- <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" /> -->
     
     <Label text="THÔNG TIN CHẤM CÔNG" class="title-white text-center"  row="0" col="0" colSpan="2"/>
     <FlexboxLayout row="0" col="0" rowSpan="2" colSpan="2">
@@ -21,8 +21,9 @@
         <Button
           id="btn_submit"
           class="btn-primary"
-          :text="this.location == null ? 'Lấy Vị Trí Của Bạn' : 'Gửi'"
+          text="CHẤM CÔNG"
           @tap="onClickButton()"
+          v-show="isShowButton"
           row="5"
           col="0"
           colSpan="2"
@@ -37,10 +38,10 @@ import Constant from "../../data/Constant";
 import StringConst from "../../assets/StringConst";
 import CurrentUser from "../../data/CurrentUser";
 import ApiService from "../../service/BackEndService";
+import Helper from "../../helper/PopularHelper";
 import * as Geolocation from 'nativescript-geolocation';
 export default {
   created() {
-    this.startGetLocation();
     const now = new Date();
     var hour = now.getHours();
     if(hour < 10) {
@@ -52,8 +53,8 @@ export default {
       min =  "0" + min;
     }
     this.checkInTime = hour + ":" + min;
+    this.startGetLocation();
   },
-  props: ["checkInItem"],
   data() {
     return {
       locationFailure:false,
@@ -63,7 +64,8 @@ export default {
       userName: CurrentUser.methods.getUserName(),
       checkInTime: "",
       store: "",
-      processing: false
+      processing: false,
+      isShowButton: false
     };
   },
   methods: {
@@ -84,18 +86,19 @@ export default {
                     this.location = result;
                     this.locationtr = result.latitude + " - " + result.longitude;
                     this.processing = false;
+                    this.submitData();
                 })
                 .catch(e => {
                     console.log('loc error', e);
                     this.processing = false;
+                    this.isShowButton = true;
                 });
             });
         });
     },
     closePage(){
       this.$modal.close({
-        isSuccess: false,
-        item: {}
+        isSuccess: false
       });
     },
     onClickButton() {
@@ -107,8 +110,7 @@ export default {
     },
     submitData() {
       this.processing = true;
-      const now = new Date();
-      const checkInDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+      const checkInDate = Helper.getCurrentDateStrForRequest();
       const data = {
         date: checkInDate,
         time: this.checkInTime,
@@ -122,12 +124,12 @@ export default {
     submitDataSuccess(json) {
       this.processing = false;
       this.$modal.close({
-        isSuccess: true,
-        item: {}
+        isSuccess: true
       });
     }, 
     submitDataFail(error) {
       this.processing = false;
+      this.isShowButton = true;
       this.showDlg(StringConst.lbl_error, error.message);
     },
     showDlg(dlgTitle, dlgMsg) {

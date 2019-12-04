@@ -9,7 +9,7 @@ module.exports = {
     getProvincesUrl: API_PREFIX + "masterdata/lookup",
     getProvincesUrl: API_PREFIX + "masterdata/lookup",
     getDistrictsUrl: API_PREFIX + "masterdata/lookup",
-    uploadImageUrl: API_PREFIX + "masterdata/lookup",
+    uploadImageUrl: API_PREFIX + "upload",
     getSessionsUrl: API_PREFIX + "session/date",
     checkInOutUrl: API_PREFIX + "session/timeentry",
     createCustomerUrl: API_PREFIX + "order/contact",
