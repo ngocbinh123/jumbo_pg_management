@@ -277,8 +277,8 @@ export default {
         transaction.code = order.abiz_ordercode;
         // transaction.time = order.abiz_ordertime;
         transaction.store = order.abiz_outletid.text;
-        transaction.total = order.abiz_totalamountrollup;
-        transaction.displayTransTotal = Helper.formatCurrencystr(order.abiz_totalamountrollup);
+        // transaction.total = order.abiz_totalamountrollup;
+        // transaction.displayTransTotal = Helper.formatCurrencystr(order.abiz_totalamountrollup);
       }
 
       this.$store.dispatch('insertInvoice', transaction);

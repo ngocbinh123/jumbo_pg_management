@@ -25,7 +25,7 @@
     <TextView v-model="selectedStreet" class="edt-box" row="12" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="done" />
 
     <Button
-      text="CHỌN"
+      text="HOÀN THÀNH"
       class="btn btn-fill-bg"
       @tap="submiData()"
       row="14"
