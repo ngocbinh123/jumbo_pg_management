@@ -7,25 +7,6 @@ const Constant = require("../data/Constant");
 
 module.exports = {
     methods: {
-        upLoadImage(bearer, file) {
-            var bearer = "Bearer " + bearId;
-
-            var name = file.substr(file.lastIndexOf("/") + 1);
-            var bghttp = require("nativescript-background-http");
-            var session = bghttp.session("image-upload");
-            var request = {
-                url: config.uploadImageUrl,
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/octet-stream",
-                    "Authorization": bearer
-                },
-                description: "Uploading " + name
-            };
-
-            var task = session.uploadFile(file, request);
-            return task;
-        },
         getProducts(dateStr, timeStr, bearer) {
             const requestBody = {
                 "abiz_sessiondate": dateStr,

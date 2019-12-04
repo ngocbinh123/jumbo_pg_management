@@ -41,7 +41,7 @@
         row="2"
         col="1"
         v-show="isSelectedCurrentDate && currCheckInList.length > 0"
-        @tap="onClickCheckIn()"
+        @tap="openCamera()"
         :isEnabled="!isChkInProscess"
       />
       <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
@@ -62,9 +62,6 @@ import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 import ApiService from '../../service/BackEndService';
 
-// const ObservableArray = require("tns-core-modules/data/observable-array")
-//   .ObservableArray;
-// const Constant = require("../../data/Constant");
 const now = new Date();
 export default {
   mounted() {
@@ -125,20 +122,18 @@ export default {
       this.fetchCheckInSchedules();
       this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
     },
-    showCheckInPage(chkItem) {
+    showCheckInPage() {
       this.$showModal(CheckIn, { 
         fullscreen: true, 
         animated: true,
-        transition: Transition.pageTransition,
-        props: { checkInItem: chkItem }
+        transition: Transition.pageTransition
         }).then(this.callBackCheckIn);
     },
     onClickCheckIn() {
       this.isChkInProscess = true;
-      this.showCheckInPage({});
+      this.showCheckInPage();
     },
     fetchCheckInSchedules() {
-      // console.log("BEARER", CurrentUser.methods.getBearId());
       this.isChkInProscess = true;
       this.currCheckInList = [];
       ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())
@@ -154,9 +149,17 @@ export default {
       this.showDlg(StringConst.lbl_error, error.message);
     },
     openCamera() {
+      this.isChkInProscess = true;
       this.$showModal(TakePicForChkIn, {
               fullscreen: true,
               animated: true
+          }).then(response => {
+            this.isChkInProscess = false;
+            if (response.isSuccess) {
+              this.onClickCheckIn();
+            }else {
+              this.showDlg(StringConst.lbl_notification,StringConst.msg_please_should_take_picture_before);
+            }
           });
     },
     showDlg(dlgTitle, dlgMsg) {
