@@ -1,6 +1,6 @@
 {
     "name": "pg_management",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "description": "A native application built with NativeScript-Vue",
     "author": "Binh Ngoc Nguyen <nnbinh0301@gmail.com>",
     "license": "personal",
@@ -8,7 +8,7 @@
         "id": "com.nnbinh.jumbo",
         "templateVersion": "v2",
         "tns-android": {
-            "version": "6.0.1"
+            "version": "6.1.1"
         },
         "tns-ios": {
             "version": "6.0.1"
