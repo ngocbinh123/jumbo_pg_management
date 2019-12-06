@@ -5,7 +5,7 @@
         </FlexboxLayout>
         <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2"/>
         <StackLayout margin="0" row="2" col="0" colSpan="3">
-            <Image :src="!cameraImage ? 'res://background' : cameraImage" id="image" loadMode="sync" stretch="aspectFit"/>
+            <Image :src="!cameraImage ? 'res://bg_trans' : cameraImage" id="image" loadMode="sync" stretch="aspectFit"/>
         </StackLayout>
 
         <Button class="btn-take-pic" text="CHỤP HÌNH" @tap="onTakePictureTap" row="4" col="0" colSpan="3" :isEnabled="!processing" v-show="!processing"/>
