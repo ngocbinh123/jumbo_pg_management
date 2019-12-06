@@ -82,11 +82,11 @@ export default {
         return;
 
       }
-
+  
       this.product.id = result.selected.abiz_productid;
       this.product.name = result.selected.abiz_name;
       this.product.price = result.selected.abiz_salesprice;
-      this.producr.currencyUnit = result.selected.transactioncurrencyid.text;
+      this.product.currencyUnit = result.selected.transactioncurrencyid.text;
 
     },
     submiData() {

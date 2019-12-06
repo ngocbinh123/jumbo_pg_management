@@ -95,7 +95,7 @@ export default {
     this.getRemoteCustomers();
     this.getRemoteOrders();
     var currentDate = new Date();
-    this.date = currentDate.getDate() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
+    this.date = Helper.getCurrentDateStr();
   },
   data() {
     return {
@@ -129,6 +129,19 @@ export default {
       
       if (event.item.products.length == 0) {
         let that = this;
+        if (event.item.customer.phone == "" || event.item.customer.address == "") {
+
+          const transCustomer = this.$store.state.customers.find(el => el.contactId == event.item.customer.contactId);
+          if (transCustomer != undefined) {
+            if (event.item.customer.phone == "") {
+              event.item.customer.phone = transCustomer.phone;
+            }
+
+            if (event.item.customer.address == "") {
+              event.item.customer.address = transCustomer.address;
+            }
+          }
+        }
         const query = "SELECT productId, productName, number, price, total, invoiceId FROM InvoiceDetail WHERE invoiceId = ?";
         this.$store.state.database.all(query, [event.item.id]).then(result => {
           result.forEach(row => {
@@ -142,8 +155,10 @@ export default {
             };
             event.item.products.push(product);
           });
+          
           that.openTransactionDetail(event.item);
         }, error => {
+            this.isProcessing = false;
             console.log("SELECT INVOICE DETAIL ERROR", error);
         });
       }else {

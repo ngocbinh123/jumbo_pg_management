@@ -58,6 +58,7 @@ export default {
     this.trackintPage();
     this.startGetLocation();
   },
+  props: ["imageId"],
   data() {
     return {
       locationFailure:false,
@@ -129,7 +130,8 @@ export default {
         date: checkInDate,
         time: this.checkInTime,
         latitude: this.location.latitude,
-        longitude: this.location.longitude
+        longitude: this.location.longitude,
+        imageId: this.$props.imageId
       };
       ApiService.methods.checkInOut(data, CurrentUser.methods.getBearId())
       .then(this.submitDataSuccess)

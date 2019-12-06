@@ -24,9 +24,18 @@
     <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="8" col="0" />
     <Label :text="transaction.store" class="trans-code-value" row="8" col="1" colSpan="4" />
 
-    <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon font-icon-size-18" row="9" col="0" />
-    <Label :text="transaction.displayTransTotal" class="trans-total-value" row="9" col="1" colSpan="4" />
+    <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon font-icon-size-18" row="9" col="0" v-show="transaction.transTotal <= 0" />
+    <Label :text="transaction.displayTransTotal" class="trans-total-value" row="9" col="1" colSpan="4" v-show="transaction.transTotal <= 0" />
 
+    <GridLayout row="9" col="0" colSpan="5" rows="auto, auto, auto" columns="100, *" class="edt-box" v-show="transaction.transTotal > 0">
+      <Label text="Tổng tiền SP:" class="text-right" textWrap="true" row="0" col="0" />          
+      <Label :text="totalWithoutVATStr" class="text-right" textWrap="true" row="0" col="1" />
+      <Label text="VAT (10%):" class="text-right" textWrap="true" row="1" col="0" />
+      <Label :text="vatStr" class="text-right" textWrap="true" row="1" col="1" />
+      <Label text="Tổng cộng:" class="text-right border-top lbl-sum" textWrap="true" row="2" col="0" />
+      <Label :text="totalStr" class="text-right lbl-sum-value border-top"  padding ="0" textWrap="true" row="2" col="1" />
+    </GridLayout>
+    
     <Label text="Danh sách sản phẩm:" class="header" row="11" col="0" colSpan="5" />
 
     <GridLayout class="lout-columns" rows="*" columns="40,*, 40,100, 100" row="12" col="0" colSpan="5">
@@ -51,18 +60,46 @@
   </GridLayout>
 </template>
 <script>
+import Helper from "../../helper/PopularHelper";
+import * as firebase from"nativescript-plugin-firebase";
+import Constant from "../../data/Constant";
+
 export default {
   props: ["transaction"],
+  created() {
+    if (this.transaction.transTotal > 0) {
+      const vat = Math.ceil(this.transaction.transTotal/11);
+      this.vatStr = Helper.formatCurrencystr(vat);
+      this.totalWithoutVATStr = Helper.formatCurrencystr(this.transaction.transTotal-vat);  
+      this.totalStr = Helper.formatCurrencystr(this.transaction.transTotal);  
+    }
+    this.trackingPage();
+  },
   data() {
-    return {};
+    return {
+      totalWithoutVATStr: "",
+      totalStr: "", 
+      vatStr: ""
+    };
   },
   methods: {
+     trackingPage() {
+      firebase.analytics.logEvent({
+      key: Constant.KEY_PAGE_VIEW,
+      parameters: [
+          {
+              key: Constant.KEY_PAGE_ID, 
+              value: "SHOW_ORDER_DETAIL"
+          }
+          ]
+      });
+    },
     closePage() {
       this.$modal.close();
     },
     formatCurrentcy(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    },
+      return Helper.formatCurrencystr(num, "");
+    }
   }
 };
 </script>
@@ -127,16 +164,21 @@ export default {
 .lbl-sum, .lbl-sum-value {
   font-family: "f_arima_madurai_extra_bold";
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   text-align: right;
 }
 
 .lbl-sum-value {
   color: $color-accent;
-  padding-right: 10;
+  // padding-right: 10;
 }
 
 .lout-padding-ver {
   padding: 4 0;
+}
+
+.border-top {
+  border-top-color: $color-border;
+  border-top-width: 0.5;
 }
 </style>

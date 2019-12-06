@@ -136,16 +136,16 @@ export default {
       this.fetchCheckInSchedules();
       this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
     },
-    showCheckInPage() {
+    showCheckInPage(remoteImageId) {
+      this.isChkInProscess = true;
       this.$showModal(CheckIn, { 
         fullscreen: true, 
         animated: true,
-        transition: Transition.pageTransition
+        transition: Transition.pageTransition, 
+        props: {
+          imageId: remoteImageId
+        }
         }).then(this.callBackCheckIn);
-    },
-    onClickCheckIn() {
-      this.isChkInProscess = true;
-      this.showCheckInPage();
     },
     fetchCheckInSchedules() {
       this.isChkInProscess = true;
@@ -170,7 +170,7 @@ export default {
           }).then(response => {
             this.isChkInProscess = false;
             if (response.isSuccess) {
-              this.onClickCheckIn();
+              this.showCheckInPage(response.imageId);
             }else {
               this.showDlg(StringConst.lbl_notification,StringConst.msg_please_should_take_picture_before);
             }

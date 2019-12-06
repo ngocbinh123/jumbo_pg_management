@@ -3,8 +3,10 @@
         <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
         <Label text="CHỤP HÌNH CHẤM CÔNG" class="text-center" />
         </FlexboxLayout>
-        <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2" />
-        <Image :src="cameraImage" id="image" loadMode="sync" stretch="aspectFit" margin="10" row="2" col="0" colSpan="3" />
+        <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2"/>
+        <StackLayout margin="0" row="2" col="0" colSpan="3">
+            <Image :src="!cameraImage ? 'res://background' : cameraImage" id="image" loadMode="sync" stretch="aspectFit"/>
+        </StackLayout>
 
         <Button class="btn-take-pic" text="CHỤP HÌNH" @tap="onTakePictureTap" row="4" col="0" colSpan="3" :isEnabled="!processing" v-show="!processing"/>
         <ActivityIndicator v-show="processing" busy="true" row="4" col="0" colSpan="3" />
@@ -86,7 +88,8 @@
                     },
                     description: "Đang tải hình...",
                     androidAutoDeleteAfterUpload: true,
-                    androidNotificationTitle: "Tải Hình Chấm Công"
+                    androidNotificationTitle: "Tải Hình Chấm Công", 
+                    androidAutoClearNotification: true
                 };
 
                 request.description = "uploading image " + file.path;
@@ -95,27 +98,34 @@
                 const session = bgHttp.session("image-upload");
 
                 var params = [
-                            {
-                                name: fileName,
-                                filename: file.path,
-                                mimeType: "image/jpeg"
-                            }
-                        ];
+                    {
+                        name: fileName,
+                        filename: file.path,
+                        mimeType: "image/jpeg"
+                    }
+                ];
 
                 var task = session.multipartUpload(params, request);
 
                 // task.on("progress", this.onEvent.bind(this));
                 task.on("error", this.onEvent.bind(this));
-                task.on("responded", this.onEvent.bind(this));
+                // task.on("responded", this.onEvent.bind(this));
                 task.on("complete", this.onEvent.bind(this));
 
             },
             onEvent(e) {
                 switch(e.eventName) {
                     case "complete": 
+                        const responseStr = e.response.getBodyAsString();
+                        var remoteImageId = "";
+                        if (responseStr.includes("abiz_imageid")) {
+                            remoteImageId = JSON.parse(responseStr).abiz_imageid;
+                        }
+
                         this.processing = false;
                         this.$modal.close({
-                            isSuccess: true
+                            isSuccess: true,
+                            imageId: remoteImageId
                         });
                         break;
                     case "error": 
