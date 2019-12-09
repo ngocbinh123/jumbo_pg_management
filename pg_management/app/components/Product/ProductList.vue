@@ -9,8 +9,7 @@
         <v-template>
             <GridLayout class="ls-group-item" rows="*" columns="*, auto, auto">
                 <Label :text="item.abiz_name" row="0" col="0" />
-                <Label :text="item.abiz_salesprice" row="0" col="1" />
-                <Label :text="' '+ item.transactioncurrencyid.text" row="0" col="2" />
+                <Label :text="formatCurrency(item.abiz_salesprice, item.transactioncurrencyid.text)" row="0" col="1" colSpan="2" />
             </GridLayout>            
         </v-template>
     </ListView>    
@@ -25,7 +24,7 @@ import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
-
+import Helper from "../../helper/PopularHelper";
 export default {
     props: ["dateStr","timeStr"],
     created() {
@@ -76,6 +75,9 @@ export default {
         callBackFail(error) {
             console.log("GET_PRODUCTS_ERROR", error.message);
             this.processing = false;
+        },
+        formatCurrency(currency, priceUnit) {
+            return Helper.formatCurrencystr(currency, priceUnit);
         }
     }
 }

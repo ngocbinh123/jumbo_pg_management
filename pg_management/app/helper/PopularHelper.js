@@ -1,19 +1,12 @@
+const fecha = require('fecha');
 module.exports = {
     getCurrentDateStr() {
-        const now = new Date();
-        const currentDate = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
+        const currentDate = fecha.default.format(new Date(), 'DD/MM/YYYY');
         return currentDate;
     },
     getCurrentTimeStr() {
-        const now = new Date();
-        var time = now.getHours() + ":";
-        const min = now.getMinutes();
-        if (min > 9) {
-            time += min;
-        } else {
-            time += "0" + min;
-        }
-        return time;
+        const currentDate = fecha.default.format(new Date(), 'HH:mm');
+        return currentDate;
     },
     convertLocalDateToRequestDate(localDate) {
         const arr = localDate.split("/");
@@ -24,11 +17,11 @@ module.exports = {
         return arr[2] + "/" + arr[1] + "/" + arr[0];
     },
     getCurrentDateStrForRequest() {
-        const now = new Date();
-        const currentDate = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+        const currentDate = fecha.default.format(new Date(), 'YYYY-MM-DD');
         return currentDate;
     },
-    formatCurrencystr(currency) {
-        return currency.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " VND";
-    }
+    formatCurrencystr(currency, priceUnit = "VND") {
+        var result = currency.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " " + priceUnit;
+        return result.trim();
+    },
 }

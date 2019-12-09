@@ -110,7 +110,8 @@ module.exports = {
                 "abiz_sessiondate": data.date,
                 "abiz_sessiontime": data.time,
                 "abiz_latitude": data.latitude,
-                "abiz_longitude": data.longitude
+                "abiz_longitude": data.longitude,
+                "abiz_imageid": data.imageId
             };
             const headers = config.authHeaders(bearer);
             return fetchModule
