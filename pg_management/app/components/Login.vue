@@ -53,12 +53,6 @@ const remember = require("../share/Remember");
 const transition = require("../share/Transition");
 
 export default {
-  created() {
-    if (TNS_ENV !== 'production') {
-      this.user.email = "nguyengocbinh@gmail.com";
-      this.user.password = "binh@2019";
-    }
-  },
   data() {
     return {
       processing: false,
