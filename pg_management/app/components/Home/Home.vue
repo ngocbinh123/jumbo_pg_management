@@ -16,21 +16,20 @@
     <GridLayout columns="*, 100, *" rows="*, 50">
       <ListView row="0" colSpan="3" rowSpan="2" for="item in currCheckInList">
         <v-template>
-          <GridLayout flexDirection="row" row="*" columns="50, 50, auto" class="ls-item-check-in">
+          <GridLayout flexDirection="row" rows="auto, auto" columns="50, 50, auto" class="ls-item-check-in">
             <!-- late -->
-            <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" rowSpan="2"/>
+            <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" />
             <!-- miss -->
-            <Label :text="'fa-times-circle' | fonticon" class="fas font-icon-missed" v-if="item.statuscode.value == 100000001" row="0" col="0" rowSpan="2"/>
+            <Label :text="'fa-times-circle' | fonticon" class="fas font-icon-missed" v-if="item.statuscode.value == 100000001" row="0" col="0"/>
             <!-- ontime -->
-            <Label :text="'fa-check-circle' | fonticon" class="fas font-icon-ontime" v-if="item.statuscode.value == 2" row="0" col="0" rowSpan="2"/>
+            <Label :text="'fa-check-circle' | fonticon" class="fas font-icon-ontime" v-if="item.statuscode.value == 2" row="0" col="0" />
             <!-- plainning -->
-            <Label :text="'fa-circle' | fonticon" class="far font-icon-plainning" v-if="item.statuscode.value == 1" row="0" col="0" rowSpan="2"/>  
+            <Label :text="'fa-circle' | fonticon" class="far font-icon-plainning" v-if="item.statuscode.value == 1" row="0" col="0" />  
 
-            <Label :text="item.abiz_requestedtime" class row="0" col="1" rowSpan="2" />
-            <StackLayout row="0" col="2">
-              <Label :text="item.s_abiz_outletid.text" class="item-header" textWrap="true"/>
-              <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"/>
-            </StackLayout>
+            <Label :text="item.abiz_requestedtime" class="" row="0" col="1" />
+            
+            <Label :text="item.s_abiz_outletid.text" class="item-header text-ver-middle" textWrap="true"  row="0" col="2"/>
+            <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"  row="1" col="2"/>
           </GridLayout>
         </v-template>
       </ListView>
@@ -41,7 +40,7 @@
         row="2"
         col="1"
         v-show="isSelectedCurrentDate && currCheckInList.length > 0"
-        @tap="openCamera()"
+        @tap="validCheckInOutTime()"
         :isEnabled="!isChkInProscess"
       />
       <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
@@ -55,7 +54,6 @@ import Vue from "nativescript-vue";
 import CalendarView from "nativescript-ui-calendar/vue";
 Vue.use(CalendarView);
 
-import CheckIn from "../CheckIn/CheckIn";
 import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
@@ -63,34 +61,25 @@ import StringConst from "../../assets/StringConst";
 import ApiService from '../../service/BackEndService';
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
-
+import Helper from "../../helper/PopularHelper";
+import * as Geolocation from 'nativescript-geolocation';
 const now = new Date();
 export default {
   mounted() {
     this.fetchCheckInSchedules();
-  },
-  created() {
-    this.trackintPage();
-    var current = new Date();
-    var firstDate = new Date(current.getFullYear(), current.getMonth(), 1);
-    var lastDate = new Date(current.getFullYear(), current.getMonth() + 1, 0);
-    this.minDate = firstDate;
-    this.maxDate = lastDate;
+    this.trackingPage();
   },
   data() {
     return {
       viewCalendarMode: "Week",
       isChkInProscess: false,
-      minDate: new Date(now.getFullYear(), now.getMonth(), 1),
-      maxDate: new Date(now.getFullYear(), now.getMonth() + 1, 0),
-      currentDate: now,
       selectedDate: now,
       isSelectedCurrentDate: true,
       currCheckInList: []
     };
   },
   methods: {
-    trackintPage() {
+    trackingPage() {
       firebase.analytics.logEvent({
       key: Constant.KEY_PAGE_VIEW,
       parameters: [
@@ -127,54 +116,98 @@ export default {
     onViewModeChanged(args) {
       args.object.viewMode = "Week";
     },
-    callBackCheckIn(data) {
-      this.isChkInProscess = false;
-      if(data == undefined || !data.isSuccess) {
-        return;
-      }
-      
-      this.fetchCheckInSchedules();
-      this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
-    },
-    showCheckInPage(remoteImageId) {
-      this.isChkInProscess = true;
-      this.$showModal(CheckIn, { 
-        fullscreen: true, 
-        animated: true,
-        transition: Transition.pageTransition, 
-        props: {
-          imageId: remoteImageId
-        }
-        }).then(this.callBackCheckIn);
-    },
     fetchCheckInSchedules() {
       this.isChkInProscess = true;
       this.currCheckInList = [];
       ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())
       .then(this.callbackGetSessionSuccess)
-      .catch(this.callbackGetSessionFail);
+      .catch(this.showCheckInPage);
     },
     callbackGetSessionSuccess(obj) {
       this.isChkInProscess = false;
       this.currCheckInList = obj.records;
     },
-    callbackGetSessionFail(error) {
-      this.isChkInProscess = false;
-      this.showDlg(StringConst.lbl_error, error.message);
-    },
-    openCamera() {
+    openCamera(curLoction) {
       this.isChkInProscess = true;
       this.$showModal(TakePicForChkIn, {
               fullscreen: true,
-              animated: true
+              animated: true,
+              props: {
+                location: curLoction
+              }
           }).then(response => {
             this.isChkInProscess = false;
             if (response.isSuccess) {
-              this.showCheckInPage(response.imageId);
+              this.fetchCheckInSchedules();
+              this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
             }else {
               this.showDlg(StringConst.lbl_notification,StringConst.msg_please_should_take_picture_before);
             }
           });
+    },
+    validCheckInOutTime() {
+      this.isChkInProscess = true;
+      const data = {
+        date: Helper.getCurrentDateStrForRequest(),
+        time: Helper.getCurrentTimeStr()
+      };
+      ApiService.methods.validInOutTimeUrl(data, CurrentUser.methods.getBearId())
+      .then(this.validCheckInOutTimeSuccess)
+      .catch(this.callApiServiceFail);
+    },
+    validCheckInOutTimeSuccess(json) {
+      this.isChkInProscess = false;
+      if (json == undefined) {
+        return;
+      }
+      this.startGetLocation();
+    },
+    startGetLocation() {
+      this.isChkInProscess = true;
+      Geolocation.enableLocationRequest(true)
+        .then(() => {
+            Geolocation.isEnabled().then(isLocationEnabled => {
+                console.log('result is '+isLocationEnabled);
+                if(!isLocationEnabled) {
+                    this.locationFailure = true;
+                    return;
+                }
+
+                // MUST pass empty object!!
+                Geolocation.getCurrentLocation({})
+                .then(result => {
+                    this.isChkInProscess = false;
+                    this.getAddressByLocation(result.latitude, result.longitude);
+                })
+                .catch(e => {
+                    console.log('loc error', e);
+                    this.isChkInProscess = false;
+                    this.showDlg(StringConst.lbl_notification, StringConst.msg_request_location_permission_fail);
+                });
+            });
+        });
+    },
+    getAddressByLocation(curLatitude, curLongitude) {
+      this.isChkInProscess = true;
+      const data = {
+        latitude: curLatitude,
+        longitude: curLongitude
+      };
+
+      ApiService.methods.getLocationAdrress(data, CurrentUser.methods.getBearId())
+        .then(obj => {
+          this.isChkInProscess = false;
+          this.openCamera({
+            latitude: curLatitude,
+            longitude: curLongitude,
+            address: obj.abiz_address
+          });
+        })
+        .catch(this.callApiServiceFail);
+    },
+    callApiServiceFail(error) {
+      this.isChkInProscess = false;
+      this.showDlg(StringConst.lbl_error, error.message);
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
@@ -190,8 +223,6 @@ export default {
 <style scroped lang="scss">
 @import "../../app-variables.scss";
 
-#home_parent {
-}
 #btn_check_in {
   font-size: 14;
   padding: 0%;
@@ -208,25 +239,25 @@ export default {
 
 .font-icon-ontime {
     color: $color-primary;
-    vertical-align: top;
+    vertical-align: middle;
     text-align: center;
 }
 
 .font-icon-late {
     color: orange;
-    vertical-align: top;
+    vertical-align: middle;
     text-align: center;
 }
 
 .font-icon-missed {
     color: $color-accent;
-    vertical-align: top;
+    vertical-align: middle;
     text-align: center;
 }
 
 .font-icon-plainning {
     // color: $color-primary;
-    vertical-align: top;
+    vertical-align: middle;
     text-align: center;
 }
 </style>

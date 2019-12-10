@@ -43,7 +43,6 @@
 <script>
 import Home from "./App";
 import ChangePass from "./ChangePassword";
-import Customer from "../data/objects/Customer";
 import * as firebase from"nativescript-plugin-firebase";
 import Vue from "nativescript-vue";
 import Constant from "../data/Constant";
@@ -136,7 +135,7 @@ export default {
       remember.setUserManagerPhone(json.manager_abiz_mobilephone);
 
 
-      var userGenderValue = json.abiz_categorycode.value;
+      var userGenderValue = json.abiz_gendercode.value;
       
       if (userGenderValue == Constant.GENDER.Male.value) {
         remember.setUserGender(Constant.GENDER.Male.text);

@@ -12,6 +12,8 @@ module.exports = {
     uploadImageUrl: API_PREFIX + "upload",
     getSessionsUrl: API_PREFIX + "session/date",
     checkInOutUrl: API_PREFIX + "session/timeentry",
+    getLocationAdrressUrl: API_PREFIX + "session/address",
+    validInOutTimeUrl: API_PREFIX + "session/checktimeentry",
     createCustomerUrl: API_PREFIX + "order/contact",
     getCustomersUrl: API_PREFIX + "order/listcontact",
     getOrdersUrl: API_PREFIX + "order/date",

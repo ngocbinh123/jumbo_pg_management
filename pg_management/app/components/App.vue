@@ -33,10 +33,7 @@ import Constant from "../data/Constant";
 import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";
-import Customer from "../data/objects/Customer";
-// import Remember from "../share/Remember";
-// import ApiService from "../service/BackEndService";
-// import CurrentUser from '../data/CurrentUser';
+
 export default {
   components: {
     Home,
