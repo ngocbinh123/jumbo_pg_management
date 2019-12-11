@@ -8,10 +8,10 @@
     <Label text="Thông Tin Khách Hàng:" class="header" row="2" col="0" colSpan="5" />
 
     <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"  row="3" col="0" />
-    <Label :text="transaction.customer.name" class="text-center txt-value" textWrap="true" row="3" col="1" colSpan="4"/>
+    <Label :text="transaction.customer.fullname" class="text-center txt-value" textWrap="true" row="3" col="1" colSpan="4"/>
 
-    <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" v-show="!!transaction.customer.phone" />
-    <Label :text="transaction.customer.phone" class="text-center txt-value" textWrap="true" row="4" col="1" />
+    <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" v-show="!!transaction.customer.mobilephone" />
+    <Label :text="transaction.customer.mobilephone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
     <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="4" col="3" v-show="!!transaction.customer.address" />
     <Label :text="transaction.customer.address" class="text-center txt-value" textWrap="true" row="4" col="4" />
@@ -49,7 +49,6 @@
     <ListView for="item in transaction.products" row="13" col="0" colSpan="5">
       <v-template>
         <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
-          <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
           <Label :text="item.name" class="lbl-name text-center"  row="0" col="0" colSpan="2"/>
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
           <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />

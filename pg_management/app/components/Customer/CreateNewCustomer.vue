@@ -28,6 +28,7 @@ import ApiService from "../../service/BackEndService";
 import CurrentUser from '../../data/CurrentUser';
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
+import Validation from "../../share/Validation";
 export default {
   created() {
     this.trackintPage();
@@ -36,9 +37,9 @@ export default {
     return {
       customerMetadata: CustomerMeta,
       customer: {
-        name: "",
+        name: "nguyễn Tấn Quốc",
         sex: "Nam",
-        phone: "",
+        phone: "0997952232",
         address: "Hồ Chí Minh"
       },
       processing: false,
@@ -66,49 +67,32 @@ export default {
           StringConst.msg_pls_fill_name
         );
         return;
-      } else if (!this.customer.phone) {
-        this.showDlg(
-          StringConst.lbl_notification,
-          StringConst.msg_pls_fill_phone
-        );
-        return;
-      } else if (
-        this.customer.phone.length != 10 ||
-        !this.customer.phone.startsWith("0")
-      ) {
-        this.showDlg(
-          StringConst.lbl_notification,
-          StringConst.msg_phone_no_math
-        );
+      }
+
+      var errMessage = Validation.validPhoneNumber(this.customer.phone);
+      if (!!errMessage) {
+        this.showDlg(StringConst.lbl_notification,errMessage);
         return;
       }
 
       const provinceId = CustomerMeta.provinces.find(el => el.abiz_name == this.customer.address).abiz_locationid;
       const newCustomer = {
-        id: 191,
         name: this.customer.name,
         sex: this.customer.sex,
         phone: this.customer.phone,
         address: this.customer.address,
         provinceId: provinceId,
-        contactId: ""
-      } 
-
-      this.senDataToServer(newCustomer);     
-    },
-    senDataToServer(customer) {
+      }
+      
       this.processing = true;
-      ApiService.methods.createNewCustomer(customer, CurrentUser.methods.getBearId())
-      .then(json => this.callBackSendDataSuccess(json, customer))
+      ApiService.methods.createNewCustomer(newCustomer, CurrentUser.methods.getBearId())
+      .then(this.callBackSendDataSuccess)
       .catch(this.callBackSendDataFail);
     },
-    callBackSendDataSuccess(json, newCustomer) {
-      newCustomer.contactId = json.abiz_contactid;
-
-      this.$store.dispatch('insertCustomer', newCustomer);
+    callBackSendDataSuccess(json) {
       this.$modal.close({
         isSuccess: true,
-        customer: newCustomer
+        customer: json
       });
       this.processing = false;
     },
@@ -132,24 +116,7 @@ export default {
   align-items: center;
 }
 
-.txt-value {
-  text-align: left;
-  vertical-align: middle;
-}
-#btn_back {
-  width: 24;
-  height: 24;
-  position: relative;
-  top: 0;
-  left: 0;
-}
 
-.drobox {
-  border-color: grey;
-  border-width: 1;
-  text-align: center;
-  align-content: center;
-}
 #btn_submit_customer {
   margin-left: 10;
   margin-right: 10;

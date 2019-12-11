@@ -30,7 +30,9 @@ const KEY_LAST_DATE_GET_REMOTE_CUSTOMERS = "KEY_LAST_DATE_GET_REMOTE_CUSTOMERS";
 
 const KEY_LAST_DATE_GET_REMOTE_ORDER = "KEY_LAST_DATE_GET_REMOTE_ORDER";
 
-const KEY_PRODUCT_LIST = "KEY_PRODUCT_LIST";
+const KEY_REMOTE_ORDER_LIST = "KEY_REMOTE_ORDER_LIST";
+
+const KEY_REMOTE_CUSTOMER_LIST = "KEY_REMOTE_CUSTOMER_LIST";
 
 
 module.exports = {
@@ -174,6 +176,37 @@ module.exports = {
 
     setLastDateGetRemoteOrders(time) {
         appSettings.setString(KEY_LAST_DATE_GET_REMOTE_ORDER, time);
+    },
+
+    getRemoteOrders() {
+        const jsonStr = appSettings.getString(KEY_REMOTE_ORDER_LIST, "");
+        if (!jsonStr) {
+            return {
+                records: []
+            };
+        }
+
+        return JSON.parse(jsonStr);
+    },
+
+    setRemoteOrders(json) {
+        const jsonStr = JSON.stringify(json);
+        appSettings.setString(KEY_REMOTE_ORDER_LIST, jsonStr);
+    },
+    getRemoteCustomers() {
+        const jsonStr = appSettings.getString(KEY_REMOTE_CUSTOMER_LIST, "");
+        if (!jsonStr) {
+            return {
+                records: []
+            };
+        }
+
+        return JSON.parse(jsonStr);
+    },
+
+    setRemoteCustomers(json) {
+        const jsonStr = JSON.stringify(json);
+        appSettings.setString(KEY_REMOTE_CUSTOMER_LIST, jsonStr);
     },
     clearAll() {
         appSettings.clear();

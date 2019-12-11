@@ -55,8 +55,6 @@ export default {
         }
       ]
     });
-    this.$store.dispatch('getAllCustomers');
-    this.$store.dispatch('getInvoices');
   },
   methods: {
 

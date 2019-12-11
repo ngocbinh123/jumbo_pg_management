@@ -121,7 +121,7 @@ export default {
       this.currCheckInList = [];
       ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())
       .then(this.callbackGetSessionSuccess)
-      .catch(this.showCheckInPage);
+      .catch(this.callApiServiceFail);
     },
     callbackGetSessionSuccess(obj) {
       this.isChkInProscess = false;
