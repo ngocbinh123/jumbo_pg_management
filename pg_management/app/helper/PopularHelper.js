@@ -20,7 +20,7 @@ module.exports = {
         const currentDate = fecha.default.format(new Date(), 'YYYY-MM-DD');
         return currentDate;
     },
-    formatCurrencystr(currency, priceUnit = "VND") {
+    formatCurrencystr(currency, priceUnit = "VNĐ") {
         var result = currency.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " " + priceUnit;
         return result.trim();
     },

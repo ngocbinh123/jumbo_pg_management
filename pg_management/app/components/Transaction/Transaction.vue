@@ -31,7 +31,7 @@
 
                 <StackLayout orientation="horizontal" class="parent-center" row="3" col="2">
                   <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon"  width="8%"/>
-                  <Label :text="item.abiz_totalamountrollup" class="item-header-sub" />                  
+                  <Label :text="formatCurrencystr(item.abiz_totalamountrollup)" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
@@ -282,6 +282,9 @@ export default {
     },
     convertRequestDateToLocalDate(remoteDate) {
       return Helper.convertRequestDateToLocalDate(remoteDate);
+    }, 
+    formatCurrencystr(currency) {
+      return Helper.formatCurrencystr(currency);
     }
   }
 };
