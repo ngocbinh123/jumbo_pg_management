@@ -37,9 +37,9 @@ export default {
     return {
       customerMetadata: CustomerMeta,
       customer: {
-        name: "nguyễn Tấn Quốc",
+        name: "",
         sex: "Nam",
-        phone: "0997952232",
+        phone: "",
         address: "Hồ Chí Minh"
       },
       processing: false,

@@ -143,7 +143,7 @@ export default {
         products: []
       };
 
-      const orderCustomer = this.remoteCustomers.find(el => el.contactid == event.item.abiz_contactid.value || el.fullname == event.item.abiz_contactid.text || el.mobilephone == event.item.mobilephone);
+      const orderCustomer = this.remoteCustomers.find(el => el.contactid == event.item.abiz_contactid.value || el.mobilephone == event.item.mobilephone);
       if(orderCustomer != undefined) {
         selected.customer.id = 101;
         selected.customer.fullname = orderCustomer.fullname;
@@ -210,10 +210,7 @@ export default {
         return;
       }
 
-      const isNewCustomer = this.remoteCustomers.find(el => el.contactid == response.rermoteCustomer.contactid || 
-                                                    el.abiz_contactcode == response.rermoteCustomer.abiz_contactcode|| 
-                                                    el.fullname == response.rermoteCustomer.fullname || 
-                                                    el.mobilephone == response.rermoteCustomer.mobilephone) == undefined;
+      const isNewCustomer = this.remoteCustomers.find(el => el.contactid == response.rermoteCustomer.contactid || el.mobilephone == response.rermoteCustomer.mobilephone) == undefined;
 
       if (isNewCustomer) {
         this.remoteCustomers.unshift(response.rermoteCustomer);
