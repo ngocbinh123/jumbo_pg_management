@@ -239,7 +239,9 @@ export default {
                                                     el.fullname == response.customer.fullname || 
                                                     el.mobilephone == response.customer.mobilephone) != undefined;
       if (isExist) {
-        this.showDlg(StringConst.lbl_notification, StringConst.msg_the_customer_is_exist);
+        setTimeout(() => {
+          this.showDlg(StringConst.lbl_notification, StringConst.msg_the_customer_is_exist);
+        }, 500); 
       }else {
         this.remoteCustomers.unshift(response.customer);
         this.onCustomerSelected({ item: response.customer});
