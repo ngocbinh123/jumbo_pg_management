@@ -30,7 +30,6 @@ import Constant from "../../data/Constant";
 import Validation from "../../share/Validation";
 export default {
   created() {
-    this.trackintPage();
   },
   data() {
     return {

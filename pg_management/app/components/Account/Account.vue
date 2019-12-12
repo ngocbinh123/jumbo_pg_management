@@ -132,7 +132,6 @@ export default {
   },
   created() {
     this.user = CurrentUser.getUserInfo();
-    this.trackingPage();
   },
   methods: {
     refreshAccountInfo() {
