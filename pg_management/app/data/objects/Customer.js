@@ -1,66 +1,39 @@
-module.exports = {
-    customers: [{
-            id: 100,
-            name: "Nguyễn Văn Tân",
-            sex: "Nam",
-            phone: "0921111222",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 101,
-            name: "Trần Ngọc Dung",
-            sex: "Nữ",
-            phone: "0931434343",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 102,
-            name: "Lê Tuấn Thanh",
-            sex: "Nam",
-            phone: "0931232654",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 103,
-            name: "Hà Nguyễn Minh Tuấn",
-            sex: "Nam",
-            phone: "09315566654",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 104,
-            name: "Phạm Thị Loan",
-            sex: "Nữ",
-            phone: "0931191169",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 105,
-            name: "Đỗ Văn Công",
-            sex: "Nam",
-            phone: "09222876123",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 106,
-            name: "Lê Thị Tú",
-            sex: "Nữ",
-            phone: "0931551124",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 107,
-            name: "Huỳnh Anh Tuấn",
-            sex: "Nam",
-            phone: "09312411581",
-            address: "Hồ Chí Minh"
-        },
-        {
-            id: 109,
-            name: "Phạm Nguyễn Thanh Tâm",
-            sex: "Nam",
-            phone: "0931241179",
-            address: "Hồ Chí Minh"
+import Constant from "../Constant";
+export default {
+    methods: {
+        formatFromRemote(remoteCustomer) {
+
+            const genderValue = remoteCustomer.gendercode.value;
+            var localGender = ""
+            if (genderValue == Constant.GENDER.Male.value) {
+                localGender = Constant.GENDER.Male.text;
+            } else if (genderValue == Constant.GENDER.Female.value) {
+                localGender = Constant.GENDER.Female.text;
+            }
+
+            return {
+                contactid: remoteCustomer.contactid,
+                code: remoteCustomer.abiz_contactcode,
+                fullName: remoteCustomer.fullname,
+                mobilePhone: remoteCustomer.mobilephone,
+                gender: localGender,
+                address: remoteCustomer.abiz_provinceid.text
+            };
         }
-    ]
+    }
 }
+
+// {
+//     "contactid": "7FA640B9-6519-EA11-A811-000D3A07B96E",
+//     "abiz_contactcode": "KH-00272",
+//     "abiz_provinceid": {
+//         "text": "Hồ Chí Minh",
+//         "value": "B3F66BE0-E90C-EA11-A811-000D3AA392C2"
+//     },
+//     "fullname": "Hà Quốc Tuấn",
+//     "gendercode": {
+//         "text": "Male",
+//         "value": "1"
+//     },
+//     "mobilephone": "0968411577"
+// }

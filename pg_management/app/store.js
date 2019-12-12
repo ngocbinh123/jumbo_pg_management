@@ -26,8 +26,8 @@ const COLS_INVOICE_WITHOUT_ID = "code, total, store, customerName, cursomterId, 
 const COLS_INVOICE_FOR_CREATE_TB = "id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT, total TEXT, store TEXT, customerName TEXT, cursomterId TEXT, createdAt TEXT";
 
 const TABLE_INVOICE_DETAIL = "InvoiceDetail";
-const COLS_INVOICE_DETAIL = "productId, productName, number, price, total, invoiceId";
-const COLS_INVOICE_DETAIL_FOR_CREATE_TB = "productId TEXT, productName TEXT, number INTEGER, price INTEGER, total INTEGER, invoiceId INTEGER";
+const COLS_INVOICE_DETAIL = "productId, productName, number, price, total, invoiceCode";
+const COLS_INVOICE_DETAIL_FOR_CREATE_TB = "productId TEXT, productName TEXT, number INTEGER, price INTEGER, total INTEGER, invoiceCode TEXT";
 
 const store = new Vuex.Store({
     state: {
@@ -135,46 +135,6 @@ const store = new Vuex.Store({
                 console.log("OPEN DB ERROR", error);
             });
         },
-        createTables(context, db, step) {
-            switch (step) {
-                case 0:
-                    this.createTableCustomer(context, db, step);
-                    break;
-                case 1:
-                    this.createTableProduct(context, db, step);
-                    break;
-                case 2:
-                    this.createTableProvince(context, db, step);
-                    break;
-                default:
-                    context.commit("init", { database: db });
-                    break;
-            }
-        },
-        createTableCustomer(context, db, step) {
-            const query = QueryBuilder.buildQueryCreateTB(TABLE_CUSTOMER, COLS_CUSTOMER_FOR_CREATE_TB);
-            db.execSQL(query).then(result => {
-                this.createTables(context, db, step + 1);
-            }, error => {
-                console.log("CREATE TABLE CUSTOMER ERROR", error);
-            });
-        },
-        createTableProduct(context, db, step) {
-            const query = QueryBuilder.buildQueryCreateTB(TABLE_PRODUCT, COLS_PRODUCT_FOR_CREATE_TB);
-            db.execSQL(query).then(result => {
-                this.createTables(context, db, step + 1);
-            }, error => {
-                console.log("CREATE TABLE PRODUCT ERROR", error);
-            });
-        },
-        createTableProvince(context, db) {
-            const query = QueryBuilder.buildQueryCreateTB(TABLE_PROVINCE, COLS_PROVINCE_FOR_CREATE_TB);
-            db.execSQL(query).then(result => {
-                this.createTables(context, db, step + 1);
-            }, error => {
-                console.log("CREATE TABLE PROVINCE ERROR", error);
-            });
-        },
         getAllProvinces(context) {
             const query = QueryBuilder.buildQuerySelectAll(TABLE_PROVINCE, COLS_PROVINCE);
             context.state.database.all(query, []).then(result => {
@@ -216,28 +176,6 @@ const store = new Vuex.Store({
                 console.log("INSERT PROVINCE RECORD ERROR", error);
             });
         },
-
-        insertAllCustomers(context, customers) {
-            // prepare : is a function that need to charges
-            // const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
-            // var prep = context.state.database.prepare(query);
-            // for (var i = 0; i < customers.length; i++) {
-            //     const customerItem = customers[i];
-            //     prep.execute([customerItem.name, customerItem.sex, customerItem.phone, customerItem.address]);
-            // }
-            // prep.finished();
-
-            const query = QueryBuilder.buildQueryDeleteAll(TABLE_CUSTOMER);
-            context.state.database.execSQL(query, []).then(result => {
-                this.state.customers = [];
-                customers.forEach(customereRecord => {
-                    this.insertCustomer(context, customereRecord);
-                });
-
-            }, error => {
-                console.log("DELETE ALL RECORDS IN CUSTOMER ERROR", error);
-            });
-        },
         insertCustomer(context, data) {
             const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?,?,?");
             context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address, Helper.getCurrentDateStr(), data.contactId]).then(id => {
@@ -254,15 +192,6 @@ const store = new Vuex.Store({
             }, error => {
                 console.log("SELECT ERROR", error);
             });
-        },
-        updateCustomer(context, data) {
-
-        },
-        deleteCustomer(context, data) {
-
-        },
-        findCustomer(context, data) {
-
         },
         insertProduct(context, data) {
             const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
@@ -291,27 +220,36 @@ const store = new Vuex.Store({
 
         },
         insertInvoice(context, data) {
-            var query = QueryBuilder.buildQueryInsert(TABLE_INVOICE, COLS_INVOICE_WITHOUT_ID, "?,?,?,?,?,?");
-            context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, data.customer.contactId, data.time + " " + data.date])
-                .then(id => {
-                    data.id = id;
-                    context.commit("saveInvoice", { invoice: data });
-                    // productId, productName, number, price, total, invoiceId
-                    data.products.forEach(product => {
-                        query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
-                        context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, id])
-                            .then(id => {
-                                // console.log("INSERT INVOICE DETAIL SUCCESS", id);
-                            })
-                            .catch(error => {
-                                console.log("INSERT INVOICE DETAIL ERROR", error);
-                            });
+            const query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
+            data.products.forEach(product => {
+                context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, data.code])
+                    .then(id => {})
+                    .catch(error => {
+                        console.log("INSERT INVOICE DETAIL ERROR", error);
                     });
+            });
+            // var query = QueryBuilder.buildQueryInsert(TABLE_INVOICE, COLS_INVOICE_WITHOUT_ID, "?,?,?,?,?,?");
+            // context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, data.customer.contactId, data.time + " " + data.date])
+            //     .then(id => {
+            //         data.id = id;
+            //         context.commit("saveInvoice", { invoice: data });
+            //         // productId, productName, number, price, total, invoiceId
+            //         data.products.forEach(product => {
+            //             query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
 
-                })
-                .catch(error => {
-                    console.log("INSERT INVOICE ERROR", error);
-                })
+            //             context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, data.id])
+            //                 .then(id => {
+            //                     // console.log("INSERT INVOICE DETAIL SUCCESS", id);
+            //                 })
+            //                 .catch(error => {
+            //                     console.log("INSERT INVOICE DETAIL ERROR", error);
+            //                 });
+            //         });
+
+            // })
+            // .catch(error => {
+            //     console.log("INSERT INVOICE ERROR", error);
+            // })
         },
         getInvoices(context) {
             const currentDate = Helper.getCurrentDateStr();

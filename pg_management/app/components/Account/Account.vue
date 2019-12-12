@@ -1,22 +1,18 @@
 <template>
   <GridLayout id="account_parent" columns="*" rows="150, *, auto">
     <GridLayout class="account-header" rows="20,90,*" columns="*,90,*" row="0" col="0" colSpan="3">
-      <Label  id="btn_logout" @tap="confirmLogoutOut()" :text="'fa-sign-out-alt' | fonticon" class="fas font-icon-defaut text-color-white font-icon-size-28 text-right" row="0" col="2" rowSpan="2" />
+      <Label id="btn_logout" @tap="confirmLogoutOut()" :text="'fa-sign-out-alt' | fonticon" class="fas font-icon-defaut text-color-white font-icon-size-28 text-right" row="0" col="2" rowSpan="2" />
       <GridLayout class="lout-circle" row="1" col="1" rows="auto" columns="auto">
       </GridLayout>
       <Label :text="'fa-user' | fonticon" class="fas font-avatar text-color-white font-icon-size-avatar" row="1" col="1"  />
       <Label :text="user.name" class="text-user-name" row="2" column="0" colSpan="3" />
     </GridLayout>
     <ScrollView row="1" col="0" colSpan="3" rowSpann="2">
-      <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20" columns="*">
+      <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20" columns="*, 50">
           <Label text="Thông Tin Tài Khoản:" class="text-part-header" row="1" col="0" />    
-          <GridLayout class="account-part" rows="20, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, *" columns="50, *,50" row="2" col="0">
-              <!-- <Label :text="'fa-id-card-alt' | fonticon" class="fas icon-field-user" row="1" col="0" />
-              <StackLayout class="lout-info" row="1" col="1" colSpan="2">
-                <Label text="Mã" class="text-label"/>              
-                <Label :text="user.id" class="text-value" textWrap="true"/>              
-              </StackLayout> -->
+          <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24 text-right" row="1" col="1"/>
 
+          <GridLayout class="account-part" rows="20, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, *" columns="50, *,50" row="2" col="0" colSpan="2">
               <Label :text="'fa-id-card' | fonticon" class="fas icon-field-user" row="1" col="0" />
               <StackLayout class="lout-info" row="1" col="1" colSpan="2">
                 <Label text="Mã GID" class="text-label"/>              
@@ -87,8 +83,8 @@
               </StackLayout>            
           </GridLayout>
 
-          <Label text="Thông Tin Người Quản Lý:" class="text-part-header" row="4" col="0" />    
-          <GridLayout class="account-part" rows="20, auto, auto, *" columns="50, *,50" row="5" col="0">
+          <Label text="Thông Tin Người Quản Lý:" class="text-part-header" row="4" col="0" colSpan="2"/>    
+          <GridLayout class="account-part" rows="20, auto, auto, *" columns="50, *,50" row="5" col="0" colSpan="2">
             <Label :text="'fa-user-tie' | fonticon" class="fas icon-field-user" row="1" col="0" />
               <StackLayout class="lout-info" row="1" col="1" colSpan="2">
                 <Label text="Họ Tên" class="text-label"/>              
@@ -107,7 +103,7 @@
                 <Label :text="user.manager.email" class="text-value" textWrap="true"/>              
               </StackLayout>     
           </GridLayout>
-          
+          <ActivityIndicator v-show="isProcessing" busy="true" row="0" colSpan="6" rowSpan="2" />
       </GridLayout>
     </ScrollView>
     <!-- <Button id="btn_logout" @tap="confirmLogoutOut()" class="btn-secondary" text="ĐĂNG XUẤT" row="3" colspan="3" /> -->
@@ -126,9 +122,7 @@ import Validation from "../../share/Validation";
 import ApiService from "../../service/BackEndService";
 import { error } from '@nativescript/core/trace/trace';
 import QueryBuilder from '../../storaged/QueryBuilder';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
-
 export default {
   data() {
     return {
@@ -138,19 +132,24 @@ export default {
   },
   created() {
     this.user = CurrentUser.getUserInfo();
-    this.trackintPage();
+    this.trackingPage();
   },
   methods: {
-    trackintPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "TAB_ACCOUNT"
-          }
-        ]
-      });
+    refreshAccountInfo() {
+      if (this.isProcessing) {
+        return;
+      }
+
+      this.isProcessing = true;
+      ApiService.methods
+        .getUserInfo(CurrentUser.methods.getBearId())
+        .catch(this.callBackServiceFail)
+        .then(this.getInfoSuccess);
+    },
+    getInfoSuccess(json) {
+       this.isProcessing = false;
+      CurrentUser.methods.saveUserInfo(json);
+      this.user = CurrentUser.getUserInfo();
     },
     onClickUpdateBirthday() {
       if (this.isProcessing) {
@@ -220,7 +219,8 @@ export default {
     },
     callBackServiceFail(error) {
       this.isProcessing = false;
-      this.showDlg(ResourceString.lbl_error, error.message);      
+      var message = error.message.includes("UnknownHostException") ? ResourceString.msg_unknow_host_exception : error.message;
+      this.showDlg(ResourceString.lbl_error, message);      
     },
     callBackUpdatePhoneNunber(obj, newPhone) {
       this.user.phone = newPhone;
