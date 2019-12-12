@@ -122,7 +122,6 @@ import Validation from "../../share/Validation";
 import ApiService from "../../service/BackEndService";
 import { error } from '@nativescript/core/trace/trace';
 import QueryBuilder from '../../storaged/QueryBuilder';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 export default {
   data() {
@@ -136,17 +135,6 @@ export default {
     this.trackingPage();
   },
   methods: {
-    trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "TAB_ACCOUNT"
-          }
-        ]
-      });
-    },
     refreshAccountInfo() {
       if (this.isProcessing) {
         return;

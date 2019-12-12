@@ -43,12 +43,10 @@
     const fs = require("file-system");
     const platform = require("platform");
     import { error } from '@nativescript/core/trace/trace';
-    import * as firebase from"nativescript-plugin-firebase";
     import Constant from "../../data/Constant";
     import Helper from "../../helper/PopularHelper";
     export default {
         created() {
-            this.trackingPage();
             this.startingTakePictureNow();
         },
         props: ["location"],
@@ -61,18 +59,7 @@
                 processing: false,
             }
         },
-        methods: {
-            trackingPage() {
-                firebase.analytics.logEvent({
-                key: Constant.KEY_PAGE_VIEW,
-                parameters: [
-                    {
-                        key: Constant.KEY_PAGE_ID, 
-                        value: "CHECK_IN_TAKE_PICTURE"
-                    }
-                    ]
-                });
-            },
+        methods: {          
             closePage() {
                 this.$modal.close();
             },

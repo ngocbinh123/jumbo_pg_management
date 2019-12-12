@@ -31,13 +31,9 @@ import StringConst from "../../assets/StringConst";
 import SelectProductMeta from "../../data/formMeta/SelectProductMeta";
 import ProductList from "../../data/objects/Product";
 import ProductListDlg from "../Product/ProductList";
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
-  created() {
-    this.trackingPage();
-  },
   props: ["dateStr","timeStr"],
   data() {
     return {
@@ -53,17 +49,6 @@ export default {
     };
   },
   methods: {
-    trackingPage() {
-        firebase.analytics.logEvent({
-        key: Constant.KEY_PAGE_VIEW,
-        parameters: [
-            {
-                key: Constant.KEY_PAGE_ID, 
-                value: "PRODUCT_SELECT"
-            }
-            ]
-        });
-    },
     closePage() {
       this.$modal.close();
     },

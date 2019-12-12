@@ -60,7 +60,6 @@
 </template>
 <script>
 import Helper from "../../helper/PopularHelper";
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
@@ -72,7 +71,6 @@ export default {
       this.totalWithoutVATStr = Helper.formatCurrencystr(this.transaction.transTotal-vat);  
       this.totalStr = Helper.formatCurrencystr(this.transaction.transTotal);  
     }
-    this.trackingPage();
   },
   data() {
     return {
@@ -82,17 +80,6 @@ export default {
     };
   },
   methods: {
-     trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-              key: Constant.KEY_PAGE_ID, 
-              value: "SHOW_ORDER_DETAIL"
-          }
-          ]
-      });
-    },
     closePage() {
       this.$modal.close();
     },
