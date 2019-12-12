@@ -43,9 +43,9 @@
 <script>
 import Home from "./App";
 import ChangePass from "./ChangePassword";
-import Customer from "../data/objects/Customer";
 import Vue from "nativescript-vue";
 import Constant from "../data/Constant";
+import CurrentUser from '../data/CurrentUser';
 
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
@@ -102,42 +102,7 @@ export default {
     },
     getInfoSuccess(json) {
       this.processing = false;
-      remember.setUserName(json.abiz_name);
-      remember.setUserCode(json.abiz_usercode);
-      remember.setUserAddress(json.abiz_addresscalculated);
-    
-      remember.setUserIDCard(json.abiz_identitycard);
-      remember.setUserPhone(json.abiz_mobilephone);
-      remember.setUserGID(json.abiz_usergid);
-
-      remember.setUserCateogry(json.abiz_categorycode.text);
-      remember.setUserChanel(json.abiz_channelcode.text);
-      remember.setUserClientCode(json.abiz_clientcode.text);
-
-      remember.setUserManagerName(json.manager_abiz_name);
-      remember.setUserManagerEmail(json.manager_emailaddress);
-      remember.setUserManagerPhone(json.manager_abiz_mobilephone);
-
-
-      var userGenderValue = json.abiz_categorycode.value;
-      
-      if (userGenderValue == Constant.GENDER.Male.value) {
-        remember.setUserGender(Constant.GENDER.Male.text);
-      }else if (userGenderValue == Constant.GENDER.Female.value) {
-        remember.setUserGender(Constant.GENDER.Female.text);
-      }
-     
-      // birthday field in response have comple format.
-      var birthday = json.abiz_birthday;
-      if (birthday.includes("T")) {
-        birthday = birthday.split("T")[0];
-        const dateArr = birthday.split("-");
-        if (dateArr.length == 3) {
-          birthday = dateArr[2] + "/" + dateArr[1] + "/" + dateArr[0];
-        }
-      }
-      remember.setUserBirthday(birthday);
-      
+      CurrentUser.methods.saveUserInfo(json);
       this.getDataBeforeGotoHome();
     },
     getInfoFail(error) {

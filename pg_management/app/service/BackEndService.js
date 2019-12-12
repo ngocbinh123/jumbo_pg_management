@@ -105,13 +105,42 @@ module.exports = {
                 })
                 .then(this.checkResponse);
         },
+        validInOutTimeUrl(data, bearer) {
+            const requestBody = {
+                "abiz_sessiondate": data.date,
+                "abiz_sessiontime": data.time
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.validInOutTimeUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
+        getLocationAdrress(data, bearer) {
+            const requestBody = {
+                "abiz_latitude": data.latitude,
+                "abiz_longitude": data.longitude,
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getLocationAdrressUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
         checkInOut(data, bearer) {
             const requestBody = {
                 "abiz_sessiondate": data.date,
                 "abiz_sessiontime": data.time,
                 "abiz_latitude": data.latitude,
                 "abiz_longitude": data.longitude,
-                "abiz_imageid": data.imageId
+                "abiz_imageid": data.imageId,
+                "abiz_address": data.address
             };
             const headers = config.authHeaders(bearer);
             return fetchModule

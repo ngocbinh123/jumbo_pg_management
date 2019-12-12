@@ -1,15 +1,31 @@
 <template>
-    <GridLayout rows="50,20,*,20,60" columns="50,*,50" class="page-parent">
+    <GridLayout rows="50,20,*,auto,5,60" columns="50,*,50" class="page-parent">
         <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
-        <Label text="CHỤP HÌNH CHẤM CÔNG" class="text-center" />
+        <Label text="CHẤM CÔNG" class="text-center" />
         </FlexboxLayout>
-        <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2"/>
-        <StackLayout margin="0" row="2" col="0" colSpan="3">
-            <Image :src="!cameraImage ? 'res://bg_trans' : cameraImage" id="image" loadMode="sync" stretch="aspectFit"/>
+        <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
+
+        <!-- <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2"/> -->
+       
+        <StackLayout row="2" col="0" colSpan="3" class="img-border">
+            <Image :src="!cameraImage ? 'res://bg_trans' : cameraImage" id="image" loadMode="sync" stretch="aspectFit" height="100%" />
         </StackLayout>
 
-        <Button class="btn-take-pic" text="CHỤP HÌNH" @tap="onTakePictureTap" row="4" col="0" colSpan="3" :isEnabled="!processing" v-show="!processing"/>
-        <ActivityIndicator v-show="processing" busy="true" row="4" col="0" colSpan="3" />
+       <Label :text="'fa-camera' | fonticon" class="fas btn-camera"  @tap="startingTakePictureNow()" row="2" col="1" colSpan="2" :isEnabled="!processing"/>   
+
+        <GridLayout class="lout-location-info" rows="40,40,auto,20" columns="50, *" row="3" col="0" colSpan="3">
+            <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-20" row="0" col="0" />
+            <Label class="lbl-value" :text="userName" row="0" col="1"/>
+
+            <Label :text="'fa-clock' | fonticon" class="far font-icon font-icon-size-20" row="1" col="0" />
+            <Label :text="checkInTime" class="lbl-value text-bold" row="1" col="1"/>
+
+            <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-20" row="2" col="0" />
+            <Label :text="$props.location.address" class="lbl-value-address" textWrap="true" row="2" col="1" rowSpan="2" />    
+        </GridLayout>
+
+        <Button class="btn-take-pic" text="CHẤM CÔNG" @tap="onClickSendButton()" row="5" col="0" colSpan="3" :isEnabled="!processing" />
+        <ActivityIndicator v-show="processing" busy="true" row="0" col="0" colSpan="3" rowSpan="5" />
     </GridLayout>
 </template>
 
@@ -28,33 +44,43 @@
     const platform = require("platform");
     import { error } from '@nativescript/core/trace/trace';
     import Constant from "../../data/Constant";
-
+    import Helper from "../../helper/PopularHelper";
     export default {
+        created() {
+            this.startingTakePictureNow();
+        },
+        props: ["location"],
         data() {
             return {
                 cameraImage: null,
+                userName: CurrentUser.methods.getUserName(),
+                checkInTime: Helper.getCurrentTimeStr(),
+                imageId: "",
                 processing: false,
             }
         },
-        methods: {
+        methods: {          
+            closePage() {
+                this.$modal.close();
+            },
             onClickSendButton() {
                 if(this.processing || this.cameraImage == null) {
                     return;
                 }
-                this.getImageFilePath(this.cameraImage)
+                if (!this.imageId) {
+                    this.getImageFilePath(this.cameraImage)
                     .then(path => {
                         this.uploadImage(path);
-                    });    
+                    });       
+                }else {
+                    this.submitData();
+                }
             },
             uploadImageSuccess() {
                 this.processing = false;
                 this.$modal.close({
                     isSuccess: true
                 });
-            },
-            uploadImageSuccessFail(error) {
-                this.showDlg(StringConst.lbl_fail, error.message);
-                this.processing = false;
             },
             uploadImage(path) {
                 this.processing = true;
@@ -102,43 +128,24 @@
                 switch(e.eventName) {
                     case "complete": 
                         const responseStr = e.response.getBodyAsString();
-                        var remoteImageId = "";
                         if (responseStr.includes("abiz_imageid")) {
-                            remoteImageId = JSON.parse(responseStr).abiz_imageid;
+                            this.imageId = JSON.parse(responseStr).abiz_imageid;
                         }
 
                         this.processing = false;
-                        this.$modal.close({
-                            isSuccess: true,
-                            imageId: remoteImageId
-                        });
+                        this.submitData();
                         break;
                     case "error": 
                         this.processing = false;
-                        var message = StringConst.please_try_again;
-                    
-                        switch(e.responseCode) {
-                            case 400: 
-                                message = "Đã có lỗi xảy ra trong quá trình tải hình lên hệ thống. Xin hãy thử lại một lần nữa."
-                                break;
-                            case 500: 
-                                message = "Đã có sự cố xảy trên hệ thống. Xin hãy thử lại."
-                                break;
-                            case 401: 
-                                message = "Đã xảy ra lỗi 401 (Unauthorized). \nBạn cần phải đăng xuất ứng dụng rồi đăng nhập lại."
-                                break;
-                            default: 
-                                message = "Tải hình lên hệ thống thất bại với lỗi " + e.responseCode + ". Xin hãy thử lại."
-                        }
-                        this.uploadImageSuccessFail(Error(message))
+                        this.submitData();
                         break;
                     case "progress":
                         console.log("UPLOADING_IMAGE", JSON.stringify(e));
                         break;
                 }
             },
-            onTakePictureTap: function(args) {
-                if(this.processing) {
+            startingTakePictureNow() {
+                  if(this.processing) {
                     return;
                 }
                 this.processing = true;
@@ -198,6 +205,33 @@
                     }
                 });
             },
+             submitData() {
+                this.processing = true;
+                const checkInDate = Helper.getCurrentDateStrForRequest();
+                this.checkInTime = Helper.getCurrentTimeStr();
+                const data = {
+                    date: checkInDate,
+                    time: this.checkInTime,
+                    latitude: this.$props.location.latitude,
+                    longitude: this.$props.location.longitude,
+                    imageId: this.imageId, 
+                    address: this.$props.location.address
+                };
+
+                ApiService.methods.checkInOut(data, CurrentUser.methods.getBearId())
+                .then(this.submitDataSuccess)
+                .catch(this.submitDataFail);
+            },
+            submitDataSuccess(json) {
+                this.processing = false;
+                this.$modal.close({
+                    isSuccess: true
+                });
+            }, 
+            submitDataFail(error) {
+                this.processing = false;
+                this.showDlg(StringConst.lbl_error, error.message);
+            },
             showDlg(dlgTitle, dlgMsg) {
                 return alert({
                     title: dlgTitle,
@@ -248,4 +282,38 @@
             color:$color-accent;
         }
     }
+
+    .img-border, .lout-location-info {
+        border-color: $color-border;
+        border-radius: 10%;
+        border-width: 0.5;
+        margin: 10 20;
+        padding: 10; 
+    }
+
+     .lout-location-info {
+        margin: 10 20 10 20;
+    }
+
+
+    .lbl-value {
+        vertical-align: middle;
+        font-size: 16;
+        text-align: left;
+    }
+
+    .lbl-value-address {
+        vertical-align: top;
+        font-size: 16;
+        text-align: left;
+    }
+
+    .btn-camera {
+        color: $color-primary;
+        vertical-align: top;
+        text-align: right;
+        font-size: 28;
+        margin: 20 35;
+    }
+
 </style>

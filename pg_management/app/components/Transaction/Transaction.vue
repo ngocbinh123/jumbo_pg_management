@@ -11,63 +11,55 @@
       <TabViewItem title="ĐƠN HÀNG">
         <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
-          <TextField id="txt_search_transaction" 
-            row="1" col="1"
-            v-model="searchTransValue"
-            v-show="false"
-            hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in $store.state.invoices" @itemTap="onSelectedTransaction">
+          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in remoteOrders" @itemTap="onSelectedTransaction">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*,*" columns="10,100,*" class="ls-item-check-in">
-                <Label :text="item.time" class="text-center time"  row="0" col="1"/>
-                <Label :text="item.code" class="item-header" textWrap="true" row="0" col="2"/>
+                <Label :text="item.abiz_ordertime" class="text-center time"  row="0" col="1"/>
+                <Label :text="item.abiz_ordercode" class="item-header" textWrap="true" row="0" col="2"/>
 
-                <Label :text="item.date" class="text-center date" row="1" col="1"/>
+                <Label :text="convertRequestDateToLocalDate(item.abiz_orderdate)" class="text-center date" row="1" col="1"/>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
                   <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon"  width="8%" />
-                  <Label :text="item.store" class="item-header-sub" textWrap="true" />
+                  <Label :text="item.abiz_outletid.text" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
                   <Label :text="'fa-user' | fonticon" class="far font-icon" width="8%" />
-                  <Label :text="item.customer.name" class="item-header-sub" />                  
+                  <Label :text="item.abiz_contactid.text" class="item-header-sub" />                  
                 </StackLayout>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="3" col="2">
                   <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon"  width="8%"/>
-                  <Label :text="item.displayTransTotal" class="item-header-sub" />                  
+                  <Label :text="formatCurrencystr(item.abiz_totalamountrollup)" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
           </ListView>
+          <Label v-if="!isProcessing && remoteOrders.length == 0" text="Hiện tại Không có đơn hàng." class="text-center" margin="24" color="red" row="2" col="0" colSpan="3" rowSpan="2" />
+
         </GridLayout>
       </TabViewItem>
       <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 60, *" columns="10, *, 50">
-          <!-- <Label text="Thêm Khách Hàng" class="page_title_small text-center" row="1" col="0"  colSpan="3"/> -->
-          <TextField id="txt_search_transaction" 
-            row="1" col="1"
-            v-model="searchTransValue"
-            v-show="false"
-            hint="Tìm kiếm đơn hàng" class="txt-search"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
-          <ListView row="0" col="0" colSpan="3" rowSpan="3" for="customer in $store.state.customers"  @itemTap="onCustomerSelected">
+          <ListView row="0" col="0" colSpan="3" rowSpan="3" for="customer in remoteCustomers"  @itemTap="onCustomerSelected">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,50,*" class="ls-item-check-in">
-                <Label :text="customer.id" class="text-center time"  row="0" col="1"/>
-                <Label :text="customer.name" class="item-header" textWrap="true" row="0" col="2"/>
+              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
+                <Label :text="customer.abiz_contactcode" class="text-center time"  row="0" col="1"/>
+                <Label :text="customer.fullname" class="item-header" textWrap="true" row="0" col="2"/>
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
                   <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
-                  <Label :text="customer.phone" class="item-header-sub" textWrap="true" />
+                  <Label :text="customer.mobilephone" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
                   <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
-                  <Label :text="customer.address" class="item-header-sub" />                  
+                  <Label :text="customer.abiz_provinceid.text" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
           </ListView>
+          <Label v-if="!isProcessing && remoteCustomers.length == 0" text="Hiện tại không có khách hàng." class="text-center" margin="24" color="red" row="0" col="0" colSpan="3" rowSpan="3" />
         </GridLayout>
       </TabViewItem>
     </TabView>
@@ -88,13 +80,18 @@ import ApiService from "../../service/BackEndService";
 import Helper from '../../helper/PopularHelper';
 import Remember from '../../share/Remember';
 import Constant from "../../data/Constant";
+import { error } from '@nativescript/core/trace/trace';
 
 export default {
   created() {
-    this.getRemoteCustomers();
-    this.getRemoteOrders();
     var currentDate = new Date();
     this.date = Helper.getCurrentDateStr();
+
+    this.remoteCustomers = Remember.getRemoteCustomers().records;
+    this.remoteOrders = Remember.getRemoteOrders().records;
+
+    this.getRemoteCustomers();
+    this.getRemoteOrders();
   },
   data() {
     return {
@@ -103,7 +100,8 @@ export default {
       selectedIndex: 0,
       searchTransValue:"",
       date: "",
-      customers: [],
+      remoteCustomers: [],
+      remoteOrders: [],
       transList:[]
     };
   },
@@ -114,44 +112,52 @@ export default {
       }
 
       this.isProcessing = true;
-      
-      if (event.item.products.length == 0) {
-        let that = this;
-        if (event.item.customer.phone == "" || event.item.customer.address == "") {
+      var selected = {
+        id: event.item.abiz_orderid,
+        code: event.item.abiz_ordercode,
+        store: event.item.abiz_outletid.text,
+        transTotal: event.item.abiz_totalamountrollup,
+        displayTransTotal: Helper.formatCurrencystr(event.item.abiz_totalamountrollup),
 
-          const transCustomer = this.$store.state.customers.find(el => el.contactId == event.item.customer.contactId);
-          if (transCustomer != undefined) {
-            if (event.item.customer.phone == "") {
-              event.item.customer.phone = transCustomer.phone;
-            }
+        customer: {
+            fullname: "",
+            mobilephone: "",
+            address: "",
+            gender: ""
+        },
+        time: Helper.convertRequestDateToLocalDate(event.item.abiz_orderdate),
+        date: event.item.abiz_ordertime,
+        products: []
+      };
 
-            if (event.item.customer.address == "") {
-              event.item.customer.address = transCustomer.address;
-            }
-          }
-        }
-        const query = "SELECT productId, productName, number, price, total, invoiceId FROM InvoiceDetail WHERE invoiceId = ?";
-        this.$store.state.database.all(query, [event.item.id]).then(result => {
-          result.forEach(row => {
-            var product = {
-                id:row[0],
-                model:"",
-                name: row[1],
-                number: row[2],
-                price: row[3],
-                total: row[4]  
-            };
-            event.item.products.push(product);
-          });
-          
-          that.openTransactionDetail(event.item);
-        }, error => {
-            this.isProcessing = false;
-            console.log("SELECT INVOICE DETAIL ERROR", error);
-        });
-      }else {
-        this.openTransactionDetail(event.item);
+      const orderCustomer = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, event.item.abiz_contactid.value) || 
+                                                          Helper.equalsIgnoreCase(el.fullscreen, event.item.abiz_contactid.text));
+      if(orderCustomer != undefined) {
+        selected.customer.fullname = orderCustomer.fullname;
+        selected.customer.mobilephone = orderCustomer.mobilephone;
+        selected.customer.address = orderCustomer.abiz_provinceid.text;
+        selected.customer.gender = this.getLocalGender(orderCustomer.gendercode);
       }
+      const that = this;
+      const query = "SELECT productId, productName, number, price, total, invoiceCode FROM InvoiceDetail WHERE invoiceCode = ?";
+      this.$store.state.database.all(query, [selected.code]).then(result => {
+        result.forEach(row => {
+          var product = {
+              id:row[0],
+              model:"",
+              name: row[1],
+              number: row[2],
+              price: row[3],
+              total: row[4]  
+          };
+          selected.products.push(product);
+        });
+        
+        that.openTransactionDetail(selected);
+      }, error => {
+          console.log("SELECT INVOICE DETAIL ERROR", error);
+          this.openTransactionDetail(selected);
+      });
     },
     openTransactionDetail(transaction) {
       this.$showModal(TransactionDetail, { 
@@ -187,11 +193,16 @@ export default {
     },
     callbackCreateTransaction(response) {
       this.isProcessing = false;
-
       if (response == undefined || !response.isSuccess) {
         return;
       }
 
+      const isNewCustomer = this.remoteCustomers.find(el => el.contactid == response.rermoteCustomer.contactid || el.mobilephone == response.rermoteCustomer.mobilephone) == undefined;
+
+      if (isNewCustomer) {
+        this.remoteCustomers.unshift(response.rermoteCustomer);
+      }
+      this.getRemoteOrders();
       this.openTransactionDetail(response.transaction);
     },
     createCustomer() {
@@ -210,104 +221,54 @@ export default {
         return;
       }
 
-      const event = {
-        item: response.customer
-      };
-      this.onCustomerSelected(event);
+      const isExist = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, response.customer.contactid)) != undefined;
+      if (isExist) {
+        this.showDlg(StringConst.lbl_notification, StringConst.msg_the_customer_is_exist);
+      }else {
+        this.remoteCustomers.unshift(response.customer);
+        this.onCustomerSelected({ item: response.customer});
+      }
     },
     getRemoteOrders() {
-      const currentDate= Helper.getCurrentDateStrForRequest();
-      const lastDate = Remember.getLastDateGetRemoteOrders();
-      if (lastDate == currentDate) {
-        return;
-      }
-
-      ApiService.methods.getOrders(currentDate, CurrentUser.methods.getBearId())
-        .then(this.callbackGetOrdersSuccess)
-        .catch(this.callbackGetOrderFail);
-    },
-    callbackGetOrdersSuccess(json) {
-      if (json == undefined) {
-        return;
-      }
-
-      const currentDate= Helper.getCurrentDateStrForRequest();
-      Remember.setLastDateGetRemoteOrders(currentDate);
-      
-      if (json.records.length == 0) {
-        return
-      }
-      json.records.forEach(order => {
-        if (order.abiz_contactid.value == null) {
-          return;    
-        }
-      
-        const isNotExisted = this.$store.state.invoices.find(el => el.code == order.abiz_ordercode) == undefined;
-        if (isNotExisted) {
-          var newTransaction = {
-            id: Math.floor(Math.random() * 100) + 100,
-            code:order.abiz_ordercode,
-            customer: {
-              id: Math.floor(Math.random() * 100) + 100,
-              name: order.abiz_contactid.text,
-              phone: "",
-              address: "", 
-              contactId: order.abiz_contactid.value
-            },
-            store: order.abiz_outletid.text,
-            time: order.abiz_ordertime,
-            date: Helper.convertRequestDateToLocalDate(order.abiz_orderdate),
-            transTotal: order.abiz_totalamountrollup,
-            displayTransTotal: Helper.formatCurrencystr(order.abiz_totalamountrollup),
-            products: []
-          }
-          this.$store.dispatch('insertInvoice', newTransaction);;
-        }
-      });
-    },
-    callbackGetOrderFail(error) {
-
+      ApiService.methods.getOrders(Helper.getCurrentDateStrForRequest(), CurrentUser.methods.getBearId())
+        .then(json => {
+          this.remoteOrders = json.records;
+          this.isProcessing = false;
+          Remember.setRemoteOrders(json);
+        })
+        .catch(error => {
+          this.isProcessing = false;
+        });
     },
     getRemoteCustomers() {
-      const lastDate = Remember.getLastDateGetRemoteCustomers();
-      if (!!lastDate) {
-        return;
-      }
+      this.isProcessing = true;
       const currentDate= Helper.getCurrentDateStrForRequest();
       ApiService.methods.getCustomers(currentDate,CurrentUser.methods.getBearId())
-      .then(this.callbackGetRemoteCustomerSuccess)
-      .catch(this.callbackGetRemoteCustomerFail);
-    },
-    callbackGetRemoteCustomerSuccess(json) {
-      json.records.forEach(remote => {
-        var isExist = this.$store.state.customers.find(el => el.contactid == remote.abiz_contactid || el.name == remote.fullname) != undefined;
-        if (!isExist && !!remote.abiz_provinceid.text && !!remote.gendercode.value) {
-          var customer = {
-            id: Math.floor(Math.random() * 100) + 100,
-            name: remote.fullname,
-            sex: remote.gendercode.value == Constant.GENDER.Male.value ? Constant.GENDER.Male.text : Constant.GENDER.Female.text,
-            phone: remote.mobilephone,
-            address: remote.abiz_provinceid.text,
-            contactId: remote.contactid
-          }
-          this.$store.dispatch('insertCustomer', customer);
-        }
-        
+      .then(json => {
+        this.remoteCustomers = json.records;
+        Remember.setRemoteCustomers(json);
+        this.isProcessing = false;
+      })
+      .catch(error => {
+        console.log("GET_REMOTE_CUSTOMER_ERROR", error.message);
+        this.isProcessing = false;
       });
-      const currentDate= Helper.getCurrentDateStrForRequest();
-      Remember.setLastDateGetRemoteCustomers(currentDate);
-      this.isProcessing = false;
-    },
-    callbackGetRemoteCustomerFail(error) {
-      console.log("GET_REMOTE_CUSTOMER_ERROR", error.message);
-      this.isProcessing = false;
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
         title: dlgTitle,
-        okButtonText: stringConst.lbl_close,
+        okButtonText: StringConst.lbl_close,
         message: dlgMsg
       });
+    },
+    getLocalGender(gendercode) {
+      return !gendercode.value ? "" : gendercode.value == Constant.GENDER.Male.value ? Constant.GENDER.Male.text : Constant.GENDER.Female.text;
+    },
+    convertRequestDateToLocalDate(remoteDate) {
+      return Helper.convertRequestDateToLocalDate(remoteDate);
+    }, 
+    formatCurrencystr(currency) {
+      return Helper.formatCurrencystr(currency);
     }
   }
 };

@@ -32,7 +32,6 @@ import Constant from "../data/Constant";
 import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";
-import Customer from "../data/objects/Customer";
 export default {
   components: {
     Home,

@@ -11,21 +11,21 @@
     <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addCustomer()" :isEnabled="!isProcessing" row="1" col="2" />     
 
-    <StackLayout row="2" col="0" colSpan="3" v-show="!!customer.name">
+    <StackLayout row="2" col="0" colSpan="3" v-show="!!customer.fullname">
       <StackLayout orientation="horizontal" class="lout-info">
         <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"/>
-        <Label :text="customer.name" class="text-center txt-value" textWrap="true"/>
+        <Label :text="customer.fullname" class="text-center txt-value" textWrap="true"/>
       </StackLayout>
 
       <StackLayout orientation="horizontal" class="lout-info" >
         <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
-        <Label :text="customer.phone" class="text-center txt-value" textWrap="true" />
+        <Label :text="customer.mobilephone" class="text-center txt-value" textWrap="true" />
 
         <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" margin="0 4 0 24" v-show="!!customer.address" />
         <Label :text="customer.address" class="text-center txt-value" textWrap="true" v-show="!!customer.address" />
       </StackLayout>
     </StackLayout>
-    <Label text="Hãy bấm nút + góc trên bên phải để thêm khách hàng." class="text-center" textWrap="true" color="red" margin="24" row="2" col="0" colSpan="3" v-show="!customer.name"/>
+    <Label text="Hãy bấm nút + góc trên bên phải để thêm khách hàng." class="text-center" textWrap="true" color="red" margin="24" row="2" col="0" colSpan="3" v-show="!customer.fullname"/>
 
     <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="3" col="2" />
@@ -96,15 +96,13 @@ export default {
       transTime: Helper.getCurrentTimeStr(),
       transTotal:0,
       displayTransTotal:"0 VND",
-      customer: {
-        id: 111,
-        name: "",
-        sex: "",
-        phone: "",
+      customer:{
+        contactId: "",
+        fullname: "",
         address: "",
-        provinceId: "",
-        contactId: ""
+        mobilephone: "",
       },
+      rermoteCustomer: {},
       products:[]
     };
   },
@@ -168,14 +166,19 @@ export default {
       if(response == undefined || !response.isSuccess) {
         return;
       }
-      this.customer = response.customer;
+      this.rermoteCustomer = response.customer;
+      this.customer.contactId = response.customer.contactid;
+      this.customer.fullname = response.customer.fullname;
+      this.customer.mobilephone = response.customer.mobilephone;
+      this.customer.address = response.customer.abiz_provinceid.text;
+
     },
     submiData() {
       if (this.isProcessing) {
         return;
       }
 
-      if (!this.customer.name) {
+      if (!this.customer.fullname) {
         this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_pls_add_customer
@@ -211,7 +214,7 @@ export default {
       }
 
       const total = this.calculateTotal();
-      const message = "- Khách hàng: " + this.customer.name + "\n- Ngày lập: " + this.transTime + "  " + this.transDate + "\n- Tổng tiền: " + total + " (Đã bao gồm VAT)";
+      const message = "- Khách hàng: " + this.customer.fullname + "\n- Ngày lập: " + this.transTime + "  " + this.transDate + "\n- Tổng tiền: " + total + " (Đã bao gồm VAT)";
 
       confirm({
         title: StringConst.lbl_pls_check_order,
@@ -263,17 +266,15 @@ export default {
       var order = json.records.find(el => json.records[0].abiz_contactid.value.toLowerCase() == transaction.customer.contactId.toLowerCase());
       if (order != undefined) {
         transaction.code = order.abiz_ordercode;
-        // transaction.time = order.abiz_ordertime;
         transaction.store = order.abiz_outletid.text;
-        // transaction.total = order.abiz_totalamountrollup;
-        // transaction.displayTransTotal = Helper.formatCurrencystr(order.abiz_totalamountrollup);
       }
 
       this.$store.dispatch('insertInvoice', transaction);
       this.$modal.close({
         isSuccess: true,
         customer: this.customer,
-        transaction: transaction
+        transaction: transaction,
+        rermoteCustomer: this.rermoteCustomer
       });
       this.isProcessing = false;
 
@@ -477,13 +478,11 @@ export default {
 .lbl-sum, .lbl-sum-value {
   font-family: "f_arima_madurai_extra_bold";
   font-weight: bold;
-  font-size: 18px;
   text-align: right;
 }
 
 .lbl-sum-value {
   color: $color-accent;
-  // padding-right: 10;
 }
 
 .lout-padding-ver {
