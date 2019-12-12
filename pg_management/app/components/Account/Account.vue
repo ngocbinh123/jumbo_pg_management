@@ -10,7 +10,7 @@
     <ScrollView row="1" col="0" colSpan="3" rowSpann="2">
       <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20" columns="*, 50">
           <Label text="Thông Tin Tài Khoản:" class="text-part-header" row="1" col="0" />    
-          <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24" row="1" col="1"/>
+          <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24 text-right" row="1" col="1"/>
 
           <GridLayout class="account-part" rows="20, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, *" columns="50, *,50" row="2" col="0" colSpan="2">
               <Label :text="'fa-id-card' | fonticon" class="fas icon-field-user" row="1" col="0" />
@@ -231,7 +231,8 @@ export default {
     },
     callBackServiceFail(error) {
       this.isProcessing = false;
-      this.showDlg(ResourceString.lbl_error, error.message);      
+      var message = error.message.includes("UnknownHostException") ? ResourceString.msg_unknow_host_exception : error.message;
+      this.showDlg(ResourceString.lbl_error, message);      
     },
     callBackUpdatePhoneNunber(obj, newPhone) {
       this.user.phone = newPhone;
