@@ -132,7 +132,6 @@ export default {
         displayTransTotal: Helper.formatCurrencystr(event.item.abiz_totalamountrollup),
 
         customer: {
-            id: "",
             fullname: "",
             mobilephone: "",
             address: "",
@@ -143,9 +142,9 @@ export default {
         products: []
       };
 
-      const orderCustomer = this.remoteCustomers.find(el => el.contactid == event.item.abiz_contactid.value || el.mobilephone == event.item.mobilephone);
+      const orderCustomer = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, event.item.abiz_contactid.value) || 
+                                                          Helper.equalsIgnoreCase(el.fullscreen, event.item.abiz_contactid.text));
       if(orderCustomer != undefined) {
-        selected.customer.id = 101;
         selected.customer.fullname = orderCustomer.fullname;
         selected.customer.mobilephone = orderCustomer.mobilephone;
         selected.customer.address = orderCustomer.abiz_provinceid.text;
@@ -234,14 +233,9 @@ export default {
         return;
       }
 
-      const isExist = this.remoteCustomers.find(el => el.contactid == response.customer.contactid || 
-                                                    el.abiz_contactcode == response.customer.abiz_contactcode|| 
-                                                    el.fullname == response.customer.fullname || 
-                                                    el.mobilephone == response.customer.mobilephone) != undefined;
+      const isExist = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, response.customer.contactid)) != undefined;
       if (isExist) {
-        setTimeout(() => {
-          this.showDlg(StringConst.lbl_notification, StringConst.msg_the_customer_is_exist);
-        }, 500); 
+        this.showDlg(StringConst.lbl_notification, StringConst.msg_the_customer_is_exist);
       }else {
         this.remoteCustomers.unshift(response.customer);
         this.onCustomerSelected({ item: response.customer});
@@ -275,7 +269,7 @@ export default {
     showDlg(dlgTitle, dlgMsg) {
       return alert({
         title: dlgTitle,
-        okButtonText: stringConst.lbl_close,
+        okButtonText: StringConst.lbl_close,
         message: dlgMsg
       });
     },

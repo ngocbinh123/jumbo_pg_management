@@ -74,5 +74,5 @@ module.exports = {
     msg_please_should_take_picture_before: "Để chấm công, bạn cần phải chụp hình.",
     please_try_again: "Đã có sự cố xảy ra. Xin hãy thử lại.",
     msg_request_location_permission_fail: "Đã xảy ra sự cố không như mong muốn. Xin hãy thử lại.",
-    msg_the_customer_is_exist: "Khách hàng này đã tồn tại trong danh sách khách hàng trước đó."
+    msg_the_customer_is_exist: "Khách hàng này đã tồn tại trong danh sách khách hàng."
 };

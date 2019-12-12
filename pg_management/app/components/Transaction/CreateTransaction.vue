@@ -490,13 +490,11 @@ export default {
 .lbl-sum, .lbl-sum-value {
   font-family: "f_arima_madurai_extra_bold";
   font-weight: bold;
-  font-size: 18px;
   text-align: right;
 }
 
 .lbl-sum-value {
   color: $color-accent;
-  // padding-right: 10;
 }
 
 .lout-padding-ver {

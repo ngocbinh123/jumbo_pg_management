@@ -208,7 +208,7 @@ export default {
     callApiServiceFail(error) {
       this.isChkInProscess = false;
       var message = error.message.includes("UnknownHostException") ? StringConst.msg_unknow_host_exception : error.message;
-      this.showDlg(StringConst.lbl_error, error.message);
+      this.showDlg(StringConst.lbl_error, message);
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
