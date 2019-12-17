@@ -18,7 +18,7 @@
     <Label :text="customer.mobilephone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
     <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="5" col="0" />
-    <Label :text="customer.abiz_provinceid.text" class="text-center txt-value" textWrap="true" row="5" col="1" />
+    <Label :text="getCustomerAddress(customer.abiz_districtid, customer.abiz_provinceid)" class="text-center txt-value" textWrap="true" row="5" col="1" />
   </GridLayout>
 </template>
 <script>
@@ -46,6 +46,21 @@ export default {
       }
 
       return "";
+    },
+    getCustomerAddress(districtId, provinceId) {
+      var address = "";
+      if(districtId != undefined && districtId.text != undefined) {
+        address = districtId.text;
+      }
+
+      if(address != "") {
+        address += ", ";
+      }
+
+      if(provinceId != undefined && provinceId.text != undefined) {
+        address += provinceId.text;
+      }
+      return address;
     }
   }
 };

@@ -1,53 +1,48 @@
 <template>
-  <StackLayout id="home_parent">
-    <RadCalendar
-      id="chkInCalendar"
-      eventsViewMode="None"
-      selectionMode="Single"
-      :viewMode="viewCalendarMode"
-      transitionMode="Stack"
-      locale="vi-VN"
-      @dateSelected="onDateSelected"
-      @dateDeselected="onDateDeselected"
-      @navigatedToDate="onNavigatedToDate"
-      @navigatingToDateStarted="onNavigatingToDateStarted"
-      @viewModeChanged="onViewModeChanged"
+  <GridLayout rows="50, *, 50" columns="50,*, 100, *, 50" class="page-parent">
+    <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="5" width="100%" height="50">
+      <Label :text="localSelectedDateStr" class="text-center" />
+    </FlexboxLayout>
+    <Label :text="'fa-calendar-alt' | fonticon" class="far btn-calendar"  @tap="ChooseDate()" row="0" col="4" />
+    
+    <ListView row="1" colSpan="5" rowSpan="3" for="msgItem in messages" v-show="messages.length > 0">
+       <v-template>
+        <Label :text="msgItem" class="text-left" textWrap="true" margin="12 6"/>
+       </v-template>
+    </ListView>
+
+    <ListView row="1" colSpan="5" rowSpan="3" for="item in currCheckInList" v-show="messages.length == 0">
+      <v-template>
+        <GridLayout flexDirection="row" rows="auto, auto" columns="50, 50, auto" class="ls-item-check-in">
+          <!-- late -->
+          <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" />
+          <!-- miss -->
+          <Label :text="'fa-times-circle' | fonticon" class="fas font-icon-missed" v-if="item.statuscode.value == 100000001" row="0" col="0"/>
+          <!-- ontime -->
+          <Label :text="'fa-check-circle' | fonticon" class="fas font-icon-ontime" v-if="item.statuscode.value == 2" row="0" col="0" />
+          <!-- plainning -->
+          <Label :text="'fa-circle' | fonticon" class="far font-icon-plainning" v-if="item.statuscode.value == 1" row="0" col="0" />  
+
+          <Label :text="item.abiz_requestedtime" class="" row="0" col="1" />
+          
+          <Label :text="item.s_abiz_outletid.text" class="item-header text-ver-middle" textWrap="true"  row="0" col="2"/>
+          <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"  row="1" col="2"/>
+        </GridLayout>
+      </v-template>
+    </ListView>
+    <Button
+      id="btn_check_in"
+      text="CHẤM CÔNG"
+      class="btn-fill-bg"
+      row="2"
+      col="2"
+      v-show="isToday(localSelectedDateStr) && currCheckInList.length > 0"
+      @tap="validCheckInOutTime()"
+      :isEnabled="!isChkInProscess"
     />
-    <GridLayout columns="*, 100, *" rows="*, 50">
-      <ListView row="0" colSpan="3" rowSpan="2" for="item in currCheckInList">
-        <v-template>
-          <GridLayout flexDirection="row" rows="auto, auto" columns="50, 50, auto" class="ls-item-check-in">
-            <!-- late -->
-            <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" />
-            <!-- miss -->
-            <Label :text="'fa-times-circle' | fonticon" class="fas font-icon-missed" v-if="item.statuscode.value == 100000001" row="0" col="0"/>
-            <!-- ontime -->
-            <Label :text="'fa-check-circle' | fonticon" class="fas font-icon-ontime" v-if="item.statuscode.value == 2" row="0" col="0" />
-            <!-- plainning -->
-            <Label :text="'fa-circle' | fonticon" class="far font-icon-plainning" v-if="item.statuscode.value == 1" row="0" col="0" />  
-
-            <Label :text="item.abiz_requestedtime" class="" row="0" col="1" />
-            
-            <Label :text="item.s_abiz_outletid.text" class="item-header text-ver-middle" textWrap="true"  row="0" col="2"/>
-            <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"  row="1" col="2"/>
-          </GridLayout>
-        </v-template>
-      </ListView>
-      <Button
-        id="btn_check_in"
-        text="CHẤM CÔNG"
-        class="btn-fill-bg"
-        row="2"
-        col="1"
-        v-show="isSelectedCurrentDate && currCheckInList.length > 0"
-        @tap="validCheckInOutTime()"
-        :isEnabled="!isChkInProscess"
-      />
-      <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="3" rowSpan="2" />
-      <Label v-if="!isChkInProscess && currCheckInList.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="0" colSpan="3" rowSpan="2" />
-
+    <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="5" rowSpan="3" />
+    <Label v-if="!isChkInProscess && currCheckInList.length == 0 && messages.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="1" colSpan="5" rowSpan="3" />
     </GridLayout>
-  </StackLayout>
 </template>
 <script>
 import Vue from "nativescript-vue";
@@ -63,7 +58,8 @@ import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import Helper from "../../helper/PopularHelper";
 import * as Geolocation from 'nativescript-geolocation';
-const now = new Date();
+import DatePickerDlg from "../Dialog/DateWithoutLimitPickerDlg";
+
 export default {
   mounted() {
     this.fetchCheckInSchedules();
@@ -71,11 +67,10 @@ export default {
   },
   data() {
     return {
-      viewCalendarMode: "Week",
+      localSelectedDateStr: Helper.getCurrentDateStr(),
       isChkInProscess: false,
-      selectedDate: now,
-      isSelectedCurrentDate: true,
-      currCheckInList: []
+      currCheckInList: [], 
+      messages: []
     };
   },
   methods: {
@@ -90,41 +85,40 @@ export default {
         ]
       });
     },
-    isToday(date) {
-      return (
-        date.getDate() == now.getDate() &&
-        date.getMonth() == now.getMonth() &&
-        date.getFullYear() == now.getFullYear()
-      );
+    isToday(dateStr) {
+      return Helper.isToday(dateStr)
     },
-    onDateSelected(args) {
-      const selectedDateStr =args.date.getFullYear() + "-" +  (args.date.getMonth()+1) + "-" +  args.date.getDate();
-      if (selectedDateStr == this.selectedDate) {
-        return;  
+    ChooseDate() {
+      if (this.isChkInProscess) {
+        return;
       }
 
-      this.selectedDate = selectedDateStr;
-      this.isSelectedCurrentDate = this.isToday(args.date);
-      this.fetchCheckInSchedules(); 
-    },
-    onDateDeselected(args) {
-    },
-    onNavigatedToDate(args) {
-    },
-    onNavigatingToDateStarted(args) {
-    },
-    onViewModeChanged(args) {
-      args.object.viewMode = "Week";
+      this.$showModal(DatePickerDlg, { 
+        fullscreen: false, 
+        animated: true,
+        props: { 
+          title: StringConst.lbl_change_checkin_date,
+          defaultDate: this.localSelectedDateStr
+        }
+      }).then(result => {
+        if (result == undefined || !result.isSuccess || result.selectedDateStr == this.localSelectedDateStr) {
+          return;
+        }    
+       this.localSelectedDateStr = result.selectedDateStr;
+       this.fetchCheckInSchedules(); 
+      });
     },
     fetchCheckInSchedules() {
       this.isChkInProscess = true;
       this.currCheckInList = [];
-      ApiService.methods.getSessions(this.selectedDate, CurrentUser.methods.getBearId())
+      const requestSelectedDate = Helper.convertLocalDateToRequestDate(this.localSelectedDateStr);
+      ApiService.methods.getSessions(requestSelectedDate, CurrentUser.methods.getBearId())
       .then(this.callbackGetSessionSuccess)
       .catch(this.callApiServiceFail);
     },
     callbackGetSessionSuccess(obj) {
       this.isChkInProscess = false;
+      this.messages = obj.messages;
       this.currCheckInList = obj.records;
     },
     openCamera(curLoction) {

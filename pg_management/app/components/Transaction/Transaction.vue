@@ -54,7 +54,7 @@
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
                   <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
-                  <Label :text="customer.abiz_provinceid.text" class="item-header-sub" />                  
+                  <Label :text="getCustomerAddress(customer.abiz_districtid, customer.abiz_provinceid)" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
@@ -281,6 +281,21 @@ export default {
     }, 
     formatCurrencystr(currency) {
       return Helper.formatCurrencystr(currency);
+    },
+    getCustomerAddress(districtId, provinceId) {
+      var address = "";
+      if(districtId != undefined && districtId.text != undefined) {
+        address = districtId.text;
+      }
+
+      if(address != "") {
+        address += ", ";
+      }
+      
+      if(provinceId != undefined && provinceId.text != undefined) {
+        address += provinceId.text;
+      }
+      return address;
     }
   }
 };
