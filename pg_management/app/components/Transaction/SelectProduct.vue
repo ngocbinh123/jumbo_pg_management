@@ -27,8 +27,6 @@
 </template>
 <script>
 import StringConst from "../../assets/StringConst";
-import SelectProductMeta from "../../data/formMeta/SelectProductMeta";
-import ProductList from "../../data/objects/Product";
 import ProductListDlg from "../Product/ProductList";
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
@@ -40,7 +38,6 @@ export default {
   props: ["dateStr","timeStr"],
   data() {
     return {
-      products: ProductList.getProductList(),
       product: {
         id: "",
         name: "Chọn sản phẩm",

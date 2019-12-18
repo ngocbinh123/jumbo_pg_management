@@ -73,7 +73,6 @@
 </template>
 <script>
 import StringConst from "../../assets/StringConst";
-import CustomerMeta from "../../data/formMeta/CustomerMeta";
 import SelectProduct from "./SelectProduct";
 import ChangeProductNumber from "./ChangeProductNumber";
 import Helper from '../../helper/PopularHelper';
