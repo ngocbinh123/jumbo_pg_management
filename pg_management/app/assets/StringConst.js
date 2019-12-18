@@ -29,6 +29,7 @@ module.exports = {
     lbl_update: "Cập nhật",
     lbl_create_order: "Tạo đơn hàng",
     lbl_pls_check_order: "HÃY KIỂM TRA LẠI ĐƠN HÀNG",
+    lbl_change_checkin_date: "THAY ĐỔI NGÀY CHẤM CÔNG",
     lbl_create_trans_date: "NGÀY TẠO ĐƠN HÀNG",
     lbl_create_trans_time: "THỜI GIAN TẠO ĐƠN HÀNG",
     lbl_upload_img_success: "TẢI HÌNH LÊN HỆ THỐNG THÀNH CÔNG",
@@ -74,5 +75,7 @@ module.exports = {
     msg_please_should_take_picture_before: "Để chấm công, bạn cần phải chụp hình.",
     please_try_again: "Đã có sự cố xảy ra. Xin hãy thử lại.",
     msg_request_location_permission_fail: "Đã xảy ra sự cố không như mong muốn. Xin hãy thử lại.",
-    msg_the_customer_is_exist: "Khách hàng này đã tồn tại trong danh sách khách hàng."
+    msg_the_customer_is_exist: "Khách hàng này đã tồn tại trong danh sách khách hàng.",
+    msg_please_fill_province: "Xin hãy chọn Tỉnh/ Thành Phố.",
+    msg_please_fill_district: "Xin hãy chọn Quận/ Huyện."
 };

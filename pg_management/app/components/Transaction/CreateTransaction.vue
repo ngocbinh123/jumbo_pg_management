@@ -20,8 +20,10 @@
       <StackLayout orientation="horizontal" class="lout-info" >
         <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18" />
         <Label :text="customer.mobilephone" class="text-center txt-value" textWrap="true" />
+      </StackLayout>
 
-        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" margin="0 4 0 24" v-show="!!customer.address" />
+      <StackLayout orientation="horizontal" class="lout-info">
+        <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" v-show="!!customer.address" />
         <Label :text="customer.address" class="text-center txt-value" textWrap="true" v-show="!!customer.address" />
       </StackLayout>
     </StackLayout>
@@ -43,19 +45,14 @@
       </StackLayout>
 
       <GridLayout row="1" col="0" colSpan="5" rows="auto, auto, auto" columns="100, *" class="edt-box" v-show="this.transTotal != 0">
-          <!-- <Label :text="'fa-money-bill-alt' | fonticon" row="0" col="0" class="far font-icon font-icon-size-18"/> -->
           <Label text="Tổng tiền SP:" class="text-right" textWrap="true" row="0" col="0" />          
           <Label :text="displayTransTotal" class="text-right" textWrap="true" row="0" col="1" />
           <Label text="VAT (10%):" class="text-right" textWrap="true" row="1" col="0" />
           <Label :text="calculateVAT()" class="text-right" textWrap="true" row="1" col="1" />
           <Label text="Tổng cộng:" class="text-right border-top lbl-sum" textWrap="true" row="2" col="0" />
           <Label :text="calculateTotal()" class="text-right lbl-sum-value border-top"  padding ="0" textWrap="true" row="2" col="1" />
-          <!-- <Label text="(Chưa bao gồm VAT)" class="text-caption" textWrap="true" row="1" col="0" colSpan="2" /> -->
       </GridLayout>
     
-      <!-- <Label :text="displayTransTotal" class="lbl-sum-value tex-center" row="2" col="3" colSpan="2"/> -->
-
-      <!-- <Label text="ID" class="column-name text-center" row="3" col="0" /> -->
       <Label text="Tên SP" class="column-name text-center" row="3" col="0" colSpan="2" />
       <Label text="SL" class="column-name text-center" row="3" col="2" />
       <Label text="Đơn Giá" class="column-name text-center" row="3" col="3" />
@@ -65,7 +62,6 @@
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
         <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
-          <!-- <Label :text="item.id" class="lbl-id text-center" row="0" col="0" /> -->
           <Label :text="item.name" class="lbl-name text-center" row="0" col="0"  colSpan="2" />
           <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
           <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />
@@ -77,7 +73,6 @@
 </template>
 <script>
 import StringConst from "../../assets/StringConst";
-import CustomerMeta from "../../data/formMeta/CustomerMeta";
 import SelectProduct from "./SelectProduct";
 import ChangeProductNumber from "./ChangeProductNumber";
 import Helper from '../../helper/PopularHelper';
@@ -170,7 +165,7 @@ export default {
       this.customer.contactId = response.customer.contactid;
       this.customer.fullname = response.customer.fullname;
       this.customer.mobilephone = response.customer.mobilephone;
-      this.customer.address = response.customer.abiz_provinceid.text;
+      this.customer.address = this.getCustomerAddress(response.customer.abiz_districtid, response.customer.abiz_provinceid);
 
     },
     submiData() {
@@ -397,7 +392,6 @@ export default {
       return this.formatCurrentcy(vat) + " VND";
     },
     calculateTotal() {
-      // const vat = Math.ceil(this.transTotal *1.1);
       const vat = Math.ceil(this.transTotal *0.1);
       return this.formatCurrentcy(this.transTotal + vat) + " VND";
     },
@@ -407,6 +401,21 @@ export default {
         okButtonText: StringConst.lbl_close,
         message: dlgMsg
       });
+    },
+    getCustomerAddress(districtId, provinceId) {
+      var address = "";
+      if(districtId != undefined && districtId.text != undefined) {
+        address = districtId.text;
+      }
+
+      if(address != "") {
+        address += ", ";
+      }
+
+      if(provinceId != undefined && provinceId.text != undefined) {
+        address += provinceId.text;
+      }
+      return address;
     }
   }
 };

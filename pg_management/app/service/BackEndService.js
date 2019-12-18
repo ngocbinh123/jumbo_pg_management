@@ -54,7 +54,9 @@ module.exports = {
                 "abiz_fullname": customer.name,
                 "abiz_gendercode": gender,
                 "abiz_mobilephone": customer.phone,
-                "abiz_provinceid": customer.provinceId
+                "abiz_provinceid": customer.province.id,
+                "abiz_districtid": customer.district.id,
+
             };
 
             const headers = config.authHeaders(bearer);

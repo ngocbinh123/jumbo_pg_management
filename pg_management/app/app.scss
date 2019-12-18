@@ -34,6 +34,9 @@
         vertical-align: middle;
         align-self: center;
     }
+    Label.title-page {
+        font-size: 24;
+    }
     .btn-right {
         font-family: "f_arima_madurai_bold";
         font-size: 14;
@@ -51,7 +54,8 @@
 }
 
 .btn-back,
-.btn-done {
+.btn-done,
+.btn-calendar {
     color: white;
     font-size: 24;
     vertical-align: middle;
@@ -310,6 +314,21 @@ ListView {
     border-width: 0.5;
     padding: 2 12;
     margin: 4 12;
+}
+
+.box-border {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 2 12;
+    margin: 4 12;
+}
+
+.input-border {
+    border-color: $color-border;
+    border-radius: 4;
+    border-width: 0.5;
+    padding: 2 12;
 }
 
 .text-ver-middle {

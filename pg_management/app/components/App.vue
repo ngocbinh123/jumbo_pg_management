@@ -12,7 +12,7 @@
         androidTabsPosition="bottom"
         col="0" row="0"
       >
-        <TabViewItem title="Chấm Công" iconSource="res://ic_home">
+        <TabViewItem title="Chấm Công" iconSource="res://ic_checkin_list">
           <Home></Home>
         </TabViewItem>
         <TabViewItem title="Đơn Hàng" iconSource="res://ic_cart">
