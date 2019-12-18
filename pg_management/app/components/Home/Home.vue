@@ -1,7 +1,7 @@
 <template>
   <GridLayout rows="50, *, 50" columns="50,*, 100, *, 50" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="5" width="100%" height="50">
-      <Label :text="localSelectedDateStr" class="text-center" />
+      <Label :text="localSelectedDateStr" class="text-center title-page" />
     </FlexboxLayout>
     <Label :text="'fa-calendar-alt' | fonticon" class="far btn-calendar"  @tap="ChooseDate()" row="0" col="4" />
     
@@ -101,7 +101,7 @@ export default {
           defaultDate: this.localSelectedDateStr
         }
       }).then(result => {
-        if (result == undefined || !result.isSuccess || result.selectedDateStr == this.localSelectedDateStr) {
+        if (result == undefined || !result.isSuccess) {
           return;
         }    
        this.localSelectedDateStr = result.selectedDateStr;

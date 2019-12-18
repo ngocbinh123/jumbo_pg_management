@@ -54,7 +54,7 @@
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
                   <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
-                  <Label :text="getCustomerAddress(customer.abiz_districtid, customer.abiz_provinceid)" class="item-header-sub" />                  
+                  <Label :text="getCustomerAddress(customer.abiz_districtid, customer.abiz_provinceid)" textWrap="true" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
@@ -147,7 +147,7 @@ export default {
       if(orderCustomer != undefined) {
         selected.customer.fullname = orderCustomer.fullname;
         selected.customer.mobilephone = orderCustomer.mobilephone;
-        selected.customer.address = orderCustomer.abiz_provinceid.text;
+        selected.customer.address = this.getCustomerAddress(orderCustomer.abiz_districtid, orderCustomer.abiz_provinceid);
         selected.customer.gender = this.getLocalGender(orderCustomer.gendercode);
       }
       const that = this;
@@ -209,11 +209,12 @@ export default {
         return;
       }
 
-      const isNewCustomer = this.remoteCustomers.find(el => el.contactid == response.rermoteCustomer.contactid || el.mobilephone == response.rermoteCustomer.mobilephone) == undefined;
+      // const isNewCustomer = this.remoteCustomers.find(el => el.contactid == response.rermoteCustomer.contactid || el.mobilephone == response.rermoteCustomer.mobilephone) == undefined;
 
-      if (isNewCustomer) {
-        this.remoteCustomers.unshift(response.rermoteCustomer);
-      }
+      // if (isNewCustomer) {
+      //   this.remoteCustomers.unshift(response.rermoteCustomer);
+      // }
+      this.getRemoteCustomers();
       this.getRemoteOrders();
       this.openTransactionDetail(response.transaction);
     },
@@ -233,9 +234,9 @@ export default {
         return;
       }
 
-      const isExist = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, response.customer.contactid)) != undefined;
-      if (isExist) {
-        this.showDlg(StringConst.lbl_notification, StringConst.msg_the_customer_is_exist);
+      const oldCustomer = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, response.customer.contactid));
+      if (oldCustomer != undefined) {
+        this.showDlg(StringConst.lbl_notification, "Khách hàng này đã có trong hệ thống với tên là: " + oldCustomer.fullname + ".");
       }else {
         this.remoteCustomers.unshift(response.customer);
         this.onCustomerSelected({ item: response.customer});
