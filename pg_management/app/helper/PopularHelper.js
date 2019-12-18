@@ -24,6 +24,10 @@ module.exports = {
         var result = currency.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " " + priceUnit;
         return result.trim();
     },
+    isToday(dateStr) {
+        const todayStr = this.getCurrentDateStr();
+        return dateStr == todayStr;
+    },
     equalsIgnoreCase(firstText, secondText) {
         if (firstText == undefined || secondText == undefined) {
             return false;
