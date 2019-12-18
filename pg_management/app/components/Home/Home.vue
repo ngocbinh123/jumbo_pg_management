@@ -54,7 +54,6 @@ import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 import ApiService from '../../service/BackEndService';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import Helper from "../../helper/PopularHelper";
 import * as Geolocation from 'nativescript-geolocation';
@@ -63,7 +62,13 @@ import DatePickerDlg from "../Dialog/DateWithoutLimitPickerDlg";
 export default {
   mounted() {
     this.fetchCheckInSchedules();
-    this.trackingPage();
+  },
+  created() {
+    var current = new Date();
+    var firstDate = new Date(current.getFullYear(), current.getMonth(), 1);
+    var lastDate = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+    this.minDate = firstDate;
+    this.maxDate = lastDate;
   },
   data() {
     return {
@@ -74,17 +79,6 @@ export default {
     };
   },
   methods: {
-    trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "TAB_HOME"
-          }
-        ]
-      });
-    },
     isToday(dateStr) {
       return Helper.isToday(dateStr)
     },
