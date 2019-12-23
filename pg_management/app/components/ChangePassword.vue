@@ -10,6 +10,7 @@
             hint="Mật khẩu hiện tại"
             secure="true"
             autocorrect="false"
+            class="input-margin"
           />
           <TextField
             id="txt_new_pass"
@@ -17,8 +18,17 @@
             hint="Mật khẩu mới"
             secure="true"
             autocorrect="false"
+            class="input-margin"
           />
-          <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary" :isEnabled = "!processing"  />
+          <TextField
+            id="txt_confirm_pass"
+            v-model="user.confirmPass"
+            hint="Nhập lại mật khẩu mới"
+            secure="true"
+            autocorrect="false"
+            class="input-margin"
+          />
+          <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary input-margin" :isEnabled = "!processing"  />
         </StackLayout>
         <ActivityIndicator v-show="processing" busy="true"/>
       </GridLayout>
@@ -38,7 +48,8 @@ export default {
       processing: false,
       user: {
         oldPass: "",
-        newPass: ""
+        newPass: "",
+        confirmPass: ""
       }
     };
   },
@@ -64,6 +75,14 @@ export default {
         this.showDlg(
           stringConst.lbl_notification,
           stringConst.msg_new_pass_diff_curr_pass
+        );
+        return;
+      }
+
+      if (this.user.confirmPass != this.user.newPass) {
+        this.showDlg(
+          stringConst.lbl_notification,
+          stringConst.msg_confirm_new_pass_is_not_match
         );
         return;
       }
@@ -127,13 +146,12 @@ StackLayout {
   border-radius: 10%;
 }
 
-#txt_old_pass,
-#btn_submit {
-  margin-bottom: 12;
+.input-margin {
+  margin: 0 0 12 0;
 }
 
-#txt_new_pass {
-  margin-bottom: 16;
+#btn_submit {
+  margin: 12 0;
 }
 
 TextField {
