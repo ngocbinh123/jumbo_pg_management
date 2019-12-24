@@ -1,4 +1,4 @@
-const API_PREFIX = "https://ntgroupipamwebapi.azurewebsites.net/api/"
+const API_PREFIX = "https://ntgroupipamwebapitest.azurewebsites.net/api/"
 
 module.exports = {
     loginUrl: API_PREFIX + "login",
