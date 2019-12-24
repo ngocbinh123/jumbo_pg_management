@@ -8,7 +8,7 @@
       <Label :text="user.name" class="text-user-name" row="2" column="0" colSpan="3" />
     </GridLayout>
     <ScrollView row="1" col="0" colSpan="3" rowSpann="2">
-      <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20" columns="*, 50">
+      <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20, 50, auto, 20" columns="*, 50">
           <Label text="Thông Tin Tài Khoản:" class="text-part-header" row="1" col="0" />    
           <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24 text-right" row="1" col="1"/>
 
@@ -103,10 +103,17 @@
                 <Label :text="user.manager.email" class="text-value" textWrap="true"/>              
               </StackLayout>     
           </GridLayout>
+
+          <Label text="Thông Tin Ứng Dụng:" class="text-part-header" row="7" col="0" colSpan="2"/>    
+          <StackLayout class="account-part" row="8" col="0" colSpan="2" padding="0 0 20 0">
+            <Image src="res://logo" id="image" loadMode="sync" stretch="aspectFit" width="60%"/>
+            <Label :text="appInfo.version" class="text-center" textWrap="true"/> 
+            <Label :text="appInfo.releasedDate" class="text-center" textWrap="true"/>   
+            <Label :text="appInfo.copyRight" class="text-center" textWrap="true"/>   
+          </StackLayout>
           <ActivityIndicator v-show="isProcessing" busy="true" row="0" colSpan="6" rowSpan="2" />
       </GridLayout>
     </ScrollView>
-    <!-- <Button id="btn_logout" @tap="confirmLogoutOut()" class="btn-secondary" text="ĐĂNG XUẤT" row="3" colspan="3" /> -->
   </GridLayout>
 </template>
 
@@ -128,7 +135,12 @@ export default {
   data() {
     return {
       isProcessing: false,
-      user: {}
+      user: {},
+      appInfo: {
+        version: "Version: 1.0",
+        releasedDate: "Released: 01-01-2020",
+        copyRight: "Copyright© by NTGroup"
+      }
     };
   },
   created() {
