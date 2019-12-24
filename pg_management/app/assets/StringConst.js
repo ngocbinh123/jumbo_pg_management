@@ -77,5 +77,6 @@ module.exports = {
     msg_request_location_permission_fail: "Đã xảy ra sự cố không như mong muốn. Xin hãy thử lại.",
     msg_the_customer_is_exist: "Khách hàng này đã tồn tại trong danh sách khách hàng.",
     msg_please_fill_province: "Xin hãy chọn Tỉnh/ Thành Phố.",
-    msg_please_fill_district: "Xin hãy chọn Quận/ Huyện."
+    msg_please_fill_district: "Xin hãy chọn Quận/ Huyện.",
+    msg_confirm_new_pass_is_not_match: "Xác nhận mật khẩu không khớp với mật khẩu mới. \nXin hãy kiểm tra lại."
 };
