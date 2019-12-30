@@ -56,6 +56,8 @@ module.exports = {
                 "abiz_mobilephone": customer.phone,
                 "abiz_provinceid": customer.province.id,
                 "abiz_districtid": customer.district.id,
+                "abiz_ward": customer.ward,
+                "abiz_street": customer.street
 
             };
 

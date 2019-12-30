@@ -38,6 +38,7 @@ export default {
   props: ["dateStr","timeStr"],
   data() {
     return {
+      isProcessing: false,
       product: {
         id: "",
         name: "Chọn sản phẩm",
@@ -63,6 +64,7 @@ export default {
       this.$modal.close();
     },
     showProducts() {
+      this.isProcessing = true;
       this.$showModal(ProductListDlg, {
         fullscreen: true,
         animated: true,
@@ -73,9 +75,9 @@ export default {
       }).then(this.callBackSelectProduct);
     },
     callBackSelectProduct(result) {
+      this.isProcessing = false;
       if (result == undefined || !result.isSuccess) {
         return;
-
       }
   
       this.product.id = result.selected.abiz_productid;
@@ -85,23 +87,27 @@ export default {
 
     },
     submiData() {
+      this.isProcessing = true;
       if (this.product.number > 10) {
         this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_product_number_out_of_scope_max
         );
+        this.isProcessing = false;
         return;
       } else if (this.product.number < 1) {
         this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_product_number_out_of_scope_min
         );
+        this.isProcessing = false;
         return;
       }else if (!this.product.id || !this.product.name || this.product.name == "Chọn sản phẩm") {
            this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_please_choos_product
         );
+        this.isProcessing = false;
         return;
       }
 
@@ -109,7 +115,7 @@ export default {
                 id: this.product.id,
                 model: this.product.name,
                 name: this.product.name,
-                number: this.product.number,
+                number: this.product.number*1,
                 price: this.product.price,
                 total: this.product.price * this.product.number
             };

@@ -4,7 +4,7 @@
       <TabView 
         iosIconRenderingMode="alwaysOriginal"
         tabTextColor="gray"
-        selectedTabTextColor="#008C99"
+        selectedTabTextColor="#07612C"
         tabBackgroundColor="white"
         androidOffscreenTabLimit="0"
         androidSelectedTabHighlightColor="white"

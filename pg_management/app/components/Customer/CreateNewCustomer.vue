@@ -7,7 +7,7 @@
     <ScrollView row="1" col="0" colSpan="2">
       <GridLayout rows="50, *, 30, 70" columns="*" >
         <Label text="Thông Tin Khách Hàng:" class="header" row="0" col="0" />
-        <GridLayout class="data-form" row="1" col="0" rows="auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto" columns="*" >
+        <GridLayout class="data-form" row="1" col="0" rows="auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto" columns="*" >
           <Label text="Họ Tên" class="text-label" row="0" col="0" />
           <TextField v-model="customer.name" hint="Nhập họ tên khách hàng" class="text-value input-border" margin="4 12" padding="12 18" row="1" col="0" />
 
@@ -31,6 +31,12 @@
               <Label :text="customer.district.name" class="text-value"  row="0" col="1" />
               <Label :text="'fa-sort-down' | fonticon" class="fas font-icon-size-24 text-center" row="0" col="2" />
           </GridLayout>
+
+          <Label text="Phường" class="text-label" row="15" col="0" colSpan="2" />
+          <TextField v-model="customer.ward" hint="Nhập họ tên khách hàng" class="text-value input-border" margin="4 12" padding="12 18" row="16" col="0" />
+
+          <Label text="Đường" class="text-label" row="18" col="0" colSpan="2" />
+          <TextField v-model="customer.street" hint="Nhập họ tên khách hàng" class="text-value input-border" margin="4 12" padding="12 18" row="19" col="0" />
         </GridLayout>
         <Button
           id="btn_submit_customer"
@@ -75,6 +81,8 @@ export default {
             id:"",
             name: ""
         },
+        ward: "",
+        street: ""
       },
       processing: false,
     };

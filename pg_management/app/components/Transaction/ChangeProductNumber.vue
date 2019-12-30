@@ -64,7 +64,7 @@ export default {
       
       this.$modal.close({
         isSuccess: true,
-        newNumber: this.number
+        newNumber: parseInt(this.number)
       });
     },
     showDlg(dlgTitle, dlgMsg) {

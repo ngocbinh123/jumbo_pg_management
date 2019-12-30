@@ -79,7 +79,7 @@
 .page_title_small {
     font-family: "f_arima_madurai_bold";
     font-weight: bold;
-    color: #007882;
+    color: $color-primary-dark;
     font-size: 40px;
     text-align: center;
     margin: 8, 8, 4, 8;
@@ -92,7 +92,7 @@
 .dlg_title {
     font-family: "f_arima_madurai_bold";
     font-weight: bold;
-    color: #007882;
+    color: $color-primary-dark;
     font-size: 24px;
     text-align: center;
     margin: 8, 8, 4, 8;
@@ -295,7 +295,7 @@ ListView {
     border-color: $color-border;
     border-radius: 4;
     border-width: 0.5;
-    padding: 2 10;
+    padding: 5 10;
     margin-right: 30%;
 }
 
