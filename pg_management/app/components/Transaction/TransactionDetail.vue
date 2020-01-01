@@ -13,7 +13,7 @@
     <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" v-show="!!transaction.customer.mobilephone" />
     <Label :text="transaction.customer.mobilephone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
-    <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="5" col="0" v-show="!!transaction.customer.address" />
+    <Label :text="'fa-map-marker-alt' | fonticon" class="fas icon-address" style="margin: 5 0 0 0; font-size:18" row="5" col="0" v-show="!!transaction.customer.address" />
     <Label :text="transaction.customer.address" class="text-center txt-value" textWrap="true" row="5" col="1" colSpan="4" />
 
     <Label text="Chi tiết đơn hàng:" class="header" row="7" col="0" colSpan="5" />

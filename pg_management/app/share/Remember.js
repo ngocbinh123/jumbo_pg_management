@@ -34,8 +34,17 @@ const KEY_REMOTE_ORDER_LIST = "KEY_REMOTE_ORDER_LIST";
 
 const KEY_REMOTE_CUSTOMER_LIST = "KEY_REMOTE_CUSTOMER_LIST";
 
+const KEY_IS_ANDROID_DEVICE = "KEY_IS_ANDROID_DEVICE";
+
+
 
 module.exports = {
+    isAndroidDevice() {
+        return appSettings.getBoolean(KEY_IS_ANDROID_DEVICE, true);
+    },
+    setIsAndroidDevice(isAndroid) {
+        return appSettings.setBoolean(KEY_IS_ANDROID_DEVICE, isAndroid);
+    },
     getUserId() {
         return appSettings.getString(KEY_USER_ID, "");
     },

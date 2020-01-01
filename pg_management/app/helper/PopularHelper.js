@@ -1,7 +1,10 @@
 const fecha = require('fecha');
+const LOCAL_DATE_FORMAT = "DD/MM/YYYY";
+const REMOTE_DATE_FORMAT = "YYYY-MM-DD";
+
 module.exports = {
     getCurrentDateStr() {
-        const currentDate = fecha.default.format(new Date(), 'DD/MM/YYYY');
+        const currentDate = fecha.default.format(new Date(), LOCAL_DATE_FORMAT);
         return currentDate;
     },
     getCurrentTimeStr() {
@@ -17,8 +20,11 @@ module.exports = {
         return arr[2] + "/" + arr[1] + "/" + arr[0];
     },
     getCurrentDateStrForRequest() {
-        const currentDate = fecha.default.format(new Date(), 'YYYY-MM-DD');
+        const currentDate = fecha.default.format(new Date(), REMOTE_DATE_FORMAT);
         return currentDate;
+    },
+    formatToLocalDate(date) {
+        return fecha.default.format(date, LOCAL_DATE_FORMAT);
     },
     formatCurrencystr(currency, priceUnit = "VND") {
         var result = currency.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " " + priceUnit;
