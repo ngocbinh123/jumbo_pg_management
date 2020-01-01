@@ -9,7 +9,7 @@
 
     <GridLayout orientation="horizontal" class="dropbox" row="3" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProducts()">
         <Label v-model="product.name" class="text-value" row="0" col="1" margin="0 0 0 0" />
-        <Label :text="'fa-sort-down' | fonticon" class="fas text-center font-icon-size-24" row="0" col="2" />
+        <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
     </GridLayout>
     
     <Label text="Số Lượng" row="4" col="0" colSpan="2" margin="24 0 0 12" />
@@ -144,13 +144,6 @@ export default {
 .txt-value {
   text-align: left;
   vertical-align: middle;
-}
-#btn_back {
-  width: 24;
-  height: 24;
-  position: relative;
-  top: 0;
-  left: 0;
 }
 
 .drobox {

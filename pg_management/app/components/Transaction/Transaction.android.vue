@@ -10,7 +10,7 @@
         col="0" row="0">
       <TabViewItem title="ĐƠN HÀNG">
         <GridLayout rows="10, 60, *" columns="50, *, 50">
-          <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-28"  @tap="chooseDate()" row="1" col="0" />
+          <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-28" @tap="chooseDate()" row="1" col="0" />
           <Label :text="selectedDate" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
           
@@ -350,7 +350,7 @@ export default {
 }
 
 .item-header-sub {
-  font-family: "f_arima_madurai_regular";
+  font-family: "f_arima_madurai_regular", "Arima Madurai";
   font-size: 14;
   vertical-align: middle; 
   margin-left: 8; 
@@ -362,7 +362,7 @@ export default {
 }
 
 .date {
-  font-family: "f_arima_madurai_thin";
+  font-family: "f_arima_madurai_thin", "Arima Madurai";
   font-size: 16;
   vertical-align: middle; 
 }

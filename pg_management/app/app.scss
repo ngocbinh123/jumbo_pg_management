@@ -21,13 +21,17 @@
     font-weight: 900;
 }
 
+.page-parent {
+    background: white;
+}
+
 .tool-bar {
     justify-content: center;
     align-items: center;
     background-size: cover;
     background-image: linear-gradient($color-primary-dark, $color-primary);
     Label {
-        font-family: "f_arima_madurai_bold";
+        font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
         font-size: 18;
         color: white;
         text-align: center;
@@ -36,20 +40,6 @@
     }
     Label.title-page {
         font-size: 24;
-    }
-    .btn-right {
-        font-family: "f_arima_madurai_bold";
-        font-size: 14;
-        border-radius: 100%;
-        border-width: 0.5;
-        background-color: transparent;
-        border-color: transparent;
-        margin-left: 0;
-        color: white;
-        padding: 0;
-    }
-    .btn-right:active {
-        background-color: $color-white-trans;
     }
 }
 
@@ -77,7 +67,7 @@
 
 .page_title,
 .page_title_small {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
     font-weight: bold;
     color: $color-primary-dark;
     font-size: 40px;
@@ -90,7 +80,7 @@
 }
 
 .dlg_title {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
     font-weight: bold;
     color: $color-primary-dark;
     font-size: 24px;
@@ -98,15 +88,8 @@
     margin: 8, 8, 4, 8;
 }
 
-.page_sub_title {
-    font-family: "f_arima_madurai_medium";
-    font-size: 16px;
-    text-align: center;
-    margin: 0, 0, 46, 0;
-}
-
 .btn {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     font-size: 18;
     font-weight: 600;
     border-radius: 50%;
@@ -114,7 +97,7 @@
 }
 
 .btn-primary {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     font-size: 18;
     font-weight: 600;
     border-radius: 50%;
@@ -126,7 +109,7 @@
 }
 
 .btn-primary:active {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     font-size: 18;
     font-weight: 600;
     border-radius: 50%;
@@ -138,7 +121,7 @@
 }
 
 .btn-add {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     font-size: 30;
     border-radius: 100%;
     border-width: 0.5;
@@ -156,7 +139,7 @@
 }
 
 .btn-secondary {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     color: $color-primary;
     font-size: 18;
     font-weight: bold;
@@ -173,7 +156,7 @@
 }
 
 .btn-fill-bg {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     color: white;
     font-size: 18;
     font-weight: bold;
@@ -191,7 +174,7 @@
 
 Label,
 TextField {
-    font-family: "f_arima_madurai_regular";
+    font-family: "f_arima_madurai_regular", "Arima Madurai";
     color: black;
     font-size: 16;
 }
@@ -210,19 +193,22 @@ ActivityIndicator {
 }
 
 .text-bold {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
 }
 
 .item-header {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
+    font-size: 16;
+    vertical-align: middle;
 }
 
 .item-header-sub {
-    font-family: "f_arima_madurai_thin";
+    font-family: "f_arima_madurai_thin", "Arima Madurai";
+    vertical-align: middle;
 }
 
 .text-caption {
-    font-family: "f_arima_madurai_thin";
+    font-family: "f_arima_madurai_thin", "Arima Madurai";
     font-size: 12;
 }
 
@@ -274,7 +260,7 @@ ListView {
 .h4,
 .h5,
 .h6 {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     color: black;
 }
 
@@ -284,7 +270,7 @@ ListView {
 }
 
 .header {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     color: $color-primary-dark;
     font-size: 20;
     padding: 8;
@@ -305,7 +291,7 @@ ListView {
     border-width: 0.5;
     padding: 8 12;
     margin: 4 12;
-    font-family: "f_arima_madurai_extra_regular";
+    font-family: "f_arima_madurai_regular", "Madurai";
 }
 
 .dropbox {
@@ -406,4 +392,11 @@ ListView {
 
 .margin-left {
     margin-left: 12;
+}
+
+.icon-sort {
+    font-size: 24;
+    text-align: center;
+    vertical-align: middle;
+    color: grey;
 }
