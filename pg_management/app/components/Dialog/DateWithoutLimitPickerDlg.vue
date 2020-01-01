@@ -18,6 +18,7 @@
   </GridLayout>
 </template>
 <script>
+import Helper from "../../helper/PopularHelper";
 export default {
     props: ["title","defaultDate"],
     created() {
@@ -39,18 +40,19 @@ export default {
           this.$modal.close();
         },
         submiData() {
-            this.$modal.close({
+            // this.$modal.close({
+            //     isSuccess: true,
+            //     selectedDate: this.selectedDate,
+            //     selectedDateStr: this.selectedDate.getDate() + "/" + (this.selectedDate.getMonth() + 1)+ "/" + this.selectedDate.getFullYear()
+            // });
+             this.$modal.close({
                 isSuccess: true,
                 selectedDate: this.selectedDate,
-                selectedDateStr: this.selectedDate.getDate() + "/" + (this.selectedDate.getMonth() + 1)+ "/" + this.selectedDate.getFullYear()
+                selectedDateStr: Helper.formatToLocalDate(this.selectedDate)
             });
         }
     }
 };
 </script>
 <style scroped lang="scss">
-.page-parent {
-  justify-content: center;
-  align-items: center;
-}
 </style>

@@ -94,7 +94,7 @@ export default {
       }
       this.isChkInProscess = true;
       this.$showModal(DatePickerDlg, { 
-        fullscreen: true, 
+        fullscreen: !CurrentUser.isAndroidDevice(), 
         animated: true,
         props: { 
           title: StringConst.lbl_change_checkin_date,

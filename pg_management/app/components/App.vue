@@ -2,7 +2,8 @@
   <Page actionBarHidden="true">
     <GridLayout rows="*" columns="*">
       <TabView 
-        iosIconRenderingMode="alwaysOriginal"
+        iosIconRenderingMode="automatic"
+        tabTextFontSize="14"
         tabTextColor="gray"
         selectedTabTextColor="#07612C"
         tabBackgroundColor="white"
