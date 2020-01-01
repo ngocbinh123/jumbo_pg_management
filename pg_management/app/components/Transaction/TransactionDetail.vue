@@ -115,34 +115,26 @@ export default {
 }
 
 .trans-code, .trans-total {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
     vertical-align: middle;
     text-align: right;
     padding: 5 0;
 }
 
 .trans-code-value, .trans-total-value {
-    // font-family: "f_arima_madurai_bold";
+    // font-family: "f_arima_madurai_bold", "Arima Madurai";
     vertical-align: middle;
     text-align: left;
     padding: 5 0;
 }
 
 .trans-total-value {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
     color: $color-accent;
 }
 
-#btn_back {
-    width: 24;
-    height: 24;
-    position: relative;
-    top: 0;
-    left: 0;
-}
-
 .column-name {
-  font-family: "f_arima_madurai_bold";
+  font-family: "f_arima_madurai_bold", "Arima Madurai";
   font-weight: bold;
   font-size: 18px;
 }
@@ -160,7 +152,7 @@ export default {
   border-bottom-width: 0.5;
 }
 .lbl-sum, .lbl-sum-value {
-  font-family: "f_arima_madurai_extra_bold";
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
   font-weight: bold;
   text-align: right;
 }

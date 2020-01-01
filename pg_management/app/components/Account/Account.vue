@@ -106,7 +106,12 @@
 
           <Label text="Thông Tin Ứng Dụng:" class="text-part-header" row="7" col="0" colSpan="2"/>    
           <StackLayout class="account-part" row="8" col="0" colSpan="2" padding="0 0 20 0">
-            <Image src="res://logo" id="image" loadMode="sync" stretch="aspectFit" width="60%"/>
+            <ios>
+              <Image src="~/assets/images/NativeScript-Vue" id="image" loadMode="sync" stretch="aspectFit" width="60%"/>
+            </ios>
+            <android>
+              <Image src="res://logo" id="image" loadMode="sync" stretch="aspectFit" width="60%"/>
+            </android>
             <Label :text="appInfo.version" class="text-center" textWrap="true"/> 
             <Label :text="appInfo.releasedDate" class="text-center" textWrap="true"/>   
             <Label :text="appInfo.copyRight" class="text-center" textWrap="true"/>   
@@ -309,10 +314,8 @@ export default {
       this.$store.state.tables.forEach(tableName => {
         var query = QueryBuilder.buildQueryDeleteAll(tableName);
         this.$store.state.database.execSQL(query, []).then(result => {
-          console.log("LOGOUT: SUCCESS DELETE RECORDS IN " + tableName, result)
         })
         .catch((error) => {
-          console.log("LOGOUT: ERROR: DELETE RECORDS IN " + tableName , error);
         })
       });
 
@@ -375,7 +378,7 @@ export default {
   font-size: 24;
   vertical-align: middle;
   text-align: center;
-  font-family: "f_arima_madurai_extra_bold";
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
 }
 .account-body {
   margin: 0 12;
@@ -403,7 +406,7 @@ export default {
 }
 
 .text-part-header {
-    font-family: "f_arima_madurai_extra_bold";
+    font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
     color: $color-primary-dark;
     font-size: 20;
     vertical-align: middle;
@@ -412,7 +415,7 @@ export default {
 
 .text-label {
   text-align: left;
-  font-family: "f_arima_madurai_thin";
+  font-family: "f_arima_madurai_thin", "Arima Madurai";
 }
 
 .text-value {

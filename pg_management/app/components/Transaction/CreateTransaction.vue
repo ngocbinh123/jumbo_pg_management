@@ -458,7 +458,7 @@ export default {
   margin-right: 10;
 }
 .column-name {
-  font-family: "f_arima_madurai_bold";
+  font-family: "f_arima_madurai_bold", "Arima Madurai";
   font-weight: bold;
   font-size: 18px;
 }
@@ -485,7 +485,7 @@ export default {
   border-bottom-width: 0.5;
 }
 .lbl-sum, .lbl-sum-value {
-  font-family: "f_arima_madurai_extra_bold";
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
   font-weight: bold;
   text-align: right;
 }

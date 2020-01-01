@@ -9,20 +9,24 @@
 
     <GridLayout orientation="horizontal" class="dropbox" row="3" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProvinces()">
         <Label :text="selectedProvince.name" class="text-value" row="0" col="1" />
-        <Label :text="'fa-sort-down' | fonticon" class="fas  font-icon-size-24 text-center" row="0" col="2" />
+        <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
     </GridLayout>
 
     <Label text="Quận/ Huyện" class="text-label" row="5" col="0"  colSpan="2" />
     <GridLayout orientation="horizontal" class="dropbox" row="6" col="0" colSpan="2" rows="*" columns="6, *, 30"  @tap="showDisctricts()">
         <Label :text="selectedDistrict.name" class="text-value"  row="0" col="1" />
-        <Label :text="'fa-sort-down' | fonticon" class="fas font-icon-size-24 text-center" row="0" col="2" />
+        <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2"/>
     </GridLayout>
 
     <Label text="Phường" class="text-label" row="8" col="0"  colSpan="2" />
-    <TextView v-model="selectedWard" class="edt-box" row="9" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="next" ke/>
+    <TextView v-model="selectedWard" 
+        hint="Nhập phường"
+        class="edt-box" row="9" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="next" ke/>
     
     <Label text="Số Nhà Và Tên Đường" class="text-label" row="11" col="0"  colSpan="2" />
-    <TextView v-model="selectedStreet" class="edt-box" row="12" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="done" />
+    <TextView v-model="selectedStreet" 
+        hint="Nhập địa chỉ nhà và tên đường"
+        class="edt-box" row="12" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="done" />
 
     <Button
       text="HOÀN THÀNH"
@@ -51,11 +55,11 @@ export default {
         return {
             selectedProvince: {
                 id:"",
-                name: ""
+                name: " "
             },
             selectedDistrict: {
                 id:"",
-                name: ""
+                name: " "
             },
             selectedWard: "",
             selectedStreet: ""
@@ -144,7 +148,7 @@ export default {
 <style scoped lang="scss">
     .text-label {
         text-align: left;
-        font-family: "f_arima_madurai_thin";
+        font-family: "f_arima_madurai_thin", "Arima Madurai";
         margin-left: 12;
     }
 

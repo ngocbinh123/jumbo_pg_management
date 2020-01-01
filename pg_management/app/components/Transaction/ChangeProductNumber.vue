@@ -93,16 +93,4 @@ export default {
 .text-ver-middel {
  vertical-align: middle;
 }
-#btn_back {
-  width: 24;
-  height: 24;
-  position: relative;
-  top: 0;
-  left: 0;
-}
-
-#btn_change {
-  margin-left: 10;
-  margin-right: 10;
-}
 </style>

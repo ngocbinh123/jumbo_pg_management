@@ -92,15 +92,16 @@ export default {
       if (this.isChkInProscess) {
         return;
       }
-
+      this.isChkInProscess = true;
       this.$showModal(DatePickerDlg, { 
-        fullscreen: false, 
+        fullscreen: true, 
         animated: true,
         props: { 
           title: StringConst.lbl_change_checkin_date,
           defaultDate: this.localSelectedDateStr
         }
       }).then(result => {
+        this.isChkInProscess = false;
         if (result == undefined || !result.isSuccess) {
           return;
         }    
@@ -174,7 +175,7 @@ export default {
                     this.getAddressByLocation(result.latitude, result.longitude);
                 })
                 .catch(e => {
-                    console.log('loc error', e);
+                  console.log('loc error', e);
                     this.isChkInProscess = false;
                     this.showDlg(StringConst.lbl_notification, StringConst.msg_request_location_permission_fail);
                 });
