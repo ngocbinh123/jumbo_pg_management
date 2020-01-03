@@ -3,7 +3,7 @@
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="5" width="100%" height="50">
       <Label :text="localSelectedDateStr" class="text-center title-page" />
     </FlexboxLayout>
-    <Label :text="'fa-calendar-alt' | fonticon" class="far btn-calendar"  @tap="ChooseDate()" row="0" col="4" />
+    <Label :text="'fa-calendar-alt' | fonticon" class="far btn-calendar"  @tap="chooseDate()" row="0" col="4" />
     
     <ListView row="1" colSpan="5" rowSpan="3" for="msgItem in messages" v-show="messages.length > 0">
        <v-template>
@@ -13,7 +13,7 @@
 
     <ListView row="1" colSpan="5" rowSpan="3" for="item in currCheckInList" v-show="messages.length == 0">
       <v-template>
-        <GridLayout flexDirection="row" rows="auto, auto" columns="50, 50, auto" class="ls-item-check-in">
+        <GridLayout flexDirection="row" rows="auto, auto" columns="50, 50, *" class="ls-item-check-in">
           <!-- late -->
           <Label :text="'fa-circle' | fonticon" class="far font-icon-late" v-if="item.statuscode.value == 100000000" row="0" col="0" />
           <!-- miss -->
@@ -26,7 +26,7 @@
           <Label :text="item.abiz_requestedtime" class="" row="0" col="1" />
           
           <Label :text="item.s_abiz_outletid.text" class="item-header text-ver-middle" textWrap="true"  row="0" col="2"/>
-          <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true"  row="1" col="2"/>
+          <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true" row="1" col="2" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -45,10 +45,6 @@
     </GridLayout>
 </template>
 <script>
-import Vue from "nativescript-vue";
-import CalendarView from "nativescript-ui-calendar/vue";
-Vue.use(CalendarView);
-
 import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
@@ -82,19 +78,20 @@ export default {
     isToday(dateStr) {
       return Helper.isToday(dateStr)
     },
-    ChooseDate() {
+    chooseDate() {
       if (this.isChkInProscess) {
         return;
       }
-
+      this.isChkInProscess = true;
       this.$showModal(DatePickerDlg, { 
-        fullscreen: false, 
+        fullscreen: true, 
         animated: true,
         props: { 
           title: StringConst.lbl_change_checkin_date,
           defaultDate: this.localSelectedDateStr
         }
       }).then(result => {
+        this.isChkInProscess = false;
         if (result == undefined || !result.isSuccess) {
           return;
         }    
@@ -168,7 +165,7 @@ export default {
                     this.getAddressByLocation(result.latitude, result.longitude);
                 })
                 .catch(e => {
-                    console.log('loc error', e);
+                  console.log('loc error', e);
                     this.isChkInProscess = false;
                     this.showDlg(StringConst.lbl_notification, StringConst.msg_request_location_permission_fail);
                 });

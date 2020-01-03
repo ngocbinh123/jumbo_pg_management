@@ -130,13 +130,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../app-variables.scss";
+
 FlexboxLayout,
 AbsoluteLayout {
   justify-content: center;
   align-items: center;
-  background-size: cover;
-  background: linear-gradient(#007882, #22aa8f);
+  background: $color-primary;
 }
 
 StackLayout {
@@ -156,7 +157,7 @@ StackLayout {
 
 TextField {
   border-width: 0.5;
-  border-color: #22aa8f;
+  border-color: $color-primary;
   border-radius: 8;
   padding: 12 16;
 }

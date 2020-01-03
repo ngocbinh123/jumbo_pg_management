@@ -1,5 +1,5 @@
 <template>
-  <GridLayout rows="50,20, auto,30,30, auto, 20,auto,auto,auto, auto, 20, auto,auto,*" columns="50,*,10,50,*" class="page-parent">
+  <GridLayout rows="50,15, auto,auto,auto, auto, 10,auto,auto,auto, auto, 10, auto,auto,*" columns="50,*,10,50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="5" width="100%">
         <Label text="CHI TIẾT ĐƠN HÀNG" class="text-center"/>
     </FlexboxLayout>
@@ -40,7 +40,7 @@
 
     <GridLayout class="lout-columns" rows="*" columns="40,*, 40,100, 100" row="13" col="0" colSpan="5">
       <Label text="Tên SP" class="column-name text-center" row="0" col="0" colSpan="2" />
-      <Label text="SL" class="column-name text-center" row="0" col="2" />
+      <Label text="SL" class="column-name text-right" row="0" col="2" />
       <Label text="Đơn Giá" class="column-name text-center" row="0" col="3" />
       <Label text="Tổng" class="column-name text-center" row="0" col="4" />
     </GridLayout>
@@ -48,10 +48,10 @@
     <ListView for="item in transaction.products" row="14" col="0" colSpan="5">
       <v-template>
         <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
-          <Label :text="item.name" class="lbl-name text-center"  row="0" col="0" colSpan="2"/>
-          <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
-          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />
-          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-center" row="0" col="4" />
+          <Label :text="item.name" class="lbl-name"  row="0" col="0" colSpan="2" padding="0 5 0 2" />
+          <Label :text="item.number" class="lbl-number text-right" row="0" col="2" />
+          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-right" row="0" col="3" padding="0 2 0 5" />
+          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-right" row="0" col="4" padding="0 2 0 5" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -102,34 +102,26 @@ export default {
 }
 
 .trans-code, .trans-total {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
     vertical-align: middle;
     text-align: right;
     padding: 5 0;
 }
 
 .trans-code-value, .trans-total-value {
-    // font-family: "f_arima_madurai_bold";
+    // font-family: "f_arima_madurai_bold", "Arima Madurai";
     vertical-align: middle;
     text-align: left;
     padding: 5 0;
 }
 
 .trans-total-value {
-    font-family: "f_arima_madurai_bold";
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
     color: $color-accent;
 }
 
-#btn_back {
-    width: 24;
-    height: 24;
-    position: relative;
-    top: 0;
-    left: 0;
-}
-
 .column-name {
-  font-family: "f_arima_madurai_bold";
+  font-family: "f_arima_madurai_bold", "Arima Madurai";
   font-weight: bold;
   font-size: 18px;
 }
@@ -147,7 +139,7 @@ export default {
   border-bottom-width: 0.5;
 }
 .lbl-sum, .lbl-sum-value {
-  font-family: "f_arima_madurai_extra_bold";
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
   font-weight: bold;
   text-align: right;
 }

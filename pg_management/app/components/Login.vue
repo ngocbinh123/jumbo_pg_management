@@ -3,10 +3,10 @@
     <FlexboxLayout class="page">
       <GridLayout row="auto, auto, auto">
         <StackLayout>
-          <Label text="Xin Chào" class="page_title" />
+          <Label text="Xin Chào" class="login-title" />
           <Label
             text="Hãy đăng nhập bằng tài khoản của bạn."
-            class="page_sub_title"
+            class="page-sub-title"
             textWrap="true"
           />
           <TextField
@@ -223,17 +223,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../app-variables.scss";
 FlexboxLayout,
 AbsoluteLayout {
   justify-content: center;
   align-items: center;
-  background-size: cover;
-  background-image: linear-gradient(#007882, #22aa8f);
+  background-image: linear-gradient($color-primary-dark, $color-primary);
 }
 
 StackLayout {
   width: 90%;
+  height: 70%;
   padding: 12 16;
   background-color: #f0f0f0;
   border-radius: 10%;
@@ -266,8 +267,24 @@ StackLayout {
 
 TextField {
   border-width: 0.5;
-  border-color: #22aa8f;
+  border-color: $color-primary;
   border-radius: 8;
   padding: 12 16;
 }
+
+.login-title {
+  color: $color-primary-dark;
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
+  font-size: 40px;
+  text-align: center;
+  margin: 8, 8, 4, 8;
+}
+
+.page-sub-title {
+    font-family: "f_arima_madurai_bold", "Arima Madurai";
+    font-size: 16px;
+    text-align: center;
+    margin: 0, 0, 46, 0;
+}
+
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <GridLayout rows="50,50,50,50,50,50" columns="50,*" class="page-parent">
+  <GridLayout rows="50,50,50,50,50,auto" columns="50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-        <Label text="KHÁCH HÀNG" class="text-center"/>
+        <Label text="KHÁCH HÀNG" class="tool-bar-title text-center"/>
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
@@ -17,8 +17,8 @@
     <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-18"  row="4" col="0" />
     <Label :text="customer.mobilephone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
-    <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" row="5" col="0" />
-    <Label :text="getCustomerAddress(customer.abiz_districtid, customer.abiz_provinceid)" class="text-center txt-value" textWrap="true" row="5" col="1" />
+    <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" style="vertical-align:top; margin: 6 0 0 0" row="5" col="0" />
+    <Label :text="getCustomerAddress(customer)" class="txt-value" style="vertical-align:top; padding:0 0 0 5" textWrap="true" row="5" col="1" />
   </GridLayout>
 </template>
 <script>
@@ -47,20 +47,8 @@ export default {
 
       return "";
     },
-    getCustomerAddress(districtId, provinceId) {
-      var address = "";
-      if(districtId != undefined && districtId.text != undefined) {
-        address = districtId.text;
-      }
-
-      if(address != "") {
-        address += ", ";
-      }
-
-      if(provinceId != undefined && provinceId.text != undefined) {
-        address += provinceId.text;
-      }
-      return address;
+    getCustomerAddress(customer) {
+      return Helper.getFullCustomerAddress(customer);
     }
   }
 };
@@ -74,12 +62,5 @@ export default {
 .txt-value {
   text-align: left;
   vertical-align: middle;
-}
-#btn_back {
-    width: 24;
-    height: 24;
-    position: relative;
-    top: 0;
-    left: 0;
 }
 </style>
