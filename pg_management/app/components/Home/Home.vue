@@ -45,10 +45,6 @@
     </GridLayout>
 </template>
 <script>
-import Vue from "nativescript-vue";
-import CalendarView from "nativescript-ui-calendar/vue";
-Vue.use(CalendarView);
-
 import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
