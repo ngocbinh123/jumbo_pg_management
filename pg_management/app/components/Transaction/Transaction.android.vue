@@ -59,7 +59,7 @@
                   <Label :text="customer.mobilephone" class="item-header-sub" textWrap="true" />
                 </StackLayout>
                 <StackLayout orientation="horizontal" class="parent-center" row="3" col="1">
-                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%"/>
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas icon-address" style="margin: 5 0 0 0" width="6%"/>
                   <Label :text="getCustomerAddress(customer)" textWrap="true" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>

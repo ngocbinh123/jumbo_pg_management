@@ -1,5 +1,5 @@
 <template>
-  <GridLayout rows="50,50,50,50,50,auto" columns="50,*" class="page-parent">
+  <GridLayout rows="50,50,50,50,50,auto,20" columns="50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
         <Label text="KHÁCH HÀNG" class="tool-bar-title text-center"/>
     </FlexboxLayout>

@@ -2,6 +2,9 @@ import Remember from "../share/Remember";
 import Constant from "../data/Constant";
 
 export default {
+    isAndroidDevice() {
+        return Remember.isAndroidDevice();
+    },
     getUserInfo() {
         return {
             id: Remember.getUserId(),
@@ -46,12 +49,12 @@ export default {
         },
         logout() {
             Remember.clearAll();
-        }, 
+        },
         saveUserInfo(json) {
             Remember.setUserName(json.abiz_name);
             Remember.setUserCode(json.abiz_usercode);
             Remember.setUserAddress(json.abiz_addresscalculated);
-            
+
             Remember.setUserIDCard(json.abiz_identitycard);
             Remember.setUserPhone(json.abiz_mobilephone);
             Remember.setUserGID(json.abiz_usergid);
@@ -66,20 +69,20 @@ export default {
 
 
             var userGenderValue = json.abiz_gendercode.value;
-            
+
             if (userGenderValue == Constant.GENDER.Male.value) {
                 Remember.setUserGender(Constant.GENDER.Male.text);
-            }else if (userGenderValue == Constant.GENDER.Female.value) {
+            } else if (userGenderValue == Constant.GENDER.Female.value) {
                 Remember.setUserGender(Constant.GENDER.Female.text);
             }
-            
+
             // birthday field in response have comple format.
             var birthday = json.abiz_birthday;
             if (birthday.includes("T")) {
                 birthday = birthday.split("T")[0];
                 const dateArr = birthday.split("-");
                 if (dateArr.length == 3) {
-                birthday = dateArr[2] + "/" + dateArr[1] + "/" + dateArr[0];
+                    birthday = dateArr[2] + "/" + dateArr[1] + "/" + dateArr[0];
                 }
             }
             Remember.setUserBirthday(birthday);

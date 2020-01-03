@@ -173,7 +173,7 @@ export default {
       }
 
       this.$showModal(DatePickerDlg, { 
-        fullscreen: false, 
+        fullscreen: !CurrentUser.isAndroidDevice(), 
         animated: true,
         props: { 
           title: ResourceString.lbl_update_birthday,
