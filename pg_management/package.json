@@ -7,11 +7,11 @@
     "nativescript": {
         "id": "com.nnbinh.jumbo",
         "templateVersion": "v2",
-        "tns-android": {
-            "version": "6.1.1"
-        },
         "tns-ios": {
             "version": "6.3.0"
+        },
+        "tns-android": {
+            "version": "6.1.2"
         }
     },
     "dependencies": {
@@ -20,11 +20,8 @@
         "font-awesome": "^4.7.0",
         "nativescript-background-http": "^4.2.1",
         "nativescript-camera": "^4.5.0",
-        "nativescript-drop-down": "^5.0.4",
         "nativescript-fonticon": "^2.0.0",
         "nativescript-geolocation": "^5.1.0",
-        "nativescript-materialdropdownlist": "^1.0.15",
-        "nativescript-plugin-firebase": "^10.2.1",
         "nativescript-socketio": "^3.2.1",
         "nativescript-sqlite": "^2.3.3",
         "nativescript-theme-core": "^1.0.6",

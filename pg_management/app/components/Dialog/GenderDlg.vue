@@ -16,30 +16,15 @@
 </template>
 
 <script>
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
-    created() {
-        this.trackingPage();
-    },
     data() {
         return {
             genders: [Constant.GENDER.Male.text, Constant.GENDER.Female.text]
         }
     },
     methods: {
-        trackingPage() {
-            firebase.analytics.logEvent({
-            key: Constant.KEY_PAGE_VIEW,
-            parameters: [
-                {
-                    key: Constant.KEY_PAGE_ID, 
-                    value: "DLG_GENDER"
-                }
-                ]
-            });
-        },
         closePage() {
             this.$modal.close();
         },

@@ -111,17 +111,6 @@ export default {
     };
   },
   methods: {
-    trackintPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "TAB_ORDER"
-          }
-        ]
-      });
-    },
     onSelectedIndexChange(arg) {
       console.log("onSelectedIndexChange: ", arg.value);
       this.selectedTabItem = arg.value;
