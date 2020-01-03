@@ -25,7 +25,6 @@
           <TabViewItem iconSource="res://ic_user" >
             <Account></Account>
           </TabViewItem>
-        </ios>
         <android>
           <TabViewItem title="Chấm Công" iconSource="res://ic_checkin_list">
             <Home></Home>
@@ -53,14 +52,12 @@
 </template>
 
 <script >
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../data/Constant";
 
 import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";
 import CustomerList from "./Customer/CustomerList";
-
 
 export default {
   components: {
@@ -75,15 +72,8 @@ export default {
     };
   },
   created() {
-    firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-        {
-          key: Constant.KEY_PAGE_ID, 
-          value: "APP"
-        }
-      ]
-    });
+    this.$store.dispatch('getAllCustomers');
+    this.$store.dispatch('getInvoices');
   },
   methods: {
 

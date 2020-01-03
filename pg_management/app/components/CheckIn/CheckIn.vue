@@ -39,7 +39,6 @@ import CurrentUser from "../../data/CurrentUser";
 import ApiService from "../../service/BackEndService";
 import Helper from "../../helper/PopularHelper";
 import * as Geolocation from 'nativescript-geolocation';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
@@ -55,7 +54,6 @@ export default {
       min =  "0" + min;
     }
     this.checkInTime = hour + ":" + min;
-    this.trackingPage();
     this.startGetLocation();
   },
   props: ["imageId"],
@@ -73,17 +71,6 @@ export default {
     };
   },
   methods: {
-    trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "CHECK_IN_SUBMIT_DATA"
-          }
-        ]
-      });
-    },
     startGetLocation() {
       this.processing = true;
       Geolocation.enableLocationRequest(true)

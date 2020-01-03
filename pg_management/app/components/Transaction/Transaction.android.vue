@@ -86,7 +86,6 @@ import StringConst from "../../assets/StringConst";
 import ApiService from "../../service/BackEndService";
 import Helper from '../../helper/PopularHelper';
 import Remember from '../../share/Remember';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import { error } from '@nativescript/core/trace/trace';
 
@@ -114,17 +113,6 @@ export default {
     };
   },
   methods: {
-    trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "TAB_ORDER"
-          }
-        ]
-      });
-    },
     onSelectedTransaction(event) {
       if (this.isProcessing) {
         return
