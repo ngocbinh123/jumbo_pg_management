@@ -81,7 +81,6 @@ import StringConst from "../../assets/StringConst";
 import ApiService from "../../service/BackEndService";
 import Helper from '../../helper/PopularHelper';
 import Remember from '../../share/Remember';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import { error } from '@nativescript/core/trace/trace';
 
