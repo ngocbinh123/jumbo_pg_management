@@ -75,7 +75,7 @@ export default {
     };
   },
   methods: {
-    trackintPage() {
+    trackingPage() {
       firebase.analytics.logEvent({
       key: Constant.KEY_PAGE_VIEW,
       parameters: [

@@ -55,7 +55,7 @@ export default {
       min =  "0" + min;
     }
     this.checkInTime = hour + ":" + min;
-    this.trackintPage();
+    this.trackingPage();
     this.startGetLocation();
   },
   props: ["imageId"],
@@ -73,7 +73,7 @@ export default {
     };
   },
   methods: {
-    trackintPage() {
+    trackingPage() {
       firebase.analytics.logEvent({
       key: Constant.KEY_PAGE_VIEW,
       parameters: [
