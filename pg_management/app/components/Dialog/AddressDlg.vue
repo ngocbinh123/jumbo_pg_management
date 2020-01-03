@@ -42,13 +42,11 @@
 import ProvincesDlg from './ProvincesDlg';
 import DisctrictsDlg from './DisctrictsDlg';
 import StringConst from '../../assets/StringConst';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
     created() {
         this.$store.dispatch('getAllProvinces');
-        this.trackingPage();
     },
     props: ["title"],
     data() {
@@ -66,17 +64,6 @@ export default {
         }
     }, 
     methods: {
-        trackingPage() {
-            firebase.analytics.logEvent({
-            key: Constant.KEY_PAGE_VIEW,
-            parameters: [
-                {
-                    key: Constant.KEY_PAGE_ID, 
-                    value: "DLG_ADDRESS"
-                }
-                ]
-            });
-        },
         showProvinces() {
             this.$showModal(ProvincesDlg, {
                 fullscreen: true, 

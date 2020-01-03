@@ -6,7 +6,6 @@ import SplashScreen from './components/SplashScreen';
 import RadDataForm from 'nativescript-ui-dataform/vue';
 import { TNSFontIcon, fonticon } from 'nativescript-fonticon';
 import store from './store'
-var firebase = require("nativescript-plugin-firebase");
 // import VueDevtools from 'nativescript-vue-devtools';
 
 const remember = require("./share/Remember");
@@ -22,18 +21,6 @@ Vue.filter('fonticon', fonticon)
 if (TNS_ENV !== 'production') {
     // Vue.use(VueDevtools)
 }
-
-firebase.init({
-    // Optionally pass in properties for database, authentication and cloud messaging,
-    // see their respective docs.
-}).then(
-    function() {
-        console.log("firebase.init done");
-    },
-    function(error) {
-        console.log("firebase.init error: " + error);
-    }
-);
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')
