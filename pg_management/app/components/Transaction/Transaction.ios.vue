@@ -111,7 +111,7 @@ export default {
     };
   },
   methods: {
-    trackintPage() {
+    trackingPage() {
       firebase.analytics.logEvent({
       key: Constant.KEY_PAGE_VIEW,
       parameters: [
@@ -140,14 +140,13 @@ export default {
         displayTransTotal: Helper.formatCurrencystr(event.item.abiz_totalamountrollup),
 
         customer: {
-            fullname: "",
-            mobilephone: "",
-            address: "",
-            gender: ""
+          id: event.item.abiz_contactid.value,
+          fullname: event.item.abiz_contactid.text,
+          mobilephone: "",
+          address: ""
         },
         time: Helper.convertRequestDateToLocalDate(event.item.abiz_orderdate),
-        date: event.item.abiz_ordertime,
-        products: []
+        date: event.item.abiz_ordertime
       };
 
       const orderCustomer = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, event.item.abiz_contactid.value) || 
@@ -158,26 +157,7 @@ export default {
         selected.customer.address = this.getCustomerAddress(orderCustomer);
         selected.customer.gender = this.getLocalGender(orderCustomer.gendercode);
       }
-      const that = this;
-      const query = "SELECT productId, productName, number, price, total, invoiceCode FROM InvoiceDetail WHERE invoiceCode = ?";
-      this.$store.state.database.all(query, [selected.code]).then(result => {
-        result.forEach(row => {
-          var product = {
-              id:row[0],
-              model:"",
-              name: row[1],
-              number: row[2],
-              price: row[3],
-              total: row[4]  
-          };
-          selected.products.push(product);
-        });
-        
-        that.openTransactionDetail(selected);
-      }, error => {
-          console.log("SELECT INVOICE DETAIL ERROR", error);
-          this.openTransactionDetail(selected);
-      });
+      this.openTransactionDetail(selected);
     },
     openTransactionDetail(transaction) {
       this.$showModal(TransactionDetail, { 

@@ -65,7 +65,7 @@ import DistrictsDlg from "../Dialog/DisctrictsDlg";
 
 export default {
   created() {
-    this.trackintPage();
+    this.trackingPage();
   },
   data() {
     return {
@@ -88,7 +88,7 @@ export default {
     };
   },
   methods: {
-    trackintPage() {
+    trackingPage() {
       firebase.analytics.logEvent({
       key: Constant.KEY_PAGE_VIEW,
       parameters: [

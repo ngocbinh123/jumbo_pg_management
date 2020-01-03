@@ -112,13 +112,12 @@ export default {
       }
 
       var selectedProduct = {
-                id: this.product.id,
-                model: this.product.name,
-                name: this.product.name,
-                number: this.product.number*1,
-                price: this.product.price,
-                total: this.product.price * this.product.number
-            };
+          id: this.product.id,
+          name: this.product.name,
+          number: this.product.number*1,
+          price: this.product.price,
+          total: this.product.price * this.product.number
+      };
 
       this.$modal.close({
         isSuccess: selectedProduct.id != -1,

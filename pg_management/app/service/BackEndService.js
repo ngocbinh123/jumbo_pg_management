@@ -96,6 +96,19 @@ module.exports = {
                 })
                 .then(this.checkResponse);
         },
+        getOrderDetail(orderid, bearer) {
+            const requestBody = {
+                abiz_orderid: orderid
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getOrderdetailUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
         getSessions(dateStr, bearer) {
             const requestBody = {
                 abiz_sessiondate: dateStr
