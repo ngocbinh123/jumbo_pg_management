@@ -54,7 +54,7 @@
       </GridLayout>
     
       <Label text="Tên SP" class="column-name text-center" row="3" col="0" colSpan="2" />
-      <Label text="SL" class="column-name text-center" row="3" col="2" />
+      <Label text="SL" class="column-name text-right" row="3" col="2" />
       <Label text="Đơn Giá" class="column-name text-center" row="3" col="3" />
       <Label text="Tổng" class="column-name text-center" row="3" col="4" />
     </GridLayout>
@@ -62,10 +62,10 @@
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
         <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
-          <Label :text="item.name" class="lbl-name text-center" row="0" col="0"  colSpan="2" />
-          <Label :text="item.number" class="lbl-number text-center" row="0" col="2" />
-          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-center" row="0" col="3" />
-          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-center" row="0" col="4" />
+          <Label :text="item.name" class="lbl-name" row="0" col="0"  colSpan="2" />
+          <Label :text="item.number" class="lbl-number text-right" row="0" col="2" />
+          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-right" row="0" col="3" />
+          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-right" row="0" col="4" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -165,7 +165,7 @@ export default {
       this.customer.contactId = response.customer.contactid;
       this.customer.fullname = response.customer.fullname;
       this.customer.mobilephone = response.customer.mobilephone;
-      this.customer.address = this.getCustomerAddress(response.customer.abiz_districtid, response.customer.abiz_provinceid);
+      this.customer.address = this.getCustomerAddress(response.customer);
 
     },
     submiData() {
@@ -402,20 +402,8 @@ export default {
         message: dlgMsg
       });
     },
-    getCustomerAddress(districtId, provinceId) {
-      var address = "";
-      if(districtId != undefined && districtId.text != undefined) {
-        address = districtId.text;
-      }
-
-      if(address != "") {
-        address += ", ";
-      }
-
-      if(provinceId != undefined && provinceId.text != undefined) {
-        address += provinceId.text;
-      }
-      return address;
+    getCustomerAddress(customer) {
+      return Helper.getFullCustomerAddress(customer);
     }
   }
 };
@@ -458,7 +446,7 @@ export default {
   margin-right: 10;
 }
 .column-name {
-  font-family: "f_arima_madurai_bold";
+  font-family: "f_arima_madurai_bold", "Arima Madurai";
   font-weight: bold;
   font-size: 18px;
 }
@@ -485,7 +473,7 @@ export default {
   border-bottom-width: 0.5;
 }
 .lbl-sum, .lbl-sum-value {
-  font-family: "f_arima_madurai_extra_bold";
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
   font-weight: bold;
   text-align: right;
 }

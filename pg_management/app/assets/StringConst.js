@@ -30,6 +30,7 @@ module.exports = {
     lbl_create_order: "Tạo đơn hàng",
     lbl_pls_check_order: "HÃY KIỂM TRA LẠI ĐƠN HÀNG",
     lbl_change_checkin_date: "THAY ĐỔI NGÀY CHẤM CÔNG",
+    lbl_change_other_date: "CHỌN THỜI GIAN KHÁC",
     lbl_create_trans_date: "NGÀY TẠO ĐƠN HÀNG",
     lbl_create_trans_time: "THỜI GIAN TẠO ĐƠN HÀNG",
     lbl_upload_img_success: "TẢI HÌNH LÊN HỆ THỐNG THÀNH CÔNG",

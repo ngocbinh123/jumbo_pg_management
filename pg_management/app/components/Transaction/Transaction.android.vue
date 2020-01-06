@@ -1,24 +1,24 @@
 <template>
   <GridLayout id="trans_parent" columns="*" rows="*">
     <TabView 
-    tabTextColor="#008C99"
-    selectedTabTextColor="white"
-    tabBackgroundColor="#007882"
-    androidOffscreenTabLimit="0"
-    androidSelectedTabHighlightColor="white"
-    :selectedIndex="selectedIndex" 
-    col="0" row="0">
+        tabTextColor="#85AB98"
+        selectedTabTextColor="white"
+        tabBackgroundColor="#07612C"
+        androidOffscreenTabLimit="0"
+        androidSelectedTabHighlightColor="white"
+        :selectedIndex="selectedIndex" 
+        col="0" row="0">
       <TabViewItem title="ĐƠN HÀNG">
-        <GridLayout rows="10, 60, *" columns="10, *, 50">
-          <Label :text="date" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
+        <GridLayout rows="10, 60, *" columns="50, *, 50">
+          <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-28" @tap="chooseDate()" row="1" col="0" />
+          <Label :text="selectedDate" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
+          
           <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in remoteOrders" @itemTap="onSelectedTransaction">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.abiz_ordertime" class="text-center time"  row="0" col="1"/>
                 <Label :text="item.abiz_ordercode" class="item-header" textWrap="true" row="0" col="2"/>
-
-                <Label :text="convertRequestDateToLocalDate(item.abiz_orderdate)" class="text-center date" row="1" col="1"/>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
                   <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon"  width="8%" />
@@ -36,7 +36,7 @@
               </GridLayout>
             </v-template>
           </ListView>
-          <Label v-if="!isProcessing && remoteOrders.length == 0" text="Hiện tại Không có đơn hàng." class="text-center" margin="24" color="red" row="2" col="0" colSpan="3" rowSpan="2" />
+          <Label v-if="!isProcessing && remoteOrders.length == 0" text="Không có đơn hàng cho ngày được chọn." class="text-center" margin="24" color="red" row="2" col="0" colSpan="3" rowSpan="2" />
 
         </GridLayout>
       </TabViewItem>
@@ -45,16 +45,22 @@
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
           <ListView row="0" col="0" colSpan="3" rowSpan="3" for="customer in remoteCustomers"  @itemTap="onCustomerSelected">
             <v-template>
-              <GridLayout flexDirection="row" rows="*,*,*" columns="10,100,*" class="ls-item-check-in">
-                <Label :text="customer.abiz_contactcode" class="text-center time"  row="0" col="1"/>
-                <Label :text="customer.fullname" class="item-header" textWrap="true" row="0" col="2"/>
-                <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
-                  <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
+              <GridLayout flexDirection="row" rows="auto, auto, auto, auto" columns="10,*, 10" class="ls-item-check-in">
+                <StackLayout orientation="horizontal" class="parent-center" row="0" col="1">
+                  <Label :text="'fa-address-card' | fonticon" class="far font-icon font-icon-size-14" width="6%" />
+                  <Label :text="customer.abiz_contactcode" class="item-header-sub" textWrap="true" />
+                </StackLayout>
+                <StackLayout orientation="horizontal" class="parent-center" row="1" col="1">
+                  <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-14" width="6%" />
+                  <Label :text="customer.fullname" class="item-header" textWrap="true" />
+                </StackLayout>
+                <StackLayout orientation="horizontal" class="parent-center" row="2" col="1">
+                  <Label :text="'fa-mobile-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%"/>
                   <Label :text="customer.mobilephone" class="item-header-sub" textWrap="true" />
                 </StackLayout>
-                <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
-                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-14" width="6%" row="1" col="2" />
-                  <Label :text="getCustomerAddress(customer.abiz_districtid, customer.abiz_provinceid)" textWrap="true" class="item-header-sub" />                  
+                <StackLayout orientation="horizontal" class="parent-center" row="3" col="1">
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas icon-address" style="margin: 5 0 0 0" width="6%"/>
+                  <Label :text="getCustomerAddress(customer)" textWrap="true" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
             </v-template>
@@ -72,6 +78,7 @@ import UserDetail from "../Customer/UserDetail";
 import CreateTransaction from "../Transaction/CreateTransaction";
 import CreateCustomer from "../Customer/CreateNewCustomer";
 import TransactionDetail from "./TransactionDetail";
+import DatePickerDlg from "../Dialog/DateWithoutLimitPickerDlg";
 
 // other
 import CurrentUser from "../../data/CurrentUser";
@@ -85,7 +92,7 @@ import { error } from '@nativescript/core/trace/trace';
 export default {
   created() {
     var currentDate = new Date();
-    this.date = Helper.getCurrentDateStr();
+    this.selectedDate = Helper.getCurrentDateStr();
 
     this.remoteCustomers = Remember.getRemoteCustomers().records;
     this.remoteOrders = Remember.getRemoteOrders().records;
@@ -99,7 +106,7 @@ export default {
       isProcessing: false,
       selectedIndex: 0,
       searchTransValue:"",
-      date: "",
+      selectedDate: "",
       remoteCustomers: [],
       remoteOrders: [],
       transList:[]
@@ -118,16 +125,14 @@ export default {
         store: event.item.abiz_outletid.text,
         transTotal: event.item.abiz_totalamountrollup,
         displayTransTotal: Helper.formatCurrencystr(event.item.abiz_totalamountrollup),
-
-        customer: {
-            fullname: "",
-            mobilephone: "",
-            address: "",
-            gender: ""
-        },
         time: Helper.convertRequestDateToLocalDate(event.item.abiz_orderdate),
         date: event.item.abiz_ordertime,
-        products: []
+        customer: {
+          id: event.item.abiz_contactid.value,
+          fullname: event.item.abiz_contactid.text,
+          mobilephone: "",
+          address: ""
+        }
       };
 
       const orderCustomer = this.remoteCustomers.find(el => Helper.equalsIgnoreCase(el.contactid, event.item.abiz_contactid.value) || 
@@ -135,37 +140,18 @@ export default {
       if(orderCustomer != undefined) {
         selected.customer.fullname = orderCustomer.fullname;
         selected.customer.mobilephone = orderCustomer.mobilephone;
-        selected.customer.address = this.getCustomerAddress(orderCustomer.abiz_districtid, orderCustomer.abiz_provinceid);
-        selected.customer.gender = this.getLocalGender(orderCustomer.gendercode);
+        selected.customer.address = this.getCustomerAddress(orderCustomer);
       }
-      const that = this;
-      const query = "SELECT productId, productName, number, price, total, invoiceCode FROM InvoiceDetail WHERE invoiceCode = ?";
-      this.$store.state.database.all(query, [selected.code]).then(result => {
-        result.forEach(row => {
-          var product = {
-              id:row[0],
-              model:"",
-              name: row[1],
-              number: row[2],
-              price: row[3],
-              total: row[4]  
-          };
-          selected.products.push(product);
-        });
-        
-        that.openTransactionDetail(selected);
-      }, error => {
-          console.log("SELECT INVOICE DETAIL ERROR", error);
-          this.openTransactionDetail(selected);
-      });
+      this.openTransactionDetail(selected);
     },
     openTransactionDetail(transaction) {
+
       this.$showModal(TransactionDetail, { 
         fullscreen: true,
         animated: true,
         props: { transaction: transaction }
       }).then(result => {
-        this.isProcessing = false
+        this.isProcessing = false;
       });
     },
     onCustomerSelected(event) {
@@ -197,11 +183,6 @@ export default {
         return;
       }
 
-      // const isNewCustomer = this.remoteCustomers.find(el => el.contactid == response.rermoteCustomer.contactid || el.mobilephone == response.rermoteCustomer.mobilephone) == undefined;
-
-      // if (isNewCustomer) {
-      //   this.remoteCustomers.unshift(response.rermoteCustomer);
-      // }
       this.getRemoteCustomers();
       this.getRemoteOrders();
       this.openTransactionDetail(response.transaction);
@@ -230,8 +211,30 @@ export default {
         this.onCustomerSelected({ item: response.customer});
       }
     },
+    chooseDate() {
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+      this.$showModal(DatePickerDlg, { 
+        fullscreen: false, 
+        animated: true,
+        props: { 
+          title: StringConst.lbl_change_other_date,
+          defaultDate: this.selectedDate
+        }
+      }).then(result => {
+        this.isProcessing = false;
+        if (result == undefined || !result.isSuccess) {
+          return;
+        }    
+       this.selectedDate = result.selectedDateStr;
+       this.getRemoteOrders();
+      });
+    },
     getRemoteOrders() {
-      ApiService.methods.getOrders(Helper.getCurrentDateStrForRequest(), CurrentUser.methods.getBearId())
+       this.isProcessing = true;
+      ApiService.methods.getOrders(Helper.convertLocalDateToRequestDate(this.selectedDate), CurrentUser.methods.getBearId())
         .then(json => {
           this.remoteOrders = json.records;
           this.isProcessing = false;
@@ -271,20 +274,8 @@ export default {
     formatCurrencystr(currency) {
       return Helper.formatCurrencystr(currency);
     },
-    getCustomerAddress(districtId, provinceId) {
-      var address = "";
-      if(districtId != undefined && districtId.text != undefined) {
-        address = districtId.text;
-      }
-
-      if(address != "") {
-        address += ", ";
-      }
-      
-      if(provinceId != undefined && provinceId.text != undefined) {
-        address += provinceId.text;
-      }
-      return address;
+    getCustomerAddress(customer) {
+      return Helper.getFullCustomerAddress(customer);
     }
   }
 };
@@ -326,7 +317,7 @@ export default {
 }
 
 .item-header-sub {
-  font-family: "f_arima_madurai_regular";
+  font-family: "f_arima_madurai_regular", "Arima Madurai";
   font-size: 14;
   vertical-align: middle; 
   margin-left: 8; 
@@ -338,7 +329,7 @@ export default {
 }
 
 .date {
-  font-family: "f_arima_madurai_thin";
+  font-family: "f_arima_madurai_thin", "Arima Madurai";
   font-size: 16;
   vertical-align: middle; 
 }

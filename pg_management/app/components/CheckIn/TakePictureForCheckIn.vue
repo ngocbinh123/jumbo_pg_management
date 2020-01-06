@@ -250,7 +250,7 @@
     }
 
     .btn-take-pic {
-        font-family: "f_arima_madurai_extra_bold";
+        font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
         font-size: 18;
         margin: 0;
         border-top-width: 1;
@@ -275,7 +275,7 @@
             margin-bottom: 12;
         }
         Label.text-rule-header {
-            font-family: "f_arima_madurai_bold";
+            font-family: "f_arima_madurai_bold", "Arima Madurai";
             text-align: center;
             font-size: 24;
             margin-bottom: 24;

@@ -177,18 +177,13 @@ FlexboxLayout {
 .title-white {
   color: white;
   vertical-align: middle;
-  font-family: "f_arima_madurai_bold";
+  font-family: "f_arima_madurai_bold", "Arima Madurai";
   font-size: 24;
 }
 
 #btn_submit {
   margin-left: 5%;
   margin-right: 5%;
-  font-family: "f_arima_madurai_extra_bold";
-}
-
-#btn_back {
-  margin-left: 6%;
-  width: 6%;
+  font-family: "f_arima_madurai_extra_bold", "Arima Madurai";
 }
 </style>

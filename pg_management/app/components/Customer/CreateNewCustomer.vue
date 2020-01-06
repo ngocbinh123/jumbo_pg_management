@@ -7,14 +7,14 @@
     <ScrollView row="1" col="0" colSpan="2">
       <GridLayout rows="50, *, 30, 70" columns="*" >
         <Label text="Thông Tin Khách Hàng:" class="header" row="0" col="0" />
-        <GridLayout class="data-form" row="1" col="0" rows="auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto" columns="*" >
+        <GridLayout class="data-form" row="1" col="0" rows="auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto" columns="*" >
           <Label text="Họ Tên" class="text-label" row="0" col="0" />
           <TextField v-model="customer.name" hint="Nhập họ tên khách hàng" class="text-value input-border" margin="4 12" padding="12 18" row="1" col="0" />
 
           <Label text="Giới Tính" class="text-label" row="3" col="0" />
           <GridLayout orientation="horizontal" class="box-border" row="4" col="0" rows="*" columns="6, *, 30" @tap="showGenders()">
               <Label :text="customer.sex" class="text-value" row="0" col="1" />
-              <Label :text="'fa-sort-down' | fonticon" class="fas  font-icon-size-24 text-center" row="0" col="2" />
+              <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
           </GridLayout>
 
           <Label text="Số Điện Thoại" class="text-label" row="6" col="0" />
@@ -23,14 +23,20 @@
           <Label text="Tỉnh/ Thành Phố" class="text-label" row="9" col="0" />
           <GridLayout orientation="horizontal" class="box-border" row="10" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProvinces()">
               <Label :text="customer.province.name" class="text-value" row="0" col="1" />
-              <Label :text="'fa-sort-down' | fonticon" class="fas  font-icon-size-24 text-center" row="0" col="2" />
+              <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" margin="0 0" />
           </GridLayout>
 
           <Label text="Quận/ Huyện" class="text-label" row="12" col="0"  colSpan="2" />
           <GridLayout orientation="horizontal" class="box-border" row="13" col="0" colSpan="2" rows="*" columns="6, *, 30"  @tap="showDisctricts()">
               <Label :text="customer.district.name" class="text-value"  row="0" col="1" />
-              <Label :text="'fa-sort-down' | fonticon" class="fas font-icon-size-24 text-center" row="0" col="2" />
+              <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
           </GridLayout>
+
+          <Label text="Phường" class="text-label" row="15" col="0" colSpan="2" />
+          <TextField v-model="customer.ward" hint="Nhập phường. Ví dụ: Phường 12" class="text-value input-border" margin="4 12" padding="12 18" row="16" col="0" />
+
+          <Label text="Đường" class="text-label" row="18" col="0" colSpan="2" />
+          <TextField v-model="customer.street" hint="Nhập số nhà, tên đường" class="text-value input-border" margin="4 12" padding="12 18" row="19" col="0" />
         </GridLayout>
         <Button
           id="btn_submit_customer"
@@ -67,12 +73,14 @@ export default {
         phone: "",
         province: {
             id:"",
-            name: ""
+            name: " "
         },
         district: {
             id:"",
-            name: ""
+            name: " "
         },
+        ward: "",
+        street: ""
       },
       processing: false,
     };
@@ -218,7 +226,7 @@ export default {
   .data-form {
     .text-label {
       margin-left: 12;
-      font-family: "f_arima_madurai_thin";
+      font-family: "f_arima_madurai_thin", "Arima Madurai";
     }
 
     .text-value {
