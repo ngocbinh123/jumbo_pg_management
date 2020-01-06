@@ -56,6 +56,8 @@ module.exports = {
                 "abiz_mobilephone": customer.phone,
                 "abiz_provinceid": customer.province.id,
                 "abiz_districtid": customer.district.id,
+                "abiz_ward": customer.ward,
+                "abiz_street": customer.street
 
             };
 
@@ -88,6 +90,19 @@ module.exports = {
             const headers = config.authHeaders(bearer);
             return fetchModule
                 .fetch(config.getOrdersUrl, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                .then(this.checkResponse);
+        },
+        getOrderDetail(orderid, bearer) {
+            const requestBody = {
+                abiz_orderid: orderid
+            };
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getOrderdetailUrl, {
                     method: "POST",
                     headers: headers,
                     body: JSON.stringify(requestBody)

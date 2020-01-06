@@ -10,7 +10,6 @@ import store from './store'
 
 const remember = require("./share/Remember");
 Vue.use(RadDataForm);
-Vue.registerElement("DropDown", () => require("nativescript-drop-down/drop-down").DropDown)
 
 TNSFontIcon.debug = true
 TNSFontIcon.paths = {
