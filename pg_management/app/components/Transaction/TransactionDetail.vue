@@ -171,7 +171,8 @@ export default {
       }), new Promise((resolve, reject)=> {
         if (this.$props.transaction.hasOwnProperty("products") && this.transaction.products.length > 0) {
           this.products = this.$props.transaction.products;
-          resolve('get Products Done');
+        resolve('get Products Done');
+          return;
         }
 
         const query = "SELECT productId, productName, number, price, total, invoiceCode FROM InvoiceDetail WHERE invoiceCode = ?";
