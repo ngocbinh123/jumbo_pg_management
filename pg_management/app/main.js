@@ -6,7 +6,10 @@ import SplashScreen from './components/SplashScreen';
 import RadDataForm from 'nativescript-ui-dataform/vue';
 import { TNSFontIcon, fonticon } from 'nativescript-fonticon';
 import store from './store'
+import { NotificationHub } from "@proplugins/nativescript-azure-notification-hubs";
+
 var firebase = require("nativescript-plugin-firebase");
+import { messaging } from "nativescript-plugin-firebase/messaging";
 // import VueDevtools from 'nativescript-vue-devtools';
 
 const remember = require("./share/Remember");
@@ -23,17 +26,30 @@ if (TNS_ENV !== 'production') {
     // Vue.use(VueDevtools)
 }
 
+global.hub = new NotificationHub(
+    "<NOTIFICATION HUB LISTEN SHARED ACCESS SIGNATURE>",
+    "<NOTIFICATION HUB NAME>",
+);
+
 firebase.init({
     // Optionally pass in properties for database, authentication and cloud messaging,
     // see their respective docs.
 }).then(
     function() {
         console.log("firebase.init done");
+        messaging.registerForPushNotifications({
+            onPushTokenReceivedCallback: (token) => {
+                global.hub.register(token)
+                    .then(() => { console.log("Azure Register OK!"); })
+                    .catch((e) => { console.error(e); });
+            }
+        });
     },
     function(error) {
         console.log("firebase.init error: " + error);
     }
 );
+
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')
