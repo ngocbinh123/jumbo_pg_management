@@ -9,8 +9,11 @@
         :selectedIndex="selectedIndex" 
         col="0" row="0">
       <TabViewItem title="ĐƠN HÀNG">
-        <GridLayout rows="10, 60, *" columns="50, *, 50">
-          <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-28" @tap="chooseDate()" row="1" col="0" />
+        <GridLayout rows="10, 60, *" columns="100, *, 50">
+          <StackLayout orientation="horizontal" row="1" col="0" >
+            <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-28 margin-left" @tap="chooseDate()" />
+            <Label :text="'fa-calendar-day' | fonticon" class="fas font-icon font-icon-size-28 margin-left"  @tap="resetDateToToDay()" />
+          </StackLayout>
           <Label :text="selectedDate" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
           
@@ -89,6 +92,7 @@ import Remember from '../../share/Remember';
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import { error } from '@nativescript/core/trace/trace';
+import { rejects } from 'assert';
 
 export default {
   created() {
@@ -187,7 +191,7 @@ export default {
       this.$showModal(CreateTransaction, { 
         fullscreen: true,
         animated: true,
-        }).then(this.callbackCreateTransaction);
+      }).then(this.callbackCreateTransaction);
     },
     callbackCreateTransaction(response) {
       this.isProcessing = false;
@@ -222,6 +226,10 @@ export default {
         this.remoteCustomers.unshift(response.customer);
         this.onCustomerSelected({ item: response.customer});
       }
+    },
+    resetDateToToDay() {
+      this.selectedDate = Helper.getCurrentDateStr();
+      this.getRemoteOrders();
     },
     chooseDate() {
       if (this.isProcessing) {
@@ -321,18 +329,20 @@ export default {
   vertical-align: middle;
 }
 
-.item-header {
-  font-size: 16;
+.item-header,.item-header-sub {
+  font-size: 14;
   vertical-align: middle;
-  margin-left: 4; 
+  margin-left: 8; 
+  
+}
+
+.item-header {
   color: $color-primary-dark;
+  font-size: 16;
 }
 
 .item-header-sub {
   font-family: "f_arima_madurai_regular", "Arima Madurai";
-  font-size: 14;
-  vertical-align: middle; 
-  margin-left: 8; 
 }
 
 .time {

@@ -18,7 +18,7 @@
     <Label :text="customer.mobilephone" class="text-center txt-value" textWrap="true" row="4" col="1" />
 
     <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon font-icon-size-18" style="vertical-align:top; margin: 6 0 0 0" row="5" col="0" />
-    <Label :text="getCustomerAddress(customer)" class="txt-value" style="vertical-align:top; padding:0 0 0 5" textWrap="true" row="5" col="1" />
+    <Label :text="getCustomerAddress(customer)" class="txt-value" style="vertical-align:top; padding:0 0 0 5, margin-left:0;" textWrap="true" row="5" col="1" />
   </GridLayout>
 </template>
 <script>

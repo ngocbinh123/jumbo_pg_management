@@ -4,7 +4,8 @@
       <Label :text="localSelectedDateStr" class="text-center title-page" />
     </FlexboxLayout>
     <Label :text="'fa-calendar-alt' | fonticon" class="far btn-calendar"  @tap="chooseDate()" row="0" col="4" />
-    
+    <Label :text="'fa-calendar-day' | fonticon" class="fas btn-calendar"  @tap="resetDateToToDay()" row="0" col="0" />
+        
     <ListView row="1" colSpan="5" rowSpan="3" for="msgItem in messages" v-show="messages.length > 0">
        <v-template>
         <Label :text="msgItem" class="text-left" textWrap="true" margin="12 6"/>
@@ -83,6 +84,10 @@ export default {
     },
     isToday(dateStr) {
       return Helper.isToday(dateStr)
+    },
+    resetDateToToDay() {
+      this.localSelectedDateStr = Helper.getCurrentDateStr();
+      this.fetchCheckInSchedules();
     },
     chooseDate() {
       if (this.isChkInProscess) {
