@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import QueryBuilder from './storaged/QueryBuilder';
-import Helper from './helper/PopularHelper';
 Vue.use(Vuex);
 
 const Sqlite = require("nativescript-sqlite");
@@ -34,26 +33,12 @@ const store = new Vuex.Store({
         tables: [TABLE_CUSTOMER, TABLE_PRODUCT, TABLE_PROVINCE, TABLE_INVOICE, TABLE_INVOICE_DETAIL],
         database: null,
         customers: [],
+        notifications: [],
         provinces: [],
-        invoices: []
     },
     mutations: {
         init(state, data) {
             state.database = data.database;
-        },
-        load(state, data) {
-            state.customers = [];
-            for (var i = 0; i < data.customers.length; i++) {
-                state.customers.push({
-                    id: data.customers[i][0],
-                    name: data.customers[i][1],
-                    sex: data.customers[i][2],
-                    phone: data.customers[i][3],
-                    address: data.customers[i][4],
-                    contactId: data.customers[i][5],
-
-                });
-            }
         },
         loadProvinces(state, data) {
             state.provinces = [];
@@ -64,37 +49,14 @@ const store = new Vuex.Store({
                 });
             }
         },
-        loadInvoices(state, data) {
-            state.invoices = [];
-            for (var i = 0; i < data.invoices.length; i++) {
-                var dateArr = data.invoices[i][6].split(" ");
-                var newItems = {
-                    id: data.invoices[i][0],
-                    code: data.invoices[i][1],
-                    store: data.invoices[i][3],
-                    transTotal: data.invoices[i][2],
-                    displayTransTotal: Helper.formatCurrencystr(data.invoices[i][2]),
-                    customer: {
-                        id: data.invoices[i][5],
-                        name: data.invoices[i][4],
-                        phone: data.invoices[i][7],
-                        address: data.invoices[i][8]
-                    },
-                    time: dateArr[0],
-                    date: dateArr[1],
-                    products: []
-                };
-                state.invoices.push(newItems);
-            }
-        },
-        saveInvoice(state, data) {
-            state.invoices.unshift(data.invoice);
-        },
-        save(state, data) {
-            state.customers.unshift(data.customer);
-        },
         saveProvince(state, data) {
             state.provinces.push(data.province);
+        },
+        pushCustomers(state, data) {
+            state.customers = data.customers;
+        },
+        pushNotifications(state, data) {
+            state.notifications = data.notifications;
         }
     },
     actions: {
@@ -168,57 +130,6 @@ const store = new Vuex.Store({
                 console.log("DELETE ALL RECORDS IN PROVINCE ERROR", error);
             });
         },
-        insertProvince(context, data) {
-            const query = QueryBuilder.buildQueryInsert(TABLE_PROVINCE, COLS_PROVINCE, "?,?");
-            context.state.database.execSQL(query, [data.abiz_locationid, data.abiz_name]).then(id => {
-                context.commit("saveProvince", { province: data });
-            }, error => {
-                console.log("INSERT PROVINCE RECORD ERROR", error);
-            });
-        },
-        insertCustomer(context, data) {
-            const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?,?,?");
-            context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address, Helper.getCurrentDateStr(), data.contactId]).then(id => {
-                data.id = id;
-                context.commit("save", { customer: data });
-            }, error => {
-                console.log("INSERT ERROR", error);
-            });
-        },
-        getAllCustomers(context) {
-            const query = QueryBuilder.buildQuerySelect(TABLE_CUSTOMER, COLS_CUSTOMER, "createdAt = ?");
-            context.state.database.all(query, [Helper.getCurrentDateStr()]).then(result => {
-                context.commit("load", { customers: result });
-            }, error => {
-                console.log("SELECT ERROR", error);
-            });
-        },
-        insertProduct(context, data) {
-            const query = QueryBuilder.buildQueryInsert(TABLE_CUSTOMER, COLS_CUSTOMER_WITHOUT_ID, "?,?,?,?");
-            context.state.database.execSQL(query, [data.name, data.sex, data.phone, data.address]).then(id => {
-                data.id = id;
-                context.commit("save", { customer: data });
-            }, error => {
-                console.log("INSERT ERROR", error);
-            });
-        },
-        getAllProducts(context) {
-            const query = QueryBuilder.buildQuerySelectAll(TABLE_CUSTOMER, COLS_CUSTOMER);
-            context.state.database.all(query, []).then(result => {
-                context.commit("load", { customers: result });
-            }, error => {
-                console.log("SELECT ERROR", error);
-            });
-        },
-        updateProduct(context, data) {
-
-        },
-        deleteProduct(context, data) {
-
-        },
-        findProduct(context, data) {
-
-        },
         insertInvoice(context, data) {
             const query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
             data.products.forEach(product => {
@@ -228,42 +139,12 @@ const store = new Vuex.Store({
                         console.log("INSERT INVOICE DETAIL ERROR", error);
                     });
             });
-            // var query = QueryBuilder.buildQueryInsert(TABLE_INVOICE, COLS_INVOICE_WITHOUT_ID, "?,?,?,?,?,?");
-            // context.state.database.execSQL(query, [data.code, data.transTotal, data.store, data.customer.name, data.customer.contactId, data.time + " " + data.date])
-            //     .then(id => {
-            //         data.id = id;
-            //         context.commit("saveInvoice", { invoice: data });
-            //         // productId, productName, number, price, total, invoiceId
-            //         data.products.forEach(product => {
-            //             query = QueryBuilder.buildQueryInsert(TABLE_INVOICE_DETAIL, COLS_INVOICE_DETAIL, "?,?,?,?,?,?");
-
-            //             context.state.database.execSQL(query, [product.id, product.name, product.number, product.price, product.total, data.id])
-            //                 .then(id => {
-            //                     // console.log("INSERT INVOICE DETAIL SUCCESS", id);
-            //                 })
-            //                 .catch(error => {
-            //                     console.log("INSERT INVOICE DETAIL ERROR", error);
-            //                 });
-            //         });
-
-            // })
-            // .catch(error => {
-            //     console.log("INSERT INVOICE ERROR", error);
-            // })
         },
-        getInvoices(context) {
-            const currentDate = Helper.getCurrentDateStr();
-            var joinQuery = "SELECT a.id, a.code, a.total, a.store, a.customerName, a.cursomterId, a.createdAt, b.phone, b.address "
-            joinQuery += "FROM " + TABLE_INVOICE + " as a , " + TABLE_CUSTOMER + " as b ";
-            joinQuery += "WHERE a.cursomterId == b.contactId and a.createdAt like '%" + currentDate + "'";
-
-
-            context.state.database.all(joinQuery, []).then(result => {
-                console.log("SELECT INVOICES SUCCESS: ", result.length);
-                context.commit("loadInvoices", { invoices: result });
-            }, error => {
-                console.log("SELECT INVOICES ERROR", error);
-            });
+        pushCustomers(context, data) {
+            context.commit("pushCustomers", { customers: data });
+        },
+        pushNotifications(context, data) {
+            context.commit("pushNotifications", { notifications: data });
         }
     }
 })

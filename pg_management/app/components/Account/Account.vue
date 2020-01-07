@@ -120,9 +120,9 @@
             <Label :text="appInfo.releasedDate" class="text-center" textWrap="true"/>   
             <Label :text="appInfo.copyRight" class="text-center" textWrap="true"/>   
           </StackLayout>
-          <ActivityIndicator v-show="isProcessing" busy="true" row="0" colSpan="6" rowSpan="2" />
       </GridLayout>
     </ScrollView>
+    <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" rowSpan="3" />
   </GridLayout>
 </template>
 
