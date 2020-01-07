@@ -1,8 +1,7 @@
 <template>
   <GridLayout id="account_parent" columns="*" rows="150, *, auto">
     <GridLayout class="account-header" rows="20,90,*" columns="*,90,*" row="0" col="0" colSpan="3">
-      <Label id="btn_logout" @tap="confirmLogoutOut()" :text="'fa-sign-out-alt' | fonticon" class="fas font-icon-default text-color-white font-icon-size-28 text-right" row="0" col="2" rowSpan="2" />
-      <Label id="btn-noties" @tap="showNotifications()" :text="'fa-bell' | fonticon" class="fas font-icon-default text-color-white font-icon-size-28 margin-left margin-top"  row="0" col="0" rowSpan="2" />
+      <Label @tap="confirmLogoutOut()" :text="'fa-sign-out-alt' | fonticon" class="fas font-icon-default text-color-white font-icon-size-28 text-right" style="margin:12" row="0" col="2" rowSpan="2" />
 
       <GridLayout class="lout-circle" row="1" col="1" rows="auto" columns="auto">
       </GridLayout>
@@ -130,7 +129,6 @@
 <script>
 import DatePickerDlg from "../Dialog/DatePickerDlg";
 import AddressDlg from "../Dialog/AddressDlg";
-import NotificationsPage from "../Notification/Notifications"
 import ChangePassword from "../ChangePassword";
 import Transition from "../../share/Transition";
 import ResourceString from "../../assets/StringConst";
@@ -169,16 +167,6 @@ export default {
           }
         ]
       });
-    },
-    showNotifications() {
-      if (this.isProcessing) {
-        return;
-      }
-      this.isProcessing = true;
-      this.$showModal(NotificationsPage, { 
-        fullscreen: true, 
-        animated: true
-      }).then(() => this.isProcessing = false);
     },
     changePassword() {
       if (this.isProcessing) {
@@ -406,10 +394,6 @@ export default {
   text-align: center;
   color: white;
   font-size: 24;
-}
-
-#btn_logout {
-  margin: 12;
 }
 
 .text-user-name {

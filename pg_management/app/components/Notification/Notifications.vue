@@ -1,11 +1,6 @@
 <template>
   <GridLayout rows="50, *" columns="50,*" class="page-parent">
-    <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-      <Label text="DANH SÁCH THÔNG BÁO" class="text-center" />
-    </FlexboxLayout>
-    <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
-
-    <ListView row="1" col="0" colSpan="2" for="item in remoteNotifications" class="ls-group" @itemTap="onSelectedItem">
+    <ListView row="0" col="0" colSpan="2" rowSpan="2" for="item in remoteNotifications" class="ls-group" @itemTap="onSelectedItem">
         <v-template>
             <GridLayout rows="auto,*" columns="auto, 12, *" class="ls-group-item">
                 <Label :text="getDateFromStr(item.abiz_datetime, false)" class="text-center" row="0" col="0" />
@@ -23,9 +18,10 @@
 import CurrentUser from '../../data/CurrentUser';
 import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
-import * as firebase from"nativescript-plugin-firebase";
-import Constant from "../../data/Constant";
-import Helper from "../../Helper/PopularHelper";
+import * as firebase from 'nativescript-plugin-firebase';
+import Constant from '../../data/Constant';
+import NotificationDetail from './NotificationDetail';
+import Helper from '../../helper/PopularHelper';
 export default {
     created() {
         this.trackingPage();
@@ -33,9 +29,8 @@ export default {
     },
     data() {
        return {
-
-            isProcessing: false,
-            remoteNotifications: []
+           isProcessing: false,
+           remoteNotifications: []
        }
     },
     methods: {
@@ -59,10 +54,17 @@ export default {
             return dateArr[isDate ? 0 : 1];
         },
         onSelectedItem(event) {
-            // this.$modal.close({
-            //     isSuccess: true, 
-            //     selected: event.item
-            // });
+            if (this.isProcessing) {
+                return;
+            }
+            this.isProcessing = true;
+            this.$showModal(NotificationDetail, { 
+                fullscreen: !CurrentUser.isAndroidDevice, 
+                animated: true,
+                props: {
+                    notification: event.item
+                }
+            }).then(() => this.isProcessing = false);
         },
         getRemoteNotifications() {
             this.isProcessing = true;

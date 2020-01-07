@@ -44,6 +44,9 @@
           <TabViewItem title="Đơn Hàng" iconSource="res://ic_cart">
             <Transaction></Transaction>
           </TabViewItem>
+          <TabViewItem title="Thông Báo" iconSource="res://ic_bell" >
+            <Notifications></Notifications>
+          </TabViewItem>
           <TabViewItem title="Tài Khoản" iconSource="res://ic_user" >
             <Account></Account>
           </TabViewItem>
@@ -60,10 +63,12 @@ import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";
 import CustomerList from "./Customer/CustomerList";
+import Notifications from "./Notification/Notifications";
 
 
 export default {
   components: {
+    Notifications,
     Home,
     Transaction,
     Account,
