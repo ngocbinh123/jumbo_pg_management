@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import QueryBuilder from './storaged/QueryBuilder';
+import Helper from './helper/PopularHelper';
 Vue.use(Vuex);
 
 const Sqlite = require("nativescript-sqlite");
@@ -144,7 +145,25 @@ const store = new Vuex.Store({
             context.commit("pushCustomers", { customers: data });
         },
         pushNotifications(context, data) {
-            context.commit("pushNotifications", { notifications: data });
+            var localNotifications = [];
+            data.forEach(element => {
+                var dateTime = element.abiz_datetime.replace("T", " ");
+                dateTime = dateTime.replace(":00Z", "");
+
+                const dateArr = dateTime.split(" ");
+                const timeStr = dateArr[1].trim();
+                var dateStr = Helper.convertRequestDateToLocalDate(dateArr[0].trim());
+                const noti = {
+                    id: element.abiz_notificationid,
+                    body: element.abiz_body,
+                    name: element.abiz_name,
+                    datetime: timeStr + " " + dateStr,
+                    date: dateStr,
+                    time: timeStr,
+                };
+                localNotifications.push(noti);
+            });
+            context.commit("pushNotifications", { notifications: localNotifications });
         }
     }
 })

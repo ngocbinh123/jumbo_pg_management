@@ -5,9 +5,9 @@
     </FlexboxLayout>
     
     <StackLayout class="margin-top" row="1" col="0" colSpan="3" style="margin: 32 16">
-        <Label :text="notification.abiz_title" class="dlg_title text-center" />
-        <Label :text="notification.abiz_datetime" class="item-header-sub text-center" style="font-size:16" />
-        <Label :text="notification.abiz_body" textWrap="true" class="" style="font-size:16; margin: 16 0 0 0"/>
+        <Label :text="notification.name" class="dlg_title text-center" />
+        <Label :text="notification.datetime" class="item-header-sub text-center" style="font-size:16" />
+        <Label :text="notification.body" textWrap="true" class="" style="font-size:16; margin: 16 0 0 0"/>
     </StackLayout>
     <Button text="TÔI ĐÃ ĐỌC" class="btn btn-fill-bg"  @tap="closePage()" row="2" col="0" colSpan="3"/>
     <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" rowSpan="15" colSpan="5" />

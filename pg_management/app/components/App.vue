@@ -33,7 +33,6 @@
 <script >
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../data/Constant";
-
 import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";

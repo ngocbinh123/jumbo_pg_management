@@ -1,15 +1,16 @@
 <template>
   <GridLayout rows="50, *" columns="50,*" class="page-parent">
-    <ListView row="0" col="0" colSpan="2" rowSpan="2" for="item in remoteNotifications" class="ls-group" @itemTap="onSelectedItem">
+    <ListView row="0" col="0" colSpan="2" rowSpan="2" for="item in $store.state.notifications" class="ls-group" @itemTap="onSelectedItem" v-show="$store.state.notifications.length > 0">
         <v-template>
             <GridLayout rows="auto,*" columns="auto, 12, *" class="ls-group-item">
-                <Label :text="getDateFromStr(item.abiz_datetime, false)" class="text-center" row="0" col="0" />
-                <Label :text="getDateFromStr(item.abiz_datetime)" class="text-center" row="1" col="0" />
-                <Label :text="item.abiz_title" class="item-header text-ver-top" textWrap="true" row="0" col="2" />
-                <Label :text="item.abiz_body" class="item-header-sub" textWrap="true" row="1" col="2" />
+                <Label :text="item.time" class="text-center" row="0" col="0" />
+                <Label :text="item.date" class="text-center" row="1" col="0" />
+                <Label :text="item.name" class="item-header text-ver-top" textWrap="true" row="0" col="2" />
+                <Label :text="item.body" class="item-header-sub" textWrap="true" row="1" col="2" />
             </GridLayout>
         </v-template>
     </ListView>    
+    <Label v-show="$store.state.notifications.length == 0" text="Hiện tại không có thông báo." class="text-center text-ver-middle" color="red" row="0" col="0" colSpan="2" rowSpan="2" />
     <ActivityIndicator v-show="isProcessing" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>
   </GridLayout>
 </template>
@@ -22,6 +23,7 @@ import * as firebase from 'nativescript-plugin-firebase';
 import Constant from '../../data/Constant';
 import NotificationDetail from './NotificationDetail';
 import Helper from '../../helper/PopularHelper';
+import StringConst from '../../assets/StringConst';
 export default {
     created() {
         this.trackingPage();
@@ -49,10 +51,6 @@ export default {
             this.$modal.close();
             this.getRemoteNotifications();
         },
-        getDateFromStr(dateStr, isDate = true) {
-            const dateArr = dateStr.split(" ");  
-            return dateArr[isDate ? 0 : 1];
-        },
         onSelectedItem(event) {
             if (this.isProcessing) {
                 return;
@@ -68,30 +66,29 @@ export default {
         },
         getRemoteNotifications() {
             this.isProcessing = true;
-            var promise = new Promise(() => {
-                const item = {
-                    abiz_datetime: Helper.getCurrentDateStr() + " " + Helper.getCurrentTimeStr(),
-                    abiz_title: 'Nộp ảnh 3x4 làm hồ sơ',
-                    abiz_body: 'Các bạn nhớ nộp ảnh 3x4 để làm hồ sơ, hạn chót là ngày 20/02/2020 nhé'
-                }
-                for(let index = 0; index < 100; index++) {
-                    this.remoteNotifications.push(item);
-                }
-
-                this.isProcessing = false;
-            });
-
-            Promise.all([promise]);
-            // ApiService.methods
-            //     .getProvinces(CurrentUser.methods.getBearId())
-            //     .catch(this.callBackFail)
-            //     .then(response => {
-            //         this.remoteNotifications = response.records;
-            //         this.isProcessing = false;
-            //     });
+            ApiService.methods
+                .getNotifications(CurrentUser.methods.getBearId())
+                .catch(this.callBackFail)
+                .then(response => {
+                    this.isProcessing = false;
+                    if (response == undefined) {
+                        return;
+                    }
+                this.$store.dispatch('pushNotifications', response.records);
+                });
         },
         callBackFail(error) {
             console.log("GET_PROVINCE_ERROR", error.message);
+            this.isProcessing = false;
+            // var message = error.message.includes("UnknownHostException") ? StringConst.msg_unknow_host_exception : error.message;
+            // this.showDlg(StringConst.lbl_error, message);
+        },
+        showDlg(dlgTitle, dlgMsg) {
+            return alert({
+                title: dlgTitle,
+                okButtonText: StringConst.lbl_close,
+                message: dlgMsg
+            });
         }
     }
 }
