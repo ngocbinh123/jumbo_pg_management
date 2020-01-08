@@ -107,19 +107,6 @@
                 <Label :text="user.manager.email" class="text-value" textWrap="true"/>              
               </StackLayout>     
           </GridLayout>
-
-          <Label text="Thông Tin Ứng Dụng:" class="text-part-header" row="7" col="0" colSpan="2"/>    
-          <StackLayout class="account-part" row="8" col="0" colSpan="2" padding="0 0 20 0">
-            <ios>
-              <Image src="~/assets/images/NativeScript-Vue" id="image" loadMode="sync" stretch="aspectFit" width="60%"/>
-            </ios>
-            <android>
-              <Image src="res://logo" id="image" loadMode="sync" stretch="aspectFit" width="60%"/>
-            </android>
-            <Label :text="appInfo.version" class="text-center" textWrap="true"/> 
-            <Label :text="appInfo.releasedDate" class="text-center" textWrap="true"/>   
-            <Label :text="appInfo.copyRight" class="text-center" textWrap="true"/>   
-          </StackLayout>
       </GridLayout>
     </ScrollView>
     <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" rowSpan="3" />
