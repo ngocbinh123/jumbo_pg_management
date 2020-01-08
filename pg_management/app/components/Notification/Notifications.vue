@@ -1,6 +1,8 @@
 <template>
   <GridLayout rows="50, *" columns="50,*" class="page-parent">
-    <ListView row="0" col="0" colSpan="2" rowSpan="2" for="item in $store.state.notifications" class="ls-group" @itemTap="onSelectedItem" v-show="$store.state.notifications.length > 0">
+
+    <RadListView ref="listView" pullToRefresh="true"  @pullToRefreshInitiated="getRemoteNotifications" :pullToRefreshStyle="pullToRefreshStyle"
+    row="0" col="0" colSpan="2" rowSpan="2" for="item in $store.state.notifications" class="ls-group" @itemTap="onSelectedItem">
         <v-template>
             <GridLayout rows="auto,*" columns="auto, 12, *" class="ls-group-item">
                 <Label :text="item.time" class="text-center" row="0" col="0" />
@@ -9,9 +11,9 @@
                 <Label :text="item.body" class="item-header-sub" textWrap="true" row="1" col="2" />
             </GridLayout>
         </v-template>
-    </ListView>    
-    <Label v-show="$store.state.notifications.length == 0" text="Hiện tại không có thông báo." class="text-center text-ver-middle" color="red" row="0" col="0" colSpan="2" rowSpan="2" />
+    </RadListView>    
     <ActivityIndicator v-show="isProcessing" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>
+    <Label v-show="$store.state.notifications.length == 0" text="Hiện tại không có thông báo." class="text-center text-ver-middle" color="red" row="0" col="0" colSpan="2" rowSpan="2" />
   </GridLayout>
 </template>
 
@@ -31,8 +33,10 @@ export default {
     },
     data() {
        return {
-           isProcessing: false,
-           remoteNotifications: []
+           isShow: true,
+            isProcessing: false,
+            remoteNotifications: [],
+            pullToRefreshStyle: Constant.pullToRefreshStyle
        }
     },
     methods: {
@@ -64,17 +68,28 @@ export default {
                 }
             }).then(() => this.isProcessing = false);
         },
-        getRemoteNotifications() {
-            this.isProcessing = true;
+        getRemoteNotifications(args) {
+            if (args == undefined) {
+                this.isProcessing = true;
+            }
+
             ApiService.methods
                 .getNotifications(CurrentUser.methods.getBearId())
-                .catch(this.callBackFail)
+                .catch(error => {
+                    if (args != undefined) {
+                        args.object.notifyPullToRefreshFinished();   
+                    }
+                    this.callBackFail(error);
+                })
                 .then(response => {
                     this.isProcessing = false;
                     if (response == undefined) {
                         return;
                     }
-                this.$store.dispatch('pushNotifications', response.records);
+                    this.$store.dispatch('pushNotifications', response.records);
+                    if (args != undefined) {
+                    args.object.notifyPullToRefreshFinished();   
+                    }
                 });
         },
         callBackFail(error) {

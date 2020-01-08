@@ -17,7 +17,9 @@
           <Label :text="selectedDate" class="page_title_small text-center" row="1" col="0"  colSpan="3"/>
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createTransaction()"/>
           
-          <ListView row="2" col="0" colSpan="3" rowSpan="2" for="item in remoteOrders" @itemTap="onSelectedTransaction">
+          <RadListView 
+            ref="listView" pullToRefresh="true"  @pullToRefreshInitiated="getRemoteOrders" :pullToRefreshStyle="pullToRefreshStyle"
+            row="2" col="0" colSpan="3" rowSpan="2" for="item in remoteOrders" @itemTap="onSelectedTransaction">
             <v-template>
               <GridLayout flexDirection="row" rows="*,*,*,*" columns="10,100,*" class="ls-item-check-in">
                 <Label :text="item.abiz_ordertime" class="text-center time"  row="0" col="1"/>
@@ -38,7 +40,7 @@
                 </StackLayout>
               </GridLayout>
             </v-template>
-          </ListView>
+          </RadListView>
           <Label v-if="!isProcessing && remoteOrders.length == 0" text="Không có đơn hàng cho ngày được chọn." class="text-center" margin="24" color="red" row="2" col="0" colSpan="3" rowSpan="2" />
 
         </GridLayout>
@@ -46,7 +48,9 @@
       <TabViewItem title="KHÁCH HÀNG" >
         <GridLayout rows="10, 60, *" columns="10, *, 50">
           <Button class="btn btn-add" text="+" row="1" col="2" @tap="createCustomer()"/>
-          <ListView row="0" col="0" colSpan="3" rowSpan="3" for="customer in remoteCustomers"  @itemTap="onCustomerSelected">
+          <RadListView 
+            ref="listView" pullToRefresh="true"  @pullToRefreshInitiated="getRemoteCustomers" :pullToRefreshStyle="pullToRefreshStyle"
+            row="0" col="0" colSpan="3" rowSpan="3" for="customer in remoteCustomers"  @itemTap="onCustomerSelected">
             <v-template>
               <GridLayout flexDirection="row" rows="auto, auto, auto, auto" columns="10,*, 10" class="ls-item-check-in">
                 <StackLayout orientation="horizontal" class="parent-center" row="0" col="1">
@@ -67,7 +71,7 @@
                 </StackLayout>
               </GridLayout>
             </v-template>
-          </ListView>
+          </RadListView>
           <Label v-if="!isProcessing && remoteCustomers.length == 0" text="Hiện tại không có khách hàng." class="text-center" margin="24" color="red" row="0" col="0" colSpan="3" rowSpan="3" />
         </GridLayout>
       </TabViewItem>
@@ -114,7 +118,8 @@ export default {
       selectedDate: "",
       remoteCustomers: [],
       remoteOrders: [],
-      transList:[]
+      transList:[],
+      pullToRefreshStyle: Constant.pullToRefreshStyle
     };
   },
   methods: {
@@ -252,30 +257,48 @@ export default {
        this.getRemoteOrders();
       });
     },
-    getRemoteOrders() {
-       this.isProcessing = true;
+    getRemoteOrders(args) {
+      if (args == undefined) {
+        this.isProcessing = true;
+      }
       ApiService.methods.getOrders(Helper.convertLocalDateToRequestDate(this.selectedDate), CurrentUser.methods.getBearId())
         .then(json => {
           this.remoteOrders = json.records;
           this.isProcessing = false;
           Remember.setRemoteOrders(json);
+
+          if (args != undefined) {
+            args.object.notifyPullToRefreshFinished();   
+          } 
         })
         .catch(error => {
           this.isProcessing = false;
+          if (args != undefined) {
+            args.object.notifyPullToRefreshFinished();   
+          } 
         });
     },
-    getRemoteCustomers() {
-      this.isProcessing = true;
+    getRemoteCustomers(args) {
+      if (args == undefined) {
+        this.isProcessing = true;
+      }
       const currentDate= Helper.getCurrentDateStrForRequest();
       ApiService.methods.getCustomers(currentDate,CurrentUser.methods.getBearId())
       .then(json => {
         this.remoteCustomers = json.records;
         Remember.setRemoteCustomers(json);
         this.isProcessing = false;
+
+        if (args != undefined) {
+          args.object.notifyPullToRefreshFinished();  
+        }
       })
       .catch(error => {
         console.log("GET_REMOTE_CUSTOMER_ERROR", error.message);
         this.isProcessing = false;
+        if (args != undefined) {
+          args.object.notifyPullToRefreshFinished();  
+        }
       });
     },
     showDlg(dlgTitle, dlgMsg) {
