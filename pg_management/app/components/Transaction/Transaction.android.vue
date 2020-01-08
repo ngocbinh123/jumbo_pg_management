@@ -26,16 +26,17 @@
                 <Label :text="item.abiz_ordercode" class="item-header" textWrap="true" row="0" col="2"/>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="1" col="2">
-                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon"  width="8%" />
+                  <Label :text="'fa-map-marker-alt' | fonticon" class="fas font-icon"  width="10%" />
                   <Label :text="item.abiz_outletid.text" class="item-header-sub" textWrap="true" />
                 </StackLayout>
+
                 <StackLayout orientation="horizontal" class="parent-center" row="2" col="2">
-                  <Label :text="'fa-user' | fonticon" class="far font-icon" width="8%" />
+                  <Label :text="'fa-user' | fonticon" class="far font-icon" width="10%" />
                   <Label :text="item.abiz_contactid.text" class="item-header-sub" />                  
                 </StackLayout>
 
                 <StackLayout orientation="horizontal" class="parent-center" row="3" col="2">
-                  <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon"  width="8%"/>
+                  <Label :text="'fa-money-bill-alt' | fonticon" class="far font-icon"  width="10%"/>
                   <Label :text="formatCurrencystr(item.abiz_totalamountrollup)" class="item-header-sub" />                  
                 </StackLayout>
               </GridLayout>
@@ -72,7 +73,7 @@
               </GridLayout>
             </v-template>
           </RadListView>
-          <Label v-if="!isProcessing && remoteCustomers.length == 0" text="Hiện tại không có khách hàng." class="text-center" margin="24" color="red" row="0" col="0" colSpan="3" rowSpan="3" />
+          <Label v-if="!isProcessing && remoteCustomers.length == 0" text="Hiện tại không có khách hàng." class="text-center" textWrap="true" margin="24" color="red" row="0" col="0" colSpan="3" rowSpan="3" />
         </GridLayout>
       </TabViewItem>
     </TabView>
