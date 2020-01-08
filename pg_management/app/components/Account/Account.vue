@@ -1,83 +1,87 @@
 <template>
   <GridLayout id="account_parent" columns="*" rows="150, *, auto">
     <GridLayout class="account-header" rows="20,90,*" columns="*,90,*" row="0" col="0" colSpan="3">
-      <Label id="btn_logout" @tap="confirmLogoutOut()" :text="'fa-sign-out-alt' | fonticon" class="fas font-icon-defaut text-color-white font-icon-size-28 text-right" row="0" col="2" rowSpan="2" />
+      <Label @tap="confirmLogoutOut()" :text="'fa-sign-out-alt' | fonticon" class="fas font-icon-default text-color-white font-icon-size-28 text-right" style="margin:12" row="0" col="2" rowSpan="2" />
+
       <GridLayout class="lout-circle" row="1" col="1" rows="auto" columns="auto">
       </GridLayout>
       <Label :text="'fa-user' | fonticon" class="fas font-avatar text-color-white font-icon-size-avatar" row="1" col="1"  />
       <Label :text="user.name" class="text-user-name" row="2" column="0" colSpan="3" />
     </GridLayout>
     <ScrollView row="1" col="0" colSpan="3" rowSpann="2">
-      <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20, 50, auto, 20" columns="*, 50">
+      <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20, 50, auto, 20" columns="*, auto">
           <Label text="Thông Tin Tài Khoản:" class="text-part-header" row="1" col="0" />    
-          <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24 text-right" row="1" col="1"/>
+          <StackLayout orientation="horizontal" class=" text-right" row="1" col="1">
+            <Label @tap="changePassword()" :text="'fa-key' | fonticon" class="fas font-icon font-icon-size-24 text-right margin-right"/>
+            <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24 text-right margin-left"/>
+          </StackLayout>
 
           <GridLayout class="account-part" rows="20, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, *" columns="50, *,50" row="2" col="0" colSpan="2">
               <Label :text="'fa-id-card' | fonticon" class="fas icon-field-user" row="1" col="0" />
-              <StackLayout class="lout-info" row="1" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="1" col="1" colSpan="2">
                 <Label text="Mã GID" class="text-label"/>              
                 <Label :text="user.gid" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-id-badge' | fonticon" class="far icon-field-user" row="2" col="0" />
-              <StackLayout class="lout-info" row="2" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="2" col="1" colSpan="2">
                 <Label text="Mã Nhân Viên" class="text-label"/>              
                 <Label :text="user.code" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-address-card' | fonticon" class="far icon-field-user" row="3" col="0" />
-              <StackLayout class="lout-info" row="3" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="3" col="1" colSpan="2">
                 <Label text="CMND (Thẻ căn cước công nhân)" class="text-label"/>              
                 <Label :text="user.idCard" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-envelope' | fonticon" class="far icon-field-user" row="4" col="0" />
-              <StackLayout class="lout-info" row="4" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="4" col="1" colSpan="2">
                 <Label text="Email" class="text-label"/>              
                 <Label :text="user.email" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-birthday-cake' | fonticon" class="fas icon-field-user" row="5" col="0" />
-              <StackLayout class="lout-info" row="5" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="5" col="1" colSpan="2">
                 <Label text="Ngày Sinh Nhật" class="text-label"/>              
                 <Label :text="user.birthday" class="text-value" textWrap="true"/>              
               </StackLayout>
               <Label :text="'fa-edit' | fonticon" class="far icon-edit" row="5" col="2" @tap="onClickUpdateBirthday()" />
 
               <Label :text="'fa-mobile-alt' | fonticon" class="fas icon-field-user" row="6" col="0" />
-              <StackLayout class="lout-info" row="6" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="6" col="1" colSpan="2">
                 <Label text="Số Điện Thoại" class="text-label"/>              
                 <Label :text="user.phone" class="text-value" textWrap="true"/>              
               </StackLayout>
               <Label :text="'fa-edit' | fonticon" class="far icon-edit" row="6" col="2" @tap="onClickUpdatePhoneNumber()" />
 
               <Label :text="'fa-home' | fonticon" class="fas icon-field-user" row="7" col="0" />
-              <StackLayout class="lout-info" row="7" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="7" col="1" colSpan="2">
                 <Label text="Địa Chỉ" class="text-label"/>              
                 <Label :text="user.address" class="text-value" textWrap="true"/>              
               </StackLayout>
               <Label :text="'fa-edit' | fonticon" class="far icon-edit" row="7" col="2" @tap="onClickUpdateAddress()" />
 
               <Label :text="'fa-venus-mars' | fonticon" class="fas icon-field-user" row="8" col="0" />
-              <StackLayout class="lout-info" row="8" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="8" col="1" colSpan="2">
                 <Label text="Giới Tính" class="text-label"/>              
                 <Label :text="user.gender" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-th' | fonticon" class="fas icon-field-user" row="9" col="0" />
-              <StackLayout class="lout-info" row="9" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="9" col="1" colSpan="2">
                 <Label text="Ngành Hàng" class="text-label"/>              
                 <Label :text="user.category" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-chalkboard' | fonticon" class="fas icon-field-user" row="10" col="0" />
-              <StackLayout class="lout-info" row="10" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="10" col="1" colSpan="2">
                 <Label text="Kênh Bán Hàng" class="text-label"/>              
                 <Label :text="user.channel" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-handshake' | fonticon" class="fas icon-field-user" row="11" col="0" />
-              <StackLayout class="lout-info-no-border" row="11" col="1" colSpan="2">
+              <StackLayout class="lout-account-info-no-border" row="11" col="1" colSpan="2">
                 <Label text="Đối Tác" class="text-label"/>              
                 <Label :text="user.client" class="text-value" textWrap="true"/>              
               </StackLayout>            
@@ -86,19 +90,19 @@
           <Label text="Thông Tin Người Quản Lý:" class="text-part-header" row="4" col="0" colSpan="2"/>    
           <GridLayout class="account-part" rows="20, auto, auto, *" columns="50, *,50" row="5" col="0" colSpan="2">
             <Label :text="'fa-user-tie' | fonticon" class="fas icon-field-user" row="1" col="0" />
-              <StackLayout class="lout-info" row="1" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="1" col="1" colSpan="2">
                 <Label text="Họ Tên" class="text-label"/>              
                 <Label :text="user.manager.name" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-mobile-alt' | fonticon" class="fas icon-field-user" row="2" col="0" />
-              <StackLayout class="lout-info" row="2" col="1" colSpan="2">
+              <StackLayout class="lout-account-info" row="2" col="1" colSpan="2">
                 <Label text="Số Điện Thoại" class="text-label"/>              
                 <Label :text="user.manager.phone" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-envelope' | fonticon" class="far icon-field-user" row="3" col="0" />
-              <StackLayout class="lout-info-no-border" row="3" col="1" colSpan="2">
+              <StackLayout class="lout-account-info-no-border" row="3" col="1" colSpan="2">
                 <Label text="Email" class="text-label"/>              
                 <Label :text="user.manager.email" class="text-value" textWrap="true"/>              
               </StackLayout>     
@@ -116,15 +120,16 @@
             <Label :text="appInfo.releasedDate" class="text-center" textWrap="true"/>   
             <Label :text="appInfo.copyRight" class="text-center" textWrap="true"/>   
           </StackLayout>
-          <ActivityIndicator v-show="isProcessing" busy="true" row="0" colSpan="6" rowSpan="2" />
       </GridLayout>
     </ScrollView>
+    <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" rowSpan="3" />
   </GridLayout>
 </template>
 
 <script>
 import DatePickerDlg from "../Dialog/DatePickerDlg";
 import AddressDlg from "../Dialog/AddressDlg";
+import ChangePassword from "../ChangePassword";
 import Transition from "../../share/Transition";
 import ResourceString from "../../assets/StringConst";
 import CurrentUser from "../../data/CurrentUser";
@@ -132,7 +137,6 @@ import Remember from "../../share/Remember";
 import Login from "../Login";
 import Validation from "../../share/Validation";
 import ApiService from "../../service/BackEndService";
-import { error } from '@nativescript/core/trace/trace';
 import QueryBuilder from '../../storaged/QueryBuilder';
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
@@ -164,6 +168,29 @@ export default {
         ]
       });
     },
+    changePassword() {
+      if (this.isProcessing) {
+        return;
+      }
+      this.isProcessing = true;
+      confirm({
+        title:  ResourceString.lbl_are_you_want_to_change_pass,
+        okButtonText: ResourceString.lbl_yes,
+        cancelButtonText: ResourceString.lbl_no,
+        message:  ResourceString.msg_warning_change_pas
+      }).then(this.gotoChangePassword);
+    },
+    gotoChangePassword(isAccept) {
+      this.isProcessing = false;
+      if (!isAccept) {
+        return;
+      }
+
+      this.$navigateTo(ChangePassword, {
+        animated: true,
+        transition: Transition.pageTransition
+      });
+    },
     refreshAccountInfo() {
       if (this.isProcessing) {
         return;
@@ -176,7 +203,7 @@ export default {
         .then(this.getInfoSuccess);
     },
     getInfoSuccess(json) {
-       this.isProcessing = false;
+      this.isProcessing = false;
       CurrentUser.methods.saveUserInfo(json);
       this.user = CurrentUser.getUserInfo();
     },
@@ -184,7 +211,7 @@ export default {
       if (this.isProcessing) {
         return;
       }
-
+      this.isProcessing = true;
       this.$showModal(DatePickerDlg, { 
         fullscreen: !CurrentUser.isAndroidDevice(), 
         animated: true,
@@ -196,6 +223,7 @@ export default {
     },
     callBackOnTapUpdateBirhday(result) {
       if (result == undefined || !result.isSuccess) {
+        this.isProcessing = false;
         return;
       }
       const errMessage = Validation.validBirhtday(result.selectedDate);
@@ -315,8 +343,7 @@ export default {
         var query = QueryBuilder.buildQueryDeleteAll(tableName);
         this.$store.state.database.execSQL(query, []).then(result => {
         })
-        .catch((error) => {
-        })
+        .catch((error) => {})
       });
 
       this.$store.customers = [];
@@ -369,10 +396,6 @@ export default {
   font-size: 24;
 }
 
-#btn_logout {
-  margin: 12;
-}
-
 .text-user-name {
   color: white;
   font-size: 24;
@@ -422,17 +445,16 @@ export default {
   text-align: left;
 }
 
-.lout-info {
+.lout-account-info, .lout-account-info-no-border {
   border-bottom-width: 0.5;
   border-bottom-color: $color-border;
   padding-bottom: 8;
-  margin-bottom: 18;
+  margin-bottom: 12;
   margin-right: 12;
-  // vertical-align: top;
+  vertical-align: top;
 }
 
-.lout-info-no-border {
-  margin-bottom: 18;
-  margin-right: 12;
+.lout-account-info-no-border {
+  border-bottom-width: 0;
 }
 </style>

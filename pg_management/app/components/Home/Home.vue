@@ -4,14 +4,19 @@
       <Label :text="localSelectedDateStr" class="text-center title-page" />
     </FlexboxLayout>
     <Label :text="'fa-calendar-alt' | fonticon" class="far btn-calendar"  @tap="chooseDate()" row="0" col="4" />
-    
-    <ListView row="1" colSpan="5" rowSpan="3" for="msgItem in messages" v-show="messages.length > 0">
+    <Label :text="'fa-calendar-day' | fonticon" class="fas btn-calendar"  @tap="resetDateToToDay()" row="0" col="0" />
+        
+    <RadListView 
+      ref="listView" pullToRefresh="true"  @pullToRefreshInitiated="fetchCheckInSchedules" :pullToRefreshStyle="pullToRefreshStyle"
+      row="1" colSpan="5" rowSpan="3" for="msgItem in messages" v-show="messages.length > 0">
        <v-template>
         <Label :text="msgItem" class="text-left" textWrap="true" margin="12 6"/>
        </v-template>
-    </ListView>
+    </RadListView>
 
-    <ListView row="1" colSpan="5" rowSpan="3" for="item in currCheckInList" v-show="messages.length == 0">
+    <RadListView 
+      ref="listView" pullToRefresh="true"  @pullToRefreshInitiated="fetchCheckInSchedules" :pullToRefreshStyle="pullToRefreshStyle"
+      row="1" colSpan="5" rowSpan="3" for="item in currCheckInList" v-show="messages.length == 0">
       <v-template>
         <GridLayout flexDirection="row" rows="auto, auto" columns="50, 50, *" class="ls-item-check-in">
           <!-- late -->
@@ -29,7 +34,7 @@
           <Label :text="item.o_abiz_addresscalculated" class="item-header-sub" textWrap="true" row="1" col="2" />
         </GridLayout>
       </v-template>
-    </ListView>
+    </RadListView>
     <Button
       id="btn_check_in"
       text="CHẤM CÔNG"
@@ -66,7 +71,8 @@ export default {
       localSelectedDateStr: Helper.getCurrentDateStr(),
       isChkInProscess: false,
       currCheckInList: [], 
-      messages: []
+      messages: [],
+      pullToRefreshStyle: Constant.pullToRefreshStyle
     };
   },
   methods: {
@@ -83,6 +89,10 @@ export default {
     },
     isToday(dateStr) {
       return Helper.isToday(dateStr)
+    },
+    resetDateToToDay() {
+      this.localSelectedDateStr = Helper.getCurrentDateStr();
+      this.fetchCheckInSchedules();
     },
     chooseDate() {
       if (this.isChkInProscess) {
@@ -105,18 +115,28 @@ export default {
        this.fetchCheckInSchedules(); 
       });
     },
-    fetchCheckInSchedules() {
-      this.isChkInProscess = true;
+    fetchCheckInSchedules(args) {
+      if (args == undefined) {
+        this.isChkInProscess = true;
+      }
+
       this.currCheckInList = [];
       const requestSelectedDate = Helper.convertLocalDateToRequestDate(this.localSelectedDateStr);
       ApiService.methods.getSessions(requestSelectedDate, CurrentUser.methods.getBearId())
-      .then(this.callbackGetSessionSuccess)
-      .catch(this.callApiServiceFail);
-    },
-    callbackGetSessionSuccess(obj) {
-      this.isChkInProscess = false;
-      this.messages = obj.messages;
-      this.currCheckInList = obj.records;
+      .then(obj => {
+        this.messages = obj.messages;
+        this.currCheckInList = obj.records;
+        this.isChkInProscess = false;
+        if (args != undefined) {
+          args.object.notifyPullToRefreshFinished();   
+        } 
+      })
+      .catch(error => {
+        if (args != undefined) {
+          args.object.notifyPullToRefreshFinished();   
+        }
+        this.callApiServiceFail(error);
+      });
     },
     openCamera(curLoction) {
       this.isChkInProscess = true;
