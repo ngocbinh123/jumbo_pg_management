@@ -32,7 +32,7 @@
     <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="3" col="2" />
     
-    <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="40,*, 40,100, 100" row="4" col="0" colSpan="3">
+    <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="40,auto, 40,100, *" row="4" col="0" colSpan="3">
       
       <StackLayout row="0" col="2" colSpan="3" orientation="horizontal" class="edt-box" @tap="onClickDate()">
           <Label :text="'fa-calendar-alt' | fonticon" class="far font-icon font-icon-size-18"  margin="0 8 0 0" />
