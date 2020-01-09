@@ -55,7 +55,10 @@ export default {
     this.selectedDate = Helper.getCurrentDateStr();
 
     this.remoteCustomers = Remember.getRemoteCustomers().records;
-    this.remoteOrders = Remember.getRemoteOrders().records;
+    cacheOrders = Remember.getRemoteOrders().records;
+    if (cacheOrders.length > 0) {
+      this.$store.dispatch('pushOrders', cacheOrders);
+    }
 
     this.getRemoteCustomers();
     this.getRemoteOrders();
