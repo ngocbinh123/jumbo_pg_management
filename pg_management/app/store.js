@@ -36,6 +36,7 @@ const store = new Vuex.Store({
         customers: [],
         notifications: [],
         provinces: [],
+        orders: []
     },
     mutations: {
         init(state, data) {
@@ -58,6 +59,9 @@ const store = new Vuex.Store({
         },
         pushNotifications(state, data) {
             state.notifications = data.notifications;
+        },
+        pushOrders(state, data) {
+            state.orders = data.orders;
         }
     },
     actions: {
@@ -164,6 +168,9 @@ const store = new Vuex.Store({
                 localNotifications.push(noti);
             });
             context.commit("pushNotifications", { notifications: localNotifications });
+        },
+        pushOrders(context, data) {
+            context.commit("pushOrders", { orders: data });
         }
     }
 })

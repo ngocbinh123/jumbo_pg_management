@@ -61,7 +61,7 @@
 
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
       <v-template>
-        <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
+        <GridLayout rows="*" columns="40,*, 40,100, 120" class="lout-padding-ver">
           <Label :text="item.name" class="lbl-name" row="0" col="0"  colSpan="2" />
           <Label :text="item.number" class="lbl-number text-right" row="0" col="2" />
           <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-right" row="0" col="3" />
@@ -83,6 +83,7 @@ import TimePickerDlg from '../Dialog/TimePickerDlg';
 import CurrentUser from '../../data/CurrentUser';
 import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
+import Remember from '../../share/Remember';
 
 export default {
   created() {
@@ -249,7 +250,21 @@ export default {
         requestDate: Helper.convertLocalDateToRequestDate(this.transDate),
         transTotal: total,
         displayTransTotal: Helper.formatCurrencystr(total),
-        products: this.products
+        products: this.products,
+
+        abiz_orderid: "",
+        abiz_contactid: {
+            text: this.customer.fullname,
+            value: ""
+        },
+        abiz_ordercode: "",
+        abiz_orderdate: this.transDate,
+        abiz_ordertime: this.time,
+        abiz_outletid: {
+            text: "",
+            value: ""
+        },
+        abiz_totalamountrollup: total
       }
 
       this.uploadTransaction(newTransaction);
@@ -267,21 +282,25 @@ export default {
         .catch(error => this.callbackUploadGetOrderFail(error, transaction));
     },
     callbackGetOrdersSuccess(json, transaction) {
-      if (json == undefined) {
-        return;
-      }
-      var order = json.records.find(el => json.records[0].abiz_contactid.value.toLowerCase() == transaction.customer.contactId.toLowerCase());
-      if (order != undefined) {
+    if (json == undefined) {
+      return;
+    }
+
+    // Remember.setRemoteOrders(json);
+    // this.$store.dispatch('pushOrders', json.records);
+    
+    var order = json.records.find(el => el.abiz_contactid.value.toLowerCase() == transaction.customer.contactId.toLowerCase());
+    if (order != undefined) {
         transaction.code = order.abiz_ordercode;
         transaction.store = order.abiz_outletid.text;
       }
-
       this.$store.dispatch('insertInvoice', transaction);
       this.$modal.close({
         isSuccess: true,
         customer: this.customer,
         transaction: transaction,
-        rermoteCustomer: this.rermoteCustomer
+        rermoteCustomer: this.rermoteCustomer,
+        remoteOrder: order
       });
       this.isProcessing = false;
 
