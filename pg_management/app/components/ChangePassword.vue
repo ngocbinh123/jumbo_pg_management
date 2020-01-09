@@ -1,50 +1,60 @@
 <template>
   <Page actionBarHidden="true">
-    <FlexboxLayout class="page">
-      <GridLayout row="auto, auto, auto">
-        <StackLayout>
-          <Label text="CẬP NHẬT MẬT KHẨU" class="page_title_small" />
-          <TextField
-            id="txt_old_pass"
-            v-model="user.oldPass"
-            hint="Mật khẩu hiện tại"
-            secure="true"
-            autocorrect="false"
-            class="input-margin"
-          />
-          <TextField
-            id="txt_new_pass"
-            v-model="user.newPass"
-            hint="Mật khẩu mới"
-            secure="true"
-            autocorrect="false"
-            class="input-margin"
-          />
-          <TextField
-            id="txt_confirm_pass"
-            v-model="user.confirmPass"
-            hint="Nhập lại mật khẩu mới"
-            secure="true"
-            autocorrect="false"
-            class="input-margin"
-          />
-          <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary input-margin" :isEnabled = "!processing"  />
-        </StackLayout>
-        <ActivityIndicator v-show="processing" busy="true"/>
-      </GridLayout>
-    </FlexboxLayout>
+    <GridLayout rows="50, *" columns="*" >
+      <FlexboxLayout class="page" row="0" col="1" rowSpan="2">
+        <GridLayout rows="auto, auto, auto" columns="*">
+          <StackLayout>
+            <Label text="CẬP NHẬT MẬT KHẨU" class="page_title_small" />
+            <TextField
+              id="txt_old_pass"
+              v-model="user.oldPass"
+              hint="Mật khẩu hiện tại"
+              secure="true"
+              autocorrect="false"
+              class="input-margin"
+            />
+            <TextField
+              id="txt_new_pass"
+              v-model="user.newPass"
+              hint="Mật khẩu mới"
+              secure="true"
+              autocorrect="false"
+              class="input-margin"
+            />
+            <TextField
+              id="txt_confirm_pass"
+              v-model="user.confirmPass"
+              hint="Nhập lại mật khẩu mới"
+              secure="true"
+              autocorrect="false"
+              class="input-margin"
+            />
+            <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary input-margin" :isEnabled = "!processing"  />
+          </StackLayout>
+          <ActivityIndicator v-show="processing" busy="true"/>
+        </GridLayout>
+      </FlexboxLayout>
+      <Label :text="'fa-arrow-left' | fonticon" class="fas font-icon-default text-color-white font-icon-size-28 text-ver-top text-left " style="margin-left: 5%; margin-top: 24;" v-show="isShowBackButton" @tap="$navigateBack" row="0" col="0" />
+    </GridLayout>
   </Page>
 </template>
 
 <script>
 import Login from "./Login";
+import CurrentUser from '../data/CurrentUser';
+import QueryBuilder from "../storaged/QueryBuilder";
 const stringConst = require("../assets/StringConst");
 const apiService = require("../service/BackEndService");
 const remember = require("../share/Remember");
 const transition = require("../share/Transition");
+
 export default {
+  created() {
+    this.isShowBackButton = !remember.getFroceChangePass();
+  },
   data() {
     return {
+      isShowBackButton: false,
       processing: false,
       user: {
         oldPass: "",
@@ -100,11 +110,36 @@ export default {
     },
 
     apiRequestSuccess(json) {
-      if(!json) {
+    if(!json) {
         return;
       }
-      remember.setFroceChangePass(false);
-      this.processing = false;
+      // CurrentUser.methods.logout();
+
+      // this.$store.state.tables.forEach(tableName => {
+      //   var query = QueryBuilder.buildQueryDeleteAll(tableName);
+      //     this.$store.state.database.execSQL(query, []).then(result => {}).catch((error) => {})
+      // });
+
+    
+      Promise.all([new Promise((resolve, reject) => {
+        CurrentUser.methods.logout();
+
+        this.$store.customers = [];
+        this.$store.provinces = [];
+        this.$store.invoices = [];
+        resolve("Clear all cache successful.");
+      }), new Promise((resolve, reject) => {
+        this.$store.state.tables.forEach(tableName => {
+          var query = QueryBuilder.buildQueryDeleteAll(tableName);
+            this.$store.state.database.execSQL(query, []).then(result => {}).catch((error) => {})
+        });
+        resolve("Clear all records successful.");
+      })]).then(values => {
+        this.processing = false;
+        this.gotoLogin();
+      })
+    },
+    gotoLogin() {
       this.$navigateTo(Login, {
         clearHistory: true,
         animated: true,

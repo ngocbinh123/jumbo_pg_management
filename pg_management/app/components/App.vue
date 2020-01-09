@@ -11,41 +11,19 @@
         androidSelectedTabHighlightColor="white"
         :selectedIndex="selectedIndex" 
         androidTabsPosition="bottom"
-        col="0" row="0">
-        <!-- <ios>
-           <TabViewItem iconSource="res://ic_checkin_list">
-            <Home></Home>
-          </TabViewItem>
-          <TabViewItem iconSource="res://ic_cart">
-            <Transaction></Transaction>
-          </TabViewItem>
-          <TabViewItem iconSource="res://ic_user_group" >
-            <CustomerList></CustomerList>
-          </TabViewItem>
-          <TabViewItem iconSource="res://ic_user" >
-            <Account></Account>
-          </TabViewItem>
-        <android>
-          <TabViewItem title="Chấm Công" iconSource="res://ic_checkin_list">
-            <Home></Home>
-          </TabViewItem>
-          <TabViewItem title="Đơn Hàng" iconSource="res://ic_cart">
-            <Transaction></Transaction>
-          </TabViewItem>
-          <TabViewItem title="Tài Khoản" iconSource="res://ic_user" >
-            <Account></Account>
-          </TabViewItem>
-        </android> -->
-
+        col="0" row="0">      
         <TabViewItem title="Chấm Công" iconSource="res://ic_checkin_list">
-            <Home></Home>
-          </TabViewItem>
-          <TabViewItem title="Đơn Hàng" iconSource="res://ic_cart">
-            <Transaction></Transaction>
-          </TabViewItem>
-          <TabViewItem title="Tài Khoản" iconSource="res://ic_user" >
-            <Account></Account>
-          </TabViewItem>
+          <Home></Home>
+        </TabViewItem>
+        <TabViewItem title="Đơn Hàng" iconSource="res://ic_cart">
+          <Transaction></Transaction>
+        </TabViewItem>
+        <TabViewItem title="Thông Báo" iconSource="res://ic_bell" >
+          <Notifications></Notifications>
+        </TabViewItem>
+        <TabViewItem title="Tài Khoản" iconSource="res://ic_user" >
+          <Account></Account>
+        </TabViewItem>
       </TabView>
     </GridLayout>
   </Page>
@@ -53,14 +31,15 @@
 
 <script >
 import Constant from "../data/Constant";
-
 import Home from "./Home/Home";
 import Transaction from "./Transaction/Transaction";
 import Account from "./Account/Account";
 import CustomerList from "./Customer/CustomerList";
+import Notifications from "./Notification/Notifications";
 
 export default {
   components: {
+    Notifications,
     Home,
     Transaction,
     Account,

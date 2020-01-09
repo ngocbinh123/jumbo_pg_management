@@ -26,7 +26,7 @@ module.exports = {
     formatToLocalDate(date) {
         return fecha.default.format(date, LOCAL_DATE_FORMAT);
     },
-    formatCurrencystr(currency, priceUnit = "VND") {
+    formatCurrencystr(currency = 0, priceUnit = "VND") {
         var result = currency.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + " " + priceUnit;
         return result.trim();
     },
@@ -41,20 +41,23 @@ module.exports = {
         return firstText.toLowerCase() == secondText.toLowerCase();
     },
     getFullCustomerAddress(customer) {
+        if (customer == undefined) {
+            return "";
+        }
         var addressArr = [];
-        if (!!customer.abiz_street) {
+        if (customer.hasOwnProperty("abiz_street") && !!customer.abiz_street) {
             addressArr.push(customer.abiz_street);
         }
 
-        if (!!customer.abiz_ward) {
+        if (customer.hasOwnProperty("abiz_ward") && !!customer.abiz_ward) {
             addressArr.push(customer.abiz_ward);
         }
 
-        if (!!customer.abiz_districtid.text) {
+        if (customer.hasOwnProperty("abiz_districtid") && !!customer.abiz_districtid.text) {
             addressArr.push(customer.abiz_districtid.text);
         }
 
-        if (!!customer.abiz_provinceid.text) {
+        if (customer.hasOwnProperty("abiz_provinceid") && !!customer.abiz_provinceid.text) {
             addressArr.push(customer.abiz_provinceid.text);
         }
 

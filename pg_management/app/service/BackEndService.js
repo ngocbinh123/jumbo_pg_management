@@ -309,6 +309,15 @@ module.exports = {
                 .then(this.checkResponse);
         },
 
+        getNotifications(bearer) {
+            const headers = config.authHeaders(bearer);
+            return fetchModule
+                .fetch(config.getNotificationslUrl, {
+                    method: "POST",
+                    headers: headers
+                })
+                .then(this.checkResponse);
+        },
         checkResponse(response) {
             var body = response._bodyInit;
 

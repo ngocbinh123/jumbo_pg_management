@@ -205,6 +205,7 @@ ActivityIndicator {
 .item-header-sub {
     font-family: "f_arima_madurai_thin", "Arima Madurai";
     vertical-align: middle;
+    font-size: 14;
 }
 
 .text-caption {
@@ -348,8 +349,8 @@ ListView {
 }
 
 .font-icon-default {
-    vertical-align: middle;
-    text-align: center;
+    vertical-align: top;
+    text-align: left;
 }
 
 .font-avatar {
@@ -392,6 +393,14 @@ ListView {
 
 .margin-left {
     margin-left: 12;
+}
+
+.margin-right {
+    margin-right: 12;
+}
+
+.margin-top {
+    margin-top: 12;
 }
 
 .icon-sort {
