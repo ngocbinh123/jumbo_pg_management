@@ -115,7 +115,7 @@ export default {
         this.trackingPage();
         this.getRemoteOrderDetail();
 
-        const cacheCustomer = this.$store.state.customers.find(el => el.abiz_contactid.value == his.$props.transaction.abiz_contactid.value);
+        const cacheCustomer = this.$store.state.customers.find(el => el.contactid == this.$props.transaction.abiz_contactid.value);
         if (cacheCustomer != undefined) {
             this.orderDetail.abiz_street = cacheCustomer.abiz_street;
             this.orderDetail.abiz_ward = cacheCustomer.abiz_ward;
