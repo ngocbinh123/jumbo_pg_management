@@ -21,14 +21,12 @@
 import CurrentUser from '../../data/CurrentUser';
 import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
-import * as firebase from 'nativescript-plugin-firebase';
 import Constant from '../../data/Constant';
 import NotificationDetail from './NotificationDetail';
 import Helper from '../../helper/PopularHelper';
 import StringConst from '../../assets/StringConst';
 export default {
     created() {
-        this.trackingPage();
         this.getRemoteNotifications();
     },
     data() {
@@ -40,17 +38,6 @@ export default {
        }
     },
     methods: {
-        trackingPage() {
-            firebase.analytics.logEvent({
-            key: Constant.KEY_PAGE_VIEW,
-            parameters: [
-                {
-                    key: Constant.KEY_PAGE_ID, 
-                    value: "PAGE_NOTIFICATIONS"
-                }
-                ]
-            });
-        },
         closePage() {
             this.$modal.close();
             this.getRemoteNotifications();

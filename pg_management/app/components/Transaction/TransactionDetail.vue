@@ -59,7 +59,6 @@
   </GridLayout>
 </template>
 <script>
-import * as firebase from"nativescript-plugin-firebase";
 import Helper from "../../helper/PopularHelper";
 import Constant from "../../data/Constant";
 import ApiService from "../../service/BackEndService";

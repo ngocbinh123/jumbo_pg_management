@@ -56,13 +56,11 @@
   </GridLayout>
 </template>
 <script>
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import ApiService from "../../service/BackEndService";
 import CurrenntUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
 import Helper from "../../helper/PopularHelper";
-import { error } from '@nativescript/core/trace/trace';
 
 export default {
     props: ["transaction"],
@@ -112,11 +110,11 @@ export default {
         this.orderDetail.abiz_taxtamount = vat;
         this.orderDetail.abiz_netamount = this.orderDetail.abiz_amount-vat;  
 
-        this.trackingPage();
         this.getRemoteOrderDetail();
 
-        const cacheCustomer = this.$store.state.customers.find(el => el.abiz_contactid.value == his.$props.transaction.abiz_contactid.value);
+        const cacheCustomer = this.$store.state.customers.find(el => el.contactid == this.$props.transaction.abiz_contactid.value);
         if (cacheCustomer != undefined) {
+            this.orderDetail.mobilephone = cacheCustomer.mobilephone;
             this.orderDetail.abiz_street = cacheCustomer.abiz_street;
             this.orderDetail.abiz_ward = cacheCustomer.abiz_ward;
             this.orderDetail.abiz_districtid = cacheCustomer.abiz_districtid;
@@ -124,15 +122,6 @@ export default {
         }
     },
     methods: {
-        trackingPage() {
-            firebase.analytics.logEvent({
-            key: Constant.KEY_PAGE_VIEW,
-            parameters: [{
-                    key: Constant.KEY_PAGE_ID, 
-                    value: "SHOW_ORDER_DETAIL"
-                }]
-            });
-        },
         getCustomerAddress(orderDetail) {
             return Helper.getFullCustomerAddress(orderDetail);
         },
