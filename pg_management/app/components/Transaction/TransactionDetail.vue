@@ -50,8 +50,8 @@
         <GridLayout rows="*" columns="40,*, 40,100, 100" class="lout-padding-ver">
           <Label :text="item.name" class="lbl-name"  row="0" col="0" colSpan="2" padding="0 5 0 2" />
           <Label :text="item.number" class="lbl-number text-right" row="0" col="2" />
-          <Label :text="item.price" class="lbl-pricce text-right" row="0" col="3" padding="0 2 0 5" />
-          <Label :text="item.total" class="lbl-total text-right" row="0" col="4" padding="0 2 0 5" />
+          <Label :text="formatCurrentcy(item.price)" class="lbl-pricce text-right" row="0" col="3" padding="0 2 0 5" />
+          <Label :text="formatCurrentcy(item.total)" class="lbl-total text-right" row="0" col="4" padding="0 2 0 5" />
         </GridLayout>
       </v-template>
     </ListView>
@@ -59,15 +59,18 @@
   </GridLayout>
 </template>
 <script>
+import * as firebase from"nativescript-plugin-firebase";
 import Helper from "../../helper/PopularHelper";
 import Constant from "../../data/Constant";
 import ApiService from "../../service/BackEndService";
 import CurrenntUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
+import Helper from "../../helper/PopularHelper";
 
 export default {
   props: ["transaction"],
   created() {
+    this.getLocalData();
     this.getRemoteOrderDetail();
   },
   data() {
@@ -136,10 +139,17 @@ export default {
       });
     },
     getRemoteOrderDetailFail(error) {
+      this.isProcessing = false;
       if (error == undefined) {
-        this.isProcessing = false;
         return;
       }
+      var errMsg = error.message;
+      if (errMsg.includes("UnknownHostException")) {
+        errMsg = StringConst.msg_unknow_host_exception;
+      }
+      this.showDlg(StringConst.lbl_error, errMsg);
+    },
+    getLocalData() {
       Promise.all([new Promise((resolve, reject) => {
         if (this.orderDetail.transTotal > 0) {
           const vat = Math.ceil(this.orderDetail.transTotal/11);
@@ -147,8 +157,14 @@ export default {
           this.totalWithoutVATStr = Helper.formatCurrencystr(this.orderDetail.transTotal-vat);  
           this.totalStr = Helper.formatCurrencystr(this.orderDetail.transTotal);  
         }
-        resolve('food');
+        resolve('calucalated done');
       }), new Promise((resolve, reject)=> {
+        if (this.$props.transaction.hasOwnProperty("products") && this.transaction.products.length > 0) {
+          this.products = this.$props.transaction.products;
+        resolve('get Products Done');
+          return;
+        }
+
         const query = "SELECT productId, productName, number, price, total, invoiceCode FROM InvoiceDetail WHERE invoiceCode = ?";
         this.$store.state.database.all(query, [this.orderDetail.code])
           .then(result => {
@@ -158,8 +174,8 @@ export default {
                 id:row[0],
                 name: row[1],
                 number: row[2],
-                price: row[3],
-                total: row[4]  
+                price: this.formatCurrentcy(row[3]),
+                total: this.formatCurrentcy(row[4])  
               };
              localProducts.push(product);
             });
@@ -172,16 +188,25 @@ export default {
           });
       })]).then(values => {
         this.isProcessing = false;
-      console.log(values);
+        if (this.products.length == 0) {
+          this.getRemoteOrderDetail();
+        }
       }).catch(error => {
         this.isProcessing = false;
+        if (this.products.length == 0) {
+          this.getRemoteOrderDetail();
+        }
       });
     },
     closePage() {
       this.$modal.close();
     },
     formatCurrentcy(num) {
+      if (num.toString().includes(",")) {
+        return num;
+      }
       return Helper.formatCurrencystr(num, "");
+
     },
     showDlg(dlgTitle, dlgMsg) {
       return alert({
