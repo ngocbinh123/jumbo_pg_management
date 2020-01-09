@@ -81,22 +81,10 @@ import CreateNewCustomer from "../Customer/CreateNewCustomer";
 import DatePickerDlg from '../Dialog/DatePickerDlg';
 import TimePickerDlg from '../Dialog/TimePickerDlg';
 import CurrentUser from '../../data/CurrentUser';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import Remember from '../../share/Remember';
 
 export default {
-  created() {
-    firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-        {
-          key: Constant.KEY_PAGE_ID, 
-          value: "CREATE_NEW_ORDER"
-        }
-      ]
-    });
-  },
   data() {
     return {
       isProcessing: false,

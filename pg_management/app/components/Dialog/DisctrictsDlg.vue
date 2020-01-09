@@ -18,14 +18,12 @@
 import CurrentUser from '../../data/CurrentUser';
 import ApiService from '../../service/BackEndService';
 import Remember from '../../share/Remember';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 
 export default {
     props: ["title","province"],
     created() {
         this.getDistricts();
-        this.trackingPage();
     },
     data() {
         return {
@@ -34,17 +32,6 @@ export default {
         }
     }, 
     methods: {
-        trackingPage() {
-            firebase.analytics.logEvent({
-            key: Constant.KEY_PAGE_VIEW,
-            parameters: [
-                {
-                    key: Constant.KEY_PAGE_ID, 
-                    value: "DLG_ADDRESS_DISTRICT"
-                }
-                ]
-            });
-        },
         closePage() {
             this.$modal.close();
         },

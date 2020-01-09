@@ -56,7 +56,6 @@
 import StringConst from "../../assets/StringConst";
 import ApiService from "../../service/BackEndService";
 import CurrentUser from '../../data/CurrentUser';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import Validation from "../../share/Validation";
 import GenderDlg from "../Dialog/GenderDlg";
@@ -65,7 +64,6 @@ import DistrictsDlg from "../Dialog/DisctrictsDlg";
 
 export default {
   created() {
-    this.trackingPage();
   },
   data() {
     return {
@@ -88,17 +86,6 @@ export default {
     };
   },
   methods: {
-    trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "CREATE_NEW_CUSTOMER"
-          }
-        ]
-      });
-    },
     closePage() {
       this.$modal.close();
     },

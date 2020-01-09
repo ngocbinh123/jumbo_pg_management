@@ -60,6 +60,7 @@
 </template>
 <script>
 import * as firebase from"nativescript-plugin-firebase";
+import Helper from "../../helper/PopularHelper";
 import Constant from "../../data/Constant";
 import ApiService from "../../service/BackEndService";
 import CurrenntUser from "../../data/CurrentUser";
@@ -69,8 +70,8 @@ import Helper from "../../helper/PopularHelper";
 export default {
   props: ["transaction"],
   created() {
-    this.trackingPage();
     this.getLocalData();
+    this.getRemoteOrderDetail();
   },
   data() {
     return {
@@ -92,17 +93,6 @@ export default {
     };
   },
   methods: {
-    trackingPage() {
-      firebase.analytics.logEvent({
-      key: Constant.KEY_PAGE_VIEW,
-      parameters: [
-          {
-            key: Constant.KEY_PAGE_ID, 
-            value: "SHOW_ORDER_DETAIL"
-          }
-        ]
-      });
-    },
     getRemoteOrderDetail() {
       this.isProcessing = true;
       ApiService.methods.getOrderDetail(this.$props.transaction.id,CurrenntUser.methods.getBearId())
