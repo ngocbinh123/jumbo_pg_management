@@ -4,12 +4,14 @@ import Login from './components/Login'
 import ChangePass from './components/ChangePassword'
 import SplashScreen from './components/SplashScreen';
 import RadDataForm from 'nativescript-ui-dataform/vue';
+import RadListView from 'nativescript-ui-listview/vue';
 import { TNSFontIcon, fonticon } from 'nativescript-fonticon';
 import store from './store'
 // import VueDevtools from 'nativescript-vue-devtools';
 
 const remember = require("./share/Remember");
 Vue.use(RadDataForm);
+Vue.use(RadListView);
 
 TNSFontIcon.debug = true
 TNSFontIcon.paths = {
