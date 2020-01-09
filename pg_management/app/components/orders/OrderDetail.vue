@@ -117,6 +117,7 @@ export default {
 
         const cacheCustomer = this.$store.state.customers.find(el => el.contactid == this.$props.transaction.abiz_contactid.value);
         if (cacheCustomer != undefined) {
+            this.orderDetail.mobilephone = cacheCustomer.mobilephone;
             this.orderDetail.abiz_street = cacheCustomer.abiz_street;
             this.orderDetail.abiz_ward = cacheCustomer.abiz_ward;
             this.orderDetail.abiz_districtid = cacheCustomer.abiz_districtid;
