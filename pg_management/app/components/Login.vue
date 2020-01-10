@@ -190,7 +190,7 @@ export default {
       }
       prompt({
         title: stringConst.lbl_restore_pass,
-        message: "Xin hãy nhập Email mà bạn đã đăng ký với hệ thống.",
+        message: "Please fill your email you register before.",
         inputType: "email",
         defaultText: "",
         okButtonText: stringConst.lbl_send,

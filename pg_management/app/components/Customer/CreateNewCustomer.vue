@@ -9,7 +9,7 @@
         <Label text="Customer information:" class="header" row="0" col="0" />
         <GridLayout class="data-form" row="1" col="0" rows="auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto" columns="*" >
           <Label text="Full name" class="text-label" row="0" col="0" />
-          <TextField v-model="customer.name" hint="Nhập họ tên khách hàng" class="text-value input-border" margin="4 12" padding="12 18" row="1" col="0" />
+          <TextField v-model="customer.name" hint="Nguyen Van A" class="text-value input-border" margin="4 12" padding="12 18" row="1" col="0" />
 
           <Label text="Gender" class="text-label" row="3" col="0" />
           <GridLayout orientation="horizontal" class="box-border" row="4" col="0" rows="*" columns="6, *, 30" @tap="showGenders()">
@@ -18,7 +18,7 @@
           </GridLayout>
 
           <Label text="Mobile phone" class="text-label" row="6" col="0" />
-          <TextField v-model="customer.phone" hint="Nhập số điện thoại của khách hàng" keyboardType="phone" class="text-value input-border" margin="4 12" padding="12 18" row="7" col="0" />
+          <TextField v-model="customer.phone" hint="0901111222" keyboardType="phone" class="text-value input-border" margin="4 12" padding="12 18" row="7" col="0" />
 
           <Label text="Province" class="text-label" row="9" col="0" />
           <GridLayout orientation="horizontal" class="box-border" row="10" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProvinces()">

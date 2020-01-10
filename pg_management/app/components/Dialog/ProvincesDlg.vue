@@ -7,7 +7,11 @@
 
     <ListView row="1" col="0" colSpan="2" for="item in $store.state.provinces" class="ls-group" @itemTap="onSelectedProvince">
         <v-template>
-            <Label :text="item.name" class="ls-group-item"/>
+            <GridLayout rows="*" columns="20, *,50,5" class="ls-group-item">
+                <Label :text="'fa-circle' | fonticon" class="far font-icon font-icon-size-14 text-left" color="grey" row="0" col="0"  />
+                <Label :text="item.name" class="item-header margin-left" row="0" col="1" />
+                <Label :text="'fa-chevron-right' | fonticon" class="fas font-iconfont-icon-size-24 text-right" color="grey" row="0" col="2"  />
+            </GridLayout>
         </v-template>
     </ListView>    
     <ActivityIndicator v-show="$store.state.provinces.length == 0" busy="true"  row="0" col="0" colSpan ="2" rowSpan="3"/>

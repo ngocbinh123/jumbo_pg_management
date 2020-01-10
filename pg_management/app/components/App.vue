@@ -19,6 +19,11 @@
         <TabViewItem title="Orders" iconSource="res://ic_cart">
           <OrderList></OrderList>
         </TabViewItem>
+        <ios>
+          <TabViewItem title="Customers" iconSource="res://ic_user_group">
+            <CustomerList></CustomerList>
+          </TabViewItem>
+        </ios>
         <TabViewItem title="Notifications" iconSource="res://ic_bell" >
           <Notifications></Notifications>
         </TabViewItem>
