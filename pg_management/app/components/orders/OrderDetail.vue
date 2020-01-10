@@ -1,11 +1,11 @@
 <template>
   <GridLayout rows="50,15, auto,auto,auto, auto, 10,auto,auto,auto, auto, 10, auto,auto,*" columns="50,*,10,50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="5" width="100%">
-        <Label text="CHI TIẾT ĐƠN HÀNG" class="text-center"/>
+        <Label text="ORDER DETAIL" class="text-center"/>
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="$modal.close();" row="0" col="0" />
 
-    <Label text="Thông Tin Khách Hàng:" class="header" row="2" col="0" colSpan="5" />
+    <Label text="Customer Infomation:" class="header" row="2" col="0" colSpan="5" />
 
     <Label :text="'fa-user' | fonticon" class="far font-icon font-icon-size-18"  row="3" col="0" />
     <Label :text="orderDetail.fullname" class="text-center txt-value" textWrap="true" row="3" col="1" colSpan="4"/>
@@ -16,7 +16,7 @@
     <Label :text="'fa-map-marker-alt' | fonticon" class="fas icon-address" style="margin: 5 0 0 0; font-size:18" row="5" col="0" />
     <Label :text="getCustomerAddress(orderDetail)" class="text-center txt-value" textWrap="true" row="5" col="1" colSpan="4" />
 
-    <Label text="Chi tiết đơn hàng:" class="header" row="7" col="0" colSpan="5" />
+    <Label text="Order Detail:" class="header" row="7" col="0" colSpan="5" />
 
     <Label :text="'fa-barcode' | fonticon" class="fas font-icon font-icon-size-18" row="8" col="0" />
     <Label :text="orderDetail.abiz_ordercode" class="trans-code-value" row="8" col="1" colSpan="4"/>
@@ -25,21 +25,21 @@
     <Label :text="orderDetail.abiz_outletid.text" class="trans-code-value" row="9" col="1" colSpan="4" />
 
     <GridLayout row="10" col="0" colSpan="5" rows="auto, auto, auto" columns="100, *" class="edt-box">
-      <Label text="Tổng tiền SP:" class="text-right" textWrap="true" row="0" col="0" />          
+      <Label text="Net Total:" class="text-right" textWrap="true" row="0" col="0" />          
       <Label :text="formatCurrency(orderDetail.abiz_netamount)" class="text-right" textWrap="true" row="0" col="1" />
-      <Label text="VAT (10%):" class="text-right" textWrap="true" row="1" col="0" />
+      <Label text="TAX (10%):" class="text-right" textWrap="true" row="1" col="0" />
       <Label :text="formatCurrency(orderDetail.abiz_taxtamount)" class="text-right" textWrap="true" row="1" col="1" />
-      <Label text="Tổng cộng:" class="text-right border-top lbl-sum" textWrap="true" row="2" col="0" />
+      <Label text="Total:" class="text-right border-top lbl-sum" textWrap="true" row="2" col="0" />
       <Label :text="formatCurrency(orderDetail.abiz_amount)" class="text-right lbl-sum-value border-top"  padding ="0" textWrap="true" row="2" col="1" />
     </GridLayout>
     
-    <Label text="Danh sách sản phẩm:" class="header" row="12" col="0" colSpan="5" />
+    <Label text="Products:" class="header" row="12" col="0" colSpan="5" />
 
     <GridLayout class="lout-columns" rows="*" columns="5,*, 40,100, 120" row="13" col="0" colSpan="5">
-      <Label text="Tên SP" class="column-name text-center" row="0" col="1"/>
-      <Label text="SL" class="column-name text-right" row="0" col="2" />
-      <Label text="Đơn Giá" class="column-name text-center" row="0" col="3" />
-      <Label text="Tổng" class="column-name text-center" row="0" col="4" />
+      <Label text="Model" class="column-name text-center" row="0" col="1"/>
+      <Label text="NUM" class="column-name text-right" row="0" col="2" />
+      <Label text="Unit Price" class="column-name text-center" row="0" col="3" />
+      <Label text="Total" class="column-name text-center" row="0" col="4" />
     </GridLayout>
 
     <ListView for="item in orderDetail.records" row="14" col="0" colSpan="5">

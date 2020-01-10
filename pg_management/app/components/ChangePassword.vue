@@ -4,11 +4,11 @@
       <FlexboxLayout class="page" row="0" col="1" rowSpan="2">
         <GridLayout rows="auto, auto, auto" columns="*">
           <StackLayout>
-            <Label text="CẬP NHẬT MẬT KHẨU" class="page_title_small" />
+            <Label text="UPDATE PASSWORD" class="page_title_small" />
             <TextField
               id="txt_old_pass"
               v-model="user.oldPass"
-              hint="Mật khẩu hiện tại"
+              hint="Current Password"
               secure="true"
               autocorrect="false"
               class="input-margin"
@@ -16,7 +16,7 @@
             <TextField
               id="txt_new_pass"
               v-model="user.newPass"
-              hint="Mật khẩu mới"
+              hint="New Passowrd"
               secure="true"
               autocorrect="false"
               class="input-margin"
@@ -24,12 +24,12 @@
             <TextField
               id="txt_confirm_pass"
               v-model="user.confirmPass"
-              hint="Nhập lại mật khẩu mới"
+              hint="Please fill new password again"
               secure="true"
               autocorrect="false"
               class="input-margin"
             />
-            <Button id="btn_submit" @tap="validateInput()" text="CẬP NHẬT" class="btn btn-primary input-margin" :isEnabled = "!processing"  />
+            <Button id="btn_submit" @tap="validateInput()" text="UPDATE" class="btn btn-primary input-margin" :isEnabled = "!processing"  />
           </StackLayout>
           <ActivityIndicator v-show="processing" busy="true"/>
         </GridLayout>

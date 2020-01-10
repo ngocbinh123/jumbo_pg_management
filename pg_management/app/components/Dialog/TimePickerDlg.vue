@@ -8,7 +8,7 @@
     <TimePicker v-model="selectedTime" row="2" col="0" colSpan="2" />
     <Button
       id="btn_complete"
-      text="XONG"
+      text="COMPLETE"
       class="btn btn-fill-bg"
       @tap="submiData()"
       row="4"

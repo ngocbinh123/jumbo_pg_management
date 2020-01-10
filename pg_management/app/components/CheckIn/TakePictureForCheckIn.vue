@@ -1,12 +1,10 @@
 <template>
     <GridLayout rows="50,20,*,auto,5,60" columns="50,*,50" class="page-parent">
         <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
-        <Label text="CHẤM CÔNG" class="text-center" />
+        <Label text="CHECK-IN" class="text-center" />
         </FlexboxLayout>
         <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-        <!-- <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="onClickSendButton()" row="0" col="2"/> -->
-       
         <StackLayout row="2" col="0" colSpan="3" class="img-border">
             <Image :src="!cameraImage ? 'res://bg_trans' : cameraImage" id="image" loadMode="sync" stretch="aspectFit" height="100%" />
         </StackLayout>
@@ -24,7 +22,7 @@
             <Label :text="$props.location.address" class="lbl-value-address" textWrap="true" row="2" col="1" rowSpan="2" />    
         </GridLayout>
 
-        <Button class="btn-take-pic" text="CHẤM CÔNG" @tap="onClickSendButton()" row="5" col="0" colSpan="3" :isEnabled="!processing" />
+        <Button class="btn-take-pic" text="COMPLETE" @tap="onClickSendButton()" row="5" col="0" colSpan="3" :isEnabled="!processing" />
         <ActivityIndicator v-show="processing" busy="true" row="0" col="0" colSpan="3" rowSpan="5" />
     </GridLayout>
 </template>
@@ -49,7 +47,6 @@
     export default {
         created() {
             this.trackingPage();
-            this.startingTakePictureNow();
         },
         props: ["location"],
         data() {
@@ -110,9 +107,9 @@
                         "Authorization": bearer,
                         "Content-Type": "application/octet-stream"
                     },
-                    description: "Đang tải hình...",
+                    description: "Image is being uploaded ...",
                     androidAutoDeleteAfterUpload: true,
-                    androidNotificationTitle: "Tải Hình Chấm Công", 
+                    androidNotificationTitle: "The image was uploaded successfully.", 
                     androidAutoClearNotification: true
                 };
 

@@ -5,31 +5,31 @@
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-    <Label text="Tỉnh/ Thành Phố" class="text-label" row="2" col="0"  colSpan="2" />
+    <Label text="Province" class="text-label" row="2" col="0"  colSpan="2" />
 
     <GridLayout orientation="horizontal" class="dropbox" row="3" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProvinces()">
         <Label :text="selectedProvince.name" class="text-value" row="0" col="1" />
         <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
     </GridLayout>
 
-    <Label text="Quận/ Huyện" class="text-label" row="5" col="0"  colSpan="2" />
+    <Label text="District" class="text-label" row="5" col="0"  colSpan="2" />
     <GridLayout orientation="horizontal" class="dropbox" row="6" col="0" colSpan="2" rows="*" columns="6, *, 30"  @tap="showDisctricts()">
         <Label :text="selectedDistrict.name" class="text-value"  row="0" col="1" />
         <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2"/>
     </GridLayout>
 
-    <Label text="Phường" class="text-label" row="8" col="0"  colSpan="2" />
+    <Label text="Ward" class="text-label" row="8" col="0"  colSpan="2" />
     <TextView v-model="selectedWard" 
-        hint="Nhập phường"
+        hint="Please fill ward"
         class="edt-box" row="9" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="next" ke/>
     
-    <Label text="Số Nhà Và Tên Đường" class="text-label" row="11" col="0"  colSpan="2" />
+    <Label text="Street" class="text-label" row="11" col="0"  colSpan="2" />
     <TextView v-model="selectedStreet" 
-        hint="Nhập địa chỉ nhà và tên đường"
+        hint="Please fill street"
         class="edt-box" row="12" col="0"  colSpan="2" maxLength="50" autocapitalizationType="words" returnKeyType="done" />
 
     <Button
-      text="HOÀN THÀNH"
+      text="COMPLETE"
       class="btn btn-fill-bg"
       @tap="submiData()"
       row="14"

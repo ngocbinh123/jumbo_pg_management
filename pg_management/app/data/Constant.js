@@ -7,11 +7,11 @@ module.exports = {
     },
     GENDER: {
         Male: {
-            text: "Nam",
+            text: "Male",
             value: 1
         },
         Female: {
-            text: "Nữ",
+            text: "Female",
             value: 2
         }
     },
@@ -21,7 +21,7 @@ module.exports = {
     KEY_PAGE_VIEW: "KEY_PAGE_VIEW",
     KEY_PAGE_ID: "KEY_PAGE_ID",
     pullToRefreshStyle: {
-        indicatorColor: new colorModule.Color("#EF4D4D"),
+        indicatorColor: new colorModule.Color("#07612C"),
         indicatorBackgroundColor: new colorModule.Color("white")
     }
 }

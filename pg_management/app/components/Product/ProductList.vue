@@ -1,7 +1,7 @@
 <template>
   <GridLayout rows="50, *" columns="50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-      <Label text="DANH SÁCH SẢN PHẨM" class="text-center" />
+      <Label text="PRODUCT LIST" class="text-center" />
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 

@@ -37,16 +37,16 @@
     </RadListView>
     <Button
       id="btn_check_in"
-      text="CHẤM CÔNG"
+      text="CHECK-IN"
       class="btn-fill-bg"
       row="2"
       col="2"
-      v-show="isToday(localSelectedDateStr) && currCheckInList.length > 0"
-      @tap="validCheckInOutTime()"
+      v-show="isToday(localSelectedDateStr)"
+      @tap="startGetLocation()"
       :isEnabled="!isChkInProscess"
     />
     <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="5" rowSpan="3" />
-    <Label v-if="!isChkInProscess && currCheckInList.length == 0 && messages.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="1" colSpan="5" rowSpan="3" />
+    <Label v-if="!isChkInProscess && currCheckInList.length == 0 && messages.length == 0" text="No Data On Current Date." class="text-center" margin="24" color="red" row="1" colSpan="5" rowSpan="3" />
     </GridLayout>
 </template>
 <script>
@@ -124,7 +124,7 @@ export default {
       const requestSelectedDate = Helper.convertLocalDateToRequestDate(this.localSelectedDateStr);
       ApiService.methods.getSessions(requestSelectedDate, CurrentUser.methods.getBearId())
       .then(obj => {
-        this.messages = obj.messages;
+        // this.messages = obj.messages;
         this.currCheckInList = obj.records;
         this.isChkInProscess = false;
         if (args != undefined) {

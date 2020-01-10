@@ -2,13 +2,13 @@
   <GridLayout rows="50,60,auto,60,auto,*,10" columns="40,*,50" class="page-parent">
     <ActivityIndicator v-show="isProcessing" busy="true" row="0" col="0" colSpan="3" rowSpan="6" />
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
-      <Label text="TẠO ĐƠN HÀNG MỚI" class="text-center" />
+      <Label text="CREATE NEW ORDER" class="text-center" />
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
     <Label :text="'fa-check' | fonticon" class="fas btn-done"  @tap="submiData()" :isEnabled="!isProcessing" row="0" col="2" />
 
-    <Label text="Thông Tin Khách Hàng:" class="header" row="1" col="0" colSpan="2" />
+    <Label text="Customer Information:" class="header" row="1" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addCustomer()" :isEnabled="!isProcessing" row="1" col="2" />     
 
     <StackLayout row="2" col="0" colSpan="3" v-show="!!customer.fullname">
@@ -27,9 +27,9 @@
         <Label :text="customer.address" class="text-center txt-value" textWrap="true" v-show="!!customer.address" />
       </StackLayout>
     </StackLayout>
-    <Label text="Hãy bấm nút + góc trên bên phải để thêm khách hàng." class="text-center" textWrap="true" color="red" margin="24" row="2" col="0" colSpan="3" v-show="!customer.fullname"/>
+    <Label text="Please tab + to add customer." class="text-center" textWrap="true" color="red" margin="24" row="2" col="0" colSpan="3" v-show="!customer.fullname"/>
 
-    <Label text="Chi Tiết Đơn Hàng:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
+    <Label text="Order Detail:" class="header text-ver-middle" row="3" col="0" colSpan="2" />
     <Button class="btn btn-add" text="+" @tap="addProduct()" :isEnabled="!isProcessing" row="3" col="2" />
     
     <GridLayout class="lout-columns" rows="auto,auto,auto,*" columns="40,auto, 40,100, *" row="4" col="0" colSpan="3">
@@ -53,10 +53,10 @@
           <Label :text="calculateTotal()" class="text-right lbl-sum-value border-top"  padding ="0" textWrap="true" row="2" col="1" />
       </GridLayout>
     
-      <Label text="Tên SP" class="column-name text-center" row="3" col="0" colSpan="2" />
-      <Label text="SL" class="column-name text-right" row="3" col="2" />
-      <Label text="Đơn Giá" class="column-name text-center" row="3" col="3" />
-      <Label text="Tổng" class="column-name text-center" row="3" col="4" />
+      <Label text="Model" class="column-name text-center" row="3" col="0" colSpan="2" />
+      <Label text="Num" class="column-name text-right" row="3" col="2" />
+      <Label text="Unit Price" class="column-name text-center" row="3" col="3" />
+      <Label text="Total" class="column-name text-center" row="3" col="4" />
     </GridLayout>
 
     <ListView for="item in products" row="5" col="0" colSpan="3" rowSpan="2" @itemTap="selectedProduct">
@@ -222,7 +222,7 @@ export default {
       }
 
       const total = this.calculateTotal();
-      const message = "- Khách hàng: " + this.customer.fullname + "\n- Ngày lập: " + this.transTime + "  " + this.transDate + "\n- Tổng tiền: " + total + " (Đã bao gồm VAT)";
+      const message = "- Customer: " + this.customer.fullname + "\n- Order date: " + this.transTime + "  " + this.transDate + "\n- Total: " + total + " (included tax)";
 
       confirm({
         title: StringConst.lbl_pls_check_order,
@@ -357,7 +357,7 @@ export default {
     },
     selectedProduct(event) {
       const item = event.item;
-      action("Bạn chọn " + item.name + " là để:", 
+      action("YOU choose " + item.name + " to ", 
       StringConst.lbl_close, 
       [StringConst.lbl_update_number, StringConst.lbl_delete])
         .then(result => this.callBackSelectedProduct(result, item));

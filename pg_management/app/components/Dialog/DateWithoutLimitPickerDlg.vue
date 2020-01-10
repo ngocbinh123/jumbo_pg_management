@@ -8,7 +8,7 @@
     <DatePicker v-model="selectedDate" row="2" col="0" colSpan="2" />
     <Button
       id="btn_complete"
-      text="XONG"
+      text="COMPLETE"
       class="btn btn-fill-bg"
       @tap="submiData()"
       row="4"
@@ -40,16 +40,11 @@ export default {
           this.$modal.close();
         },
         submiData() {
-            // this.$modal.close({
-            //     isSuccess: true,
-            //     selectedDate: this.selectedDate,
-            //     selectedDateStr: this.selectedDate.getDate() + "/" + (this.selectedDate.getMonth() + 1)+ "/" + this.selectedDate.getFullYear()
-            // });
-             this.$modal.close({
-                isSuccess: true,
-                selectedDate: this.selectedDate,
-                selectedDateStr: Helper.formatToLocalDate(this.selectedDate)
-            });
+          this.$modal.close({
+            isSuccess: true,
+            selectedDate: this.selectedDate,
+            selectedDateStr: Helper.formatToLocalDate(this.selectedDate)
+        });
         }
     }
 };

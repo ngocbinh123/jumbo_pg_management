@@ -1,46 +1,46 @@
 <template>
   <GridLayout rows="50,*" columns="50,*" class="page-parent">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-      <Label text="KHÁC HÀNG MỚI" class="text-center" />
+      <Label text="NEW CUSTOMER" class="text-center" />
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
     <ScrollView row="1" col="0" colSpan="2">
       <GridLayout rows="50, *, 30, 70" columns="*" >
-        <Label text="Thông Tin Khách Hàng:" class="header" row="0" col="0" />
+        <Label text="Customer information:" class="header" row="0" col="0" />
         <GridLayout class="data-form" row="1" col="0" rows="auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto, 20, auto, auto" columns="*" >
-          <Label text="Họ Tên" class="text-label" row="0" col="0" />
+          <Label text="Full name" class="text-label" row="0" col="0" />
           <TextField v-model="customer.name" hint="Nhập họ tên khách hàng" class="text-value input-border" margin="4 12" padding="12 18" row="1" col="0" />
 
-          <Label text="Giới Tính" class="text-label" row="3" col="0" />
+          <Label text="Gender" class="text-label" row="3" col="0" />
           <GridLayout orientation="horizontal" class="box-border" row="4" col="0" rows="*" columns="6, *, 30" @tap="showGenders()">
               <Label :text="customer.sex" class="text-value" row="0" col="1" />
               <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
           </GridLayout>
 
-          <Label text="Số Điện Thoại" class="text-label" row="6" col="0" />
+          <Label text="Mobile phone" class="text-label" row="6" col="0" />
           <TextField v-model="customer.phone" hint="Nhập số điện thoại của khách hàng" keyboardType="phone" class="text-value input-border" margin="4 12" padding="12 18" row="7" col="0" />
 
-          <Label text="Tỉnh/ Thành Phố" class="text-label" row="9" col="0" />
+          <Label text="Province" class="text-label" row="9" col="0" />
           <GridLayout orientation="horizontal" class="box-border" row="10" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProvinces()">
               <Label :text="customer.province.name" class="text-value" row="0" col="1" />
               <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" margin="0 0" />
           </GridLayout>
 
-          <Label text="Quận/ Huyện" class="text-label" row="12" col="0"  colSpan="2" />
+          <Label text="District" class="text-label" row="12" col="0"  colSpan="2" />
           <GridLayout orientation="horizontal" class="box-border" row="13" col="0" colSpan="2" rows="*" columns="6, *, 30"  @tap="showDisctricts()">
               <Label :text="customer.district.name" class="text-value"  row="0" col="1" />
               <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
           </GridLayout>
 
-          <Label text="Phường" class="text-label" row="15" col="0" colSpan="2" />
-          <TextField v-model="customer.ward" hint="Nhập phường. Ví dụ: Phường 12" class="text-value input-border" margin="4 12" padding="12 18" row="16" col="0" />
+          <Label text="Ward" class="text-label" row="15" col="0" colSpan="2" />
+          <TextField v-model="customer.ward" hint="Ward 12" class="text-value input-border" margin="4 12" padding="12 18" row="16" col="0" />
 
-          <Label text="Đường" class="text-label" row="18" col="0" colSpan="2" />
-          <TextField v-model="customer.street" hint="Nhập số nhà, tên đường" class="text-value input-border" margin="4 12" padding="12 18" row="19" col="0" />
+          <Label text="Street" class="text-label" row="18" col="0" colSpan="2" />
+          <TextField v-model="customer.street" hint="123 Cong Hoa" class="text-value input-border" margin="4 12" padding="12 18" row="19" col="0" />
         </GridLayout>
         <Button
           id="btn_submit_customer"
-          text="Hoàn Thành"
+          text="COMPLETE"
           class="btn btn-fill-bg"
           @tap="submiData()"
           :isEnabled="!processing"
@@ -71,7 +71,7 @@ export default {
     return {
       customer: {
         name: "",
-        sex: "Nam",
+        sex: "Male",
         phone: "",
         province: {
             id:"",
@@ -192,7 +192,7 @@ export default {
           fullscreen: true, 
           animated: true,
           props: {
-          title: "QUẬN/ HUYỆN CỦA " + this.customer.province.name.toUpperCase(),
+          title: "DISTRICT OF " + this.customer.province.name.toUpperCase(),
           province: this.customer.province
       }
           

@@ -3,9 +3,9 @@
     <FlexboxLayout class="page">
       <GridLayout row="auto, auto, auto">
         <StackLayout>
-          <Label text="Xin Chào" class="login-title" />
+          <Label text="HELLO" class="login-title" />
           <Label
-            text="Hãy đăng nhập bằng tài khoản của bạn."
+            text="Pls access app by your account."
             class="page-sub-title"
             textWrap="true"
           />
@@ -19,7 +19,7 @@
           <TextField
             id="txt_pass"
             v-model="user.password"
-            hint="Mật khẩu"
+            hint="Password"
             secure="true"
             autocorrect="false"
             returnKeyType="done"
@@ -28,11 +28,11 @@
           <Button
             id="btn_login"
             @tap="validateInput()"
-            text="Đăng Nhập"
+            text="LOGIN"
             class="btn btn-primary"
             :isEnabled="!processing"
           />
-          <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Bạn quên mật khẩu?" />
+          <Label id="lbl_forgot_pass" @tap="forgotPassword()" text="Are you forgot password?" />
         </StackLayout>
         <ActivityIndicator v-show="processing" busy="true" />
       </GridLayout>

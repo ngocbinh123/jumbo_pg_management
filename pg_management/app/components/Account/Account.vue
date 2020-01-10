@@ -10,28 +10,27 @@
     </GridLayout>
     <ScrollView row="1" col="0" colSpan="3" rowSpann="2">
       <GridLayout class="account-body" rows="20, 50, auto, 20, 50,*,20, 50, auto, 20" columns="*, auto">
-          <Label text="Thông Tin Tài Khoản:" class="text-part-header" row="1" col="0" />    
+          <Label text="Account Info:" class="text-part-header" row="1" col="0" />    
           <StackLayout orientation="horizontal" class=" text-right" row="1" col="1">
-            <Label @tap="changePassword()" :text="'fa-key' | fonticon" class="fas font-icon font-icon-size-24 text-right margin-right"/>
             <Label @tap="refreshAccountInfo()" :text="'fa-sync-alt' | fonticon" class="fas font-icon font-icon-size-24 text-right margin-left"/>
           </StackLayout>
 
           <GridLayout class="account-part" rows="20, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, *" columns="50, *,50" row="2" col="0" colSpan="2">
               <Label :text="'fa-id-card' | fonticon" class="fas icon-field-user" row="1" col="0" />
               <StackLayout class="lout-account-info" row="1" col="1" colSpan="2">
-                <Label text="Mã GID" class="text-label"/>              
+                <Label text="GID" class="text-label"/>              
                 <Label :text="user.gid" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-id-badge' | fonticon" class="far icon-field-user" row="2" col="0" />
               <StackLayout class="lout-account-info" row="2" col="1" colSpan="2">
-                <Label text="Mã Nhân Viên" class="text-label"/>              
+                <Label text="Staff ID" class="text-label"/>              
                 <Label :text="user.code" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-address-card' | fonticon" class="far icon-field-user" row="3" col="0" />
               <StackLayout class="lout-account-info" row="3" col="1" colSpan="2">
-                <Label text="CMND (Thẻ căn cước công nhân)" class="text-label"/>              
+                <Label text="ID CARD" class="text-label"/>              
                 <Label :text="user.idCard" class="text-value" textWrap="true"/>              
               </StackLayout>
 
@@ -43,61 +42,43 @@
 
               <Label :text="'fa-birthday-cake' | fonticon" class="fas icon-field-user" row="5" col="0" />
               <StackLayout class="lout-account-info" row="5" col="1" colSpan="2">
-                <Label text="Ngày Sinh Nhật" class="text-label"/>              
+                <Label text="Birthday" class="text-label"/>              
                 <Label :text="user.birthday" class="text-value" textWrap="true"/>              
               </StackLayout>
               <Label :text="'fa-edit' | fonticon" class="far icon-edit" row="5" col="2" @tap="onClickUpdateBirthday()" />
 
               <Label :text="'fa-mobile-alt' | fonticon" class="fas icon-field-user" row="6" col="0" />
               <StackLayout class="lout-account-info" row="6" col="1" colSpan="2">
-                <Label text="Số Điện Thoại" class="text-label"/>              
+                <Label text="Mobile Phone" class="text-label"/>              
                 <Label :text="user.phone" class="text-value" textWrap="true"/>              
               </StackLayout>
               <Label :text="'fa-edit' | fonticon" class="far icon-edit" row="6" col="2" @tap="onClickUpdatePhoneNumber()" />
 
               <Label :text="'fa-home' | fonticon" class="fas icon-field-user" row="7" col="0" />
               <StackLayout class="lout-account-info" row="7" col="1" colSpan="2">
-                <Label text="Địa Chỉ" class="text-label"/>              
+                <Label text="Address" class="text-label"/>              
                 <Label :text="user.address" class="text-value" textWrap="true"/>              
               </StackLayout>
               <Label :text="'fa-edit' | fonticon" class="far icon-edit" row="7" col="2" @tap="onClickUpdateAddress()" />
 
               <Label :text="'fa-venus-mars' | fonticon" class="fas icon-field-user" row="8" col="0" />
               <StackLayout class="lout-account-info" row="8" col="1" colSpan="2">
-                <Label text="Giới Tính" class="text-label"/>              
+                <Label text="Gender" class="text-label"/>              
                 <Label :text="user.gender" class="text-value" textWrap="true"/>              
-              </StackLayout>
-
-              <Label :text="'fa-th' | fonticon" class="fas icon-field-user" row="9" col="0" />
-              <StackLayout class="lout-account-info" row="9" col="1" colSpan="2">
-                <Label text="Ngành Hàng" class="text-label"/>              
-                <Label :text="user.category" class="text-value" textWrap="true"/>              
-              </StackLayout>
-
-              <Label :text="'fa-chalkboard' | fonticon" class="fas icon-field-user" row="10" col="0" />
-              <StackLayout class="lout-account-info" row="10" col="1" colSpan="2">
-                <Label text="Kênh Bán Hàng" class="text-label"/>              
-                <Label :text="user.channel" class="text-value" textWrap="true"/>              
-              </StackLayout>
-
-              <Label :text="'fa-handshake' | fonticon" class="fas icon-field-user" row="11" col="0" />
-              <StackLayout class="lout-account-info-no-border" row="11" col="1" colSpan="2">
-                <Label text="Đối Tác" class="text-label"/>              
-                <Label :text="user.client" class="text-value" textWrap="true"/>              
-              </StackLayout>            
+              </StackLayout>         
           </GridLayout>
 
-          <Label text="Thông Tin Người Quản Lý:" class="text-part-header" row="4" col="0" colSpan="2"/>    
+          <Label text="Leader Info:" class="text-part-header" row="4" col="0" colSpan="2"/>    
           <GridLayout class="account-part" rows="20, auto, auto, *" columns="50, *,50" row="5" col="0" colSpan="2">
             <Label :text="'fa-user-tie' | fonticon" class="fas icon-field-user" row="1" col="0" />
               <StackLayout class="lout-account-info" row="1" col="1" colSpan="2">
-                <Label text="Họ Tên" class="text-label"/>              
+                <Label text="Full name" class="text-label"/>              
                 <Label :text="user.manager.name" class="text-value" textWrap="true"/>              
               </StackLayout>
 
               <Label :text="'fa-mobile-alt' | fonticon" class="fas icon-field-user" row="2" col="0" />
               <StackLayout class="lout-account-info" row="2" col="1" colSpan="2">
-                <Label text="Số Điện Thoại" class="text-label"/>              
+                <Label text="Mobile phone" class="text-label"/>              
                 <Label :text="user.manager.phone" class="text-value" textWrap="true"/>              
               </StackLayout>
 
@@ -134,8 +115,8 @@ export default {
       user: {},
       appInfo: {
         version: "Version: 1.0",
-        releasedDate: "Released: 01-01-2020",
-        copyRight: "Copyright© by NTGroup"
+        releasedDate: "Released: 01-12-2019",
+        copyRight: "Copyright© by NNBINH"
       }
     };
   },

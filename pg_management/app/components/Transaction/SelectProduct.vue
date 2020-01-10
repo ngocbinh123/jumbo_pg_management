@@ -1,22 +1,22 @@
 <template>
   <GridLayout rows="50,20, auto, auto, auto, auto 30, 70" columns="50,*" class="page-parent data-form">
     <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="2" width="100%">
-      <Label text="THÊM SẢN PHẨM" class="text-center" />
+      <Label text="ADD PRODUCT" class="text-center" />
     </FlexboxLayout>
     <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
-    <Label text="Sản Phẩm" row="2" col="0" colSpan="2" margin="0 0 0 12" />    
+    <Label text="Product" row="2" col="0" colSpan="2" margin="0 0 0 12" />    
 
     <GridLayout orientation="horizontal" class="dropbox" row="3" col="0" colSpan="2" rows="*" columns="6, *, 30" @tap="showProducts()">
         <Label v-model="product.name" class="text-value" row="0" col="1" margin="0 0 0 0" />
         <Label :text="'fa-sort' | fonticon" class="fas icon-sort" row="0" col="2" />
     </GridLayout>
     
-    <Label text="Số Lượng" row="4" col="0" colSpan="2" margin="24 0 0 12" />
+    <Label text="Number" row="4" col="0" colSpan="2" margin="24 0 0 12" />
     <TextView v-model="product.number"  keyboardType="number" autocorrect="false" class="edt-box" row="5" col="0" colSpan="2" />
     <Button
       id="btn_add_product"
-      text="Thêm"
+      text="ADD"
       class="btn btn-fill-bg"
       @tap="submiData()"
       row="7"
@@ -41,7 +41,7 @@ export default {
       isProcessing: false,
       product: {
         id: "",
-        name: "Chọn sản phẩm",
+        name: "Please select product",
         number: 1,
         price: "",
         currencyUnit:""
@@ -102,7 +102,7 @@ export default {
         );
         this.isProcessing = false;
         return;
-      }else if (!this.product.id || !this.product.name || this.product.name == "Chọn sản phẩm") {
+      }else if (!this.product.id || !this.product.name || this.product.name == "Please select product") {
            this.showDlg(
           StringConst.lbl_notification,
           StringConst.msg_please_choos_product
