@@ -28,6 +28,13 @@ if (TNS_ENV !== 'production') {
 firebase.init({
     // Optionally pass in properties for database, authentication and cloud messaging,
     // see their respective docs.
+    onPushTokenReceivedCallback: function(token) {
+        remember.setFCMToken(token);
+        console.log("Firebase push token: " + token);
+    },
+    onMessageReceivedCallback: function(message) {
+        console.log("onMessageReceivedCallback", message);
+    }
 }).then(
     function() {
         console.log("firebase.init done");
@@ -36,6 +43,7 @@ firebase.init({
         console.log("firebase.init error: " + error);
     }
 );
+Vue.prototype.$firebase = firebase;
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')

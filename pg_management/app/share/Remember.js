@@ -36,7 +36,7 @@ const KEY_REMOTE_CUSTOMER_LIST = "KEY_REMOTE_CUSTOMER_LIST";
 
 const KEY_IS_ANDROID_DEVICE = "KEY_IS_ANDROID_DEVICE";
 
-
+const KEY_FCM_TOKEN = "KEY_FCM_TOKEN";
 
 module.exports = {
     isAndroidDevice() {
@@ -44,6 +44,12 @@ module.exports = {
     },
     setIsAndroidDevice(isAndroid) {
         return appSettings.setBoolean(KEY_IS_ANDROID_DEVICE, isAndroid);
+    },
+    getFCMToken() {
+        return appSettings.getString(KEY_FCM_TOKEN, "");
+    },
+    setFCMToken(token) {
+        appSettings.setString(KEY_FCM_TOKEN, token);
     },
     getUserId() {
         return appSettings.getString(KEY_USER_ID, "");
