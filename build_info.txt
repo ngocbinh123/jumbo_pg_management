@@ -1,5 +1,10 @@
-tns build android --release --key-store-path pg_keystore.jks --key-store-password 123456 --key-store-alias PGMan --key-store-alias-password 123456
+tns build android --release --key-store-path pg_keystore.jks --key-store-password 123456 --key-store-alias PGMan --key-store-alias-password 123456 --env.uglify
 
+
+IOS: 
+	- Debug: tns debug <DEVICE ID>
+	- Run: tns run <DEVICE ID>
+	- build: tns build ios --release --for-device --provision <UUID/NAME> --env.uglify
 
 ADB command 
 Uninstall app:  adb shell pm uninstall -k com.nnbinh.jumbo

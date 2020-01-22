@@ -1,7 +1,6 @@
 <template>
   <Page actionBarHidden="true">
-    <GridLayout rows="*" columns="*">
-      <TabView 
+     <TabView 
         iosIconRenderingMode="automatic"
         tabTextFontSize="14"
         tabTextColor="gray"
@@ -26,7 +25,6 @@
           <Account></Account>
         </TabViewItem>
       </TabView>
-    </GridLayout>
   </Page>
 </template>
 
