@@ -7,15 +7,16 @@
     "nativescript": {
         "id": "com.nnbinh.jumbo",
         "templateVersion": "v2",
-        "tns-ios": {
-            "version": "6.3.0"
-        },
         "tns-android": {
             "version": "6.3.1"
+        },
+        "tns-ios": {
+            "version": "6.3.0"
         }
     },
     "dependencies": {
         "@vue/devtools": "^5.0.6",
+        "axios": "^0.19.1",
         "fecha": "^3.0.3",
         "font-awesome": "^4.7.0",
         "nativescript-background-http": "^4.2.1",

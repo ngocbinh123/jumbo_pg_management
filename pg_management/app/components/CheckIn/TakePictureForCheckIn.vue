@@ -1,7 +1,7 @@
 <template>
     <GridLayout rows="50,20,*,auto,5,60" columns="50,*,50" class="page-parent">
         <FlexboxLayout class="tool-bar" row="0" col="0" colSpan="3" width="100%">
-        <Label text="CHẤM CÔNG" class="text-center" />
+            <Label text="CHẤM CÔNG" class="text-center" />
         </FlexboxLayout>
         <Label :text="'fa-chevron-left' | fonticon" class="fas btn-back"  @tap="closePage()" row="0" col="0" />
 
@@ -31,8 +31,6 @@
 
 <script>
     import { EventData, Observable, fromObject } from "tns-core-modules/data/observable";
-    import { Page } from "tns-core-modules/ui/page";
-    import { View } from 'tns-core-modules/ui/core/view';
     import { takePicture, requestPermissions } from "nativescript-camera";
     import StringConst from '../../assets/StringConst';
     import ApiService from '../../service/BackEndService';

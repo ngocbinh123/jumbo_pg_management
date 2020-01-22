@@ -28,7 +28,7 @@
           <Button
             id="btn_login"
             @tap="validateInput()"
-            text="Đăng Nhập"
+            text="ĐĂNG NHẬP"
             class="btn btn-primary"
             :isEnabled="!processing"
           />
@@ -286,5 +286,4 @@ TextField {
     text-align: center;
     margin: 0, 0, 46, 0;
 }
-
 </style>
