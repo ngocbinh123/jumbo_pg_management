@@ -35,6 +35,7 @@
         </GridLayout>
       </v-template>
     </RadListView>
+    <Label v-if="!isChkInProscess && currCheckInList.length == 0 && messages.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="1" colSpan="5" rowSpan="3" />
     <Button
       id="btn_check_in"
       text="CHẤM CÔNG"
@@ -46,11 +47,10 @@
       :isEnabled="!isChkInProscess"
     />
     <ActivityIndicator v-show="isChkInProscess" busy="true" row="0" colSpan="5" rowSpan="3" />
-    <Label v-if="!isChkInProscess && currCheckInList.length == 0 && messages.length == 0" text="Không có dữ liệu Chấm công." class="text-center" margin="24" color="red" row="1" colSpan="5" rowSpan="3" />
     </GridLayout>
 </template>
 <script>
-import TakePicForChkIn from "../CheckIn/TakePictureForCheckIn";
+import TakePicture from '../CheckIn/TakePicture';
 import Transition from "../../share/Transition";
 import CurrentUser from "../../data/CurrentUser";
 import StringConst from "../../assets/StringConst";
@@ -115,6 +115,16 @@ export default {
        this.fetchCheckInSchedules(); 
       });
     },
+    fetchingDataAfterCheckin(isSuccess) {
+      this.fetchCheckInSchedules();
+      if (isSuccess == undefined) {
+        return
+      }else if (isSuccess) {
+        setTimeout(()=> {
+          this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
+        },500);
+      }
+    },
     fetchCheckInSchedules(args) {
       if (args == undefined) {
         this.isChkInProscess = true;
@@ -138,23 +148,16 @@ export default {
         this.callApiServiceFail(error);
       });
     },
-    openCamera(curLoction) {
-      this.isChkInProscess = true;
-      this.$showModal(TakePicForChkIn, {
-              fullscreen: true,
-              animated: true,
-              props: {
-                location: curLoction
-              }
-          }).then(response => {
-            this.isChkInProscess = false;
-            if (response.isSuccess) {
-              this.fetchCheckInSchedules();
-              this.showDlg(StringConst.lbl_success, StringConst.msg_check_in_success);
-            }else {
-              this.showDlg(StringConst.lbl_notification,StringConst.msg_please_should_take_picture_before);
-            }
-          });
+    openCamera(curLoction) {      
+      this.isChkInProscess = false;
+      this.$navigateTo(TakePicture, {
+        animated: true,
+        transition: Transition.pageTransition,
+        props: {
+          $delegate: this,
+          location: curLoction
+        }
+      });
     },
     validCheckInOutTime() {
       this.isChkInProscess = true;
