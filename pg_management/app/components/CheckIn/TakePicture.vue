@@ -34,7 +34,6 @@ import CurrentUser from '../../data/CurrentUser';
 import StringConst from '../../assets/StringConst';
 import ApiService from '../../service/BackEndService';
 import Config from '../../service/Config';
-import * as firebase from"nativescript-plugin-firebase";
 import Constant from "../../data/Constant";
 import Helper from "../../helper/PopularHelper";
 
